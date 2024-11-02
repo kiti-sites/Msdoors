@@ -911,7 +911,7 @@ notifsTab:AddToggle({
 --------------------[[ 💻 AUTOMAÇÃO 💻 ]]--------------------------------
 local autoIn = Window:MakeTab({
     Name = "Automoção",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid:///7733765045",
     PremiumOnly = false
 })
 
