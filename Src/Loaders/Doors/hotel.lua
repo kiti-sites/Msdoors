@@ -758,8 +758,8 @@ end
 --------------------// 📱 INTERFACE 📱\\--------------------------------
 --// CRÉDITOS \\--
 local CreditsTab = Window:MakeTab({
-    Name = "Créditos",
-    Icon = "rbxassetid://7743871002",
+    Name = "Créditos - Msdoors",
+    Icon = "rbxassetid://7743875759",
     PremiumOnly = false
 })
 local CdSc = CreditsTab:AddSection({
@@ -985,6 +985,7 @@ autoIn:AddToggle({
 workspace.DescendantAdded:Connect(ChildCheck)
 CheckPrompts()
 
+--{ ☝️ AUTO LOOT / BOTÃO }--
 autoIn:AddToggle({
     Name = "Auto Loot",
     Default = false,
@@ -1027,7 +1028,7 @@ local function antiHalt()
     end
 end
 
---//Anti Entity\\--
+--------------------[[ 💻 BYPASS ENTITIES 💻 ]]--------------------------------
 local AntiMonstersTab = Window:MakeTab({
     Name = "Anti Monsters",
     Icon = "rbxassetid://4483345998",
@@ -1094,7 +1095,7 @@ local ByTab = Window:MakeTab({
 
 --[ Itens ]--
 local ItensTab = Window:MakeTab({
-    Name = "Give Itens",
+    Name = "Itens",
     Icon = "rbxassetid://11713331539",
     PremiumOnly = false
 })
@@ -1108,33 +1109,9 @@ ItensTab:AddButton({
 
 -- Local Player
 local GameLocal = Window:MakeTab({
-    Name = "Player",
-    Icon = "rbxassetid://17328380241",
+    Name = "Funções do player",
+    Icon = "rbxassetid://7733799795",
     PremiumOnly = false
-})
-
-GameLocal:AddButton({
-    Name = "🎥 Alternar campo de visão",
-    Callback = function()
-        toggleFieldOfView()
-    end    
-})
-
-
-GameLocal:AddButton({
-    Name = "💾 Stats de FPS",
-    Callback = function()
-        loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/RhyanXG7/RseekerHub/Fun%C3%A7%C3%B5es/Sc/Stats.lua"))()
-        print("O botão stats foi ativo!")
-       end
-})
-
-GameLocal:AddButton({
-    Name = "👻 Modo Fantasma",
-    Callback = function()
-        loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/RhyanXG7/RseekerHub/Fun%C3%A7%C3%B5es/Sc/Godmode.lua"))()
-        print("O godmode foi ativo!")
-    end
 })
 
 GameLocal:AddToggle({
@@ -1146,26 +1123,6 @@ GameLocal:AddToggle({
     end
 })
 
-GameLocal:AddToggle({
-    Name = "Speed Bypass",
-    Default = false,
-    Callback = function(value)
-        speedBypass(value)
-    end    
-})
-
-GameLocal:AddToggle({
-    Name = "Speed Bypass Delay",
-    Default = false,
-    Callback = function(value)
-        if value then
-            speedBypassWithDelay(true, 2)
-        else
-            speedBypassWithDelay(false, 0)
-            speedBypass(false) 
-        end
-    end    
-})
 
 local FloorTab = Window:MakeTab({
     Name = "Floors",
