@@ -1031,7 +1031,7 @@ end
 --------------------[[ 💻 BYPASS ENTITIES 💻 ]]--------------------------------
 local AntiMonstersTab = Window:MakeTab({
     Name = "Anti Monsters",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://7733701545",
     PremiumOnly = false
 })
 
@@ -1074,7 +1074,7 @@ AntiMonstersTab:AddToggle({
 -- Exploits
 local ExploitsTab = Window:MakeTab({
     Name = "Exploits",
-    Icon = "rbxassetid://13264701341",
+    Icon = "rbxassetid://7743873633",
     PremiumOnly = false
 })
 --// Anti Entity Tab \\--
@@ -1087,7 +1087,7 @@ local AntiEntitySection = ExploitsTab:AddSection({Name = "Anti-Entity"})
 --[[ Byppas Area ]]--
 local ByTab = Window:MakeTab({
     Name = "Byppas",
-    Icon = "rbxassetid://14255000409",
+    Icon = "rbxassetid://7733964370",
     PremiumOnly = false
 })
 
@@ -1096,7 +1096,7 @@ local ByTab = Window:MakeTab({
 --[ Itens ]--
 local ItensTab = Window:MakeTab({
     Name = "Itens",
-    Icon = "rbxassetid://11713331539",
+    Icon = "rbxassetid://7733914390",
     PremiumOnly = false
 })
 
