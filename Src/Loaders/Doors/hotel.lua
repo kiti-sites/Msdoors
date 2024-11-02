@@ -282,12 +282,13 @@ end
 
 --[[ 💺 ESP PARA ITENS ]]--
 local esp_loot = {
-    {"Item", "+", Color3.fromRGB(0, 255, 0)}
-    }
+    {"Item", nil, Color3.fromRGB(0, 255, 0)}  -- Define apenas a cor, nome real será extraído
+}
 
 local esp_loot_ativos = {}
 local esp_loot_ativado = false
 local verificar_esp_loot = false
+local localPlayer = game.Players.LocalPlayer
 
 local function encontrarLootESP(nome_loot)
     local loot_encontrado = {}
@@ -299,8 +300,9 @@ local function encontrarLootESP(nome_loot)
     return loot_encontrado
 end
 
-local function aplicarESPLoot(loot, nome, cor)
+local function aplicarESPLoot(loot, cor)
     local cor_destaque = cor or BrickColor.random().Color
+    local nome_verdadeiro = loot.Name 
 
     local Tracer = ESPLibrary.ESP.Tracer({
         Model = loot,
@@ -310,20 +312,27 @@ local function aplicarESPLoot(loot, nome, cor)
     })
 
     local Billboard = ESPLibrary.ESP.Billboard({
-        Name = nome,
+        Name = nome_verdadeiro,
         Model = loot,
         MaxDistance = 5000,
         Color = cor_destaque
     })
 
     local Highlight = ESPLibrary.ESP.Highlight({
-        Name = nome,
+        Name = nome_verdadeiro,
         Model = loot,
         MaxDistance = 5000,
         FillColor = cor_destaque,
         OutlineColor = cor_destaque,
         TextColor = cor_destaque
     })
+
+    RunService.RenderStepped:Connect(function()
+        if loot and loot:IsDescendantOf(workspace) and esp_loot_ativado then
+            local distancia = (localPlayer.Character.HumanoidRootPart.Position - loot.Position).Magnitude
+            Billboard:SetName(string.format("%s [%.0f]", nome_verdadeiro, distancia))
+        end
+    end)
 
     return {Tracer = Tracer, Billboard = Billboard, Highlight = Highlight}
 end
@@ -333,11 +342,11 @@ local function ativarESPLoot()
         local loot_encontrado = encontrarLootESP(lootData[1])
         if #loot_encontrado > 0 then
             for _, loot in ipairs(loot_encontrado) do
-                local espElementos = aplicarESPLoot(loot, lootData[2], lootData[3])
+                local espElementos = aplicarESPLoot(loot, lootData[3])
                 table.insert(esp_loot_ativos, espElementos)
             end
         else
-            warn("[ ⚠️ MsDoors - Aviso ] imp adicionar esp a " .. lootData[1] .. " pois não foi encontrado!")
+            warn("[ ⚠️ MsDoors - Aviso ] Não foi possível adicionar ESP a " .. lootData[1] .. " pois não foi encontrado!")
         end
     end
 end
@@ -661,11 +670,11 @@ end
 local function LogNotification(level, message)
     local title, color, icon
     if level == "SUCESSO" then
-        title, color, icon = "🟩 | Rseeker", Color3.fromRGB(0, 255, 0), "rbxassetid://13311697821"
+        title, color, icon = "🟩 MsDoors", Color3.fromRGB(0, 255, 0), "rbxassetid://13311697821"
     elseif level == "ERRO" then
-        title, color, icon = "🟥 | Rseeker", Color3.fromRGB(255, 0, 0), "rbxassetid://13369776727"
+        title, color, icon = "🟥 MsDoors", Color3.fromRGB(255, 0, 0), "rbxassetid://13369776727"
     else -- Em análise
-        title, color, icon = "🟨 | Rseeker", Color3.fromRGB(255, 255, 0), "rbxassetid://97983317580515"
+        title, color, icon = "🟨 MsDoors", Color3.fromRGB(255, 255, 0), "rbxassetid://97983317580515"
     end
 
     DoorsNotify({
@@ -779,6 +788,7 @@ VisualsEsp:AddToggle({
 })
 
 --{ 🛍️ ESP ITENS / BOTÃO }--
+
 VisualsEsp:AddToggle({
     Name = "esp loot",
     Default = false,
