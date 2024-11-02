@@ -431,7 +431,7 @@ local function ativarDoorESP()
                 table.insert(espAtivosPortas, espElementos)
             end
         else
-            warn("[Seeker Logs] A Porta " .. portaData[1] .. " não foi encontrada!")
+            warn("[ ⚠️ Msdoors - Avisos ] A Porta " .. portaData[1] .. " não foi encontrada!")
         end
     end
 end
@@ -457,6 +457,104 @@ end
 --------------------[[ 🌟 FUNÇÕES DO MSDOORS 🌟 ]]--------------------
 --------------------[[ 🏃 NOCLIP 🏃 ]]--------------------------------
 
+
+--------------------[[ 💻 ANTI LAG ]]--------------------------------
+local antiLagEnabled = false
+local antiLagConnection
+
+local function ActivateAntiLag(notify)
+    if not antiLagEnabled then return end  
+
+    game.Lighting.FogEnd = 1e10
+    game.Lighting.FogStart = 1e10
+    game.Lighting.Brightness = 2
+    game.Lighting.GlobalShadows = false
+    game.Lighting.EnvironmentDiffuseScale = 0
+    game.Lighting.EnvironmentSpecularScale = 0
+
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") and obj.Material ~= Enum.Material.Plastic then
+            obj.Material = Enum.Material.Plastic
+        elseif obj:IsA("Decal") then
+            obj.Transparency = 1
+        end
+    end
+
+    if not antiLagConnection then
+        antiLagConnection = workspace.DescendantAdded:Connect(function(obj)
+            if obj:IsA("BasePart") and obj.Material ~= Enum.Material.Plastic then
+                obj.Material = Enum.Material.Plastic
+            elseif obj:IsA("Decal") then
+                obj.Transparency = 1
+            end
+        end)
+    end
+
+    if notify then
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "🔔 Notificação",
+            Text = "Anti Lag Carregado...",
+            Icon = "rbxassetid://13264701341",
+            Duration = 5
+        })
+
+        local sound = Instance.new("Sound")
+        sound.SoundId = "rbxassetid://4590657391"
+        sound.Volume = 1
+        sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+        sound:Play()
+        sound.Ended:Connect(function()
+            sound:Destroy()
+        end)
+    end
+end
+
+local function DeactivateAntiLag()
+    game.Lighting.FogEnd = 500
+    game.Lighting.FogStart = 0
+    game.Lighting.Brightness = 1
+    game.Lighting.GlobalShadows = true
+    game.Lighting.EnvironmentDiffuseScale = 1
+    game.Lighting.EnvironmentSpecularScale = 1
+
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") and obj.Material == Enum.Material.Plastic then
+            obj.Material = Enum.Material.SmoothPlastic
+        elseif obj:IsA("Decal") then
+            obj.Transparency = 0
+        end
+    end
+
+    if antiLagConnection then
+        antiLagConnection:Disconnect()
+        antiLagConnection = nil
+    end
+
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "🔔 Notificação",
+        Text = "Anti Lag Desativado",
+        Icon = "rbxassetid://13264701341",
+        Duration = 5
+    })
+
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://4590657391"
+    sound.Volume = 1
+    sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    sound:Play()
+    sound.Ended:Connect(function()
+        sound:Destroy()
+    end)
+end
+
+local function onRoomChanged()
+    if antiLagEnabled then
+        ActivateAntiLag(false)
+    end
+end
+
+local latestRoom = game.ReplicatedStorage:WaitForChild("GameData"):WaitForChild("LatestRoom")
+latestRoom:GetPropertyChangedSignal("Value"):Connect(onRoomChanged)
 
 --------------------[[ 📝 NOTIFICAR ENTIDADE 📝 ]]--------------------------------
 --// Tabela de Entidades para notificação.
@@ -620,8 +718,8 @@ local CdSc = CreditsTab:AddSection({
     Name = "Créditos"
 })
 
-CdSc:AddParagraph("Rhyan57", "Criador do RSeeker hub.")
-CdSc:AddParagraph("SeekAlegriaFla", "Pensador das funções e programador")
+CdSc:AddParagraph("Rhyan57", "• Criador do RSeeker hub.")
+CdSc:AddParagraph("SeekAlegriaFla", "• Pensador das funções e programador")
 
 --------------------[[ 💻 VISUAL 💻 ]]--------------------------------
 local VisualsEsp = Window:MakeTab({
@@ -1053,7 +1151,7 @@ local function applyTimerStyle(style)
         end
     elseif style == "Tempo Limite kick" then
         if getgenv().SpeedRunTime >= countdownLimit then
-            LocalPlayer:Kick("[Seeker Hub] ⏰ Timer Expirado! ")
+            LocalPlayer:Kick("[Msdoors] ⏰ Timer Expirado! ")
         end
     end
 end
