@@ -67,10 +67,11 @@ local PromptTable = {
         }
     }
 }
+--[[ 👾 AUTO LOOT ]]--
 --// VARIÁVEIS \\--
 local autoLootEnabled = false
--- AUTO LOOT
 local autoLootAtivo = false
+
 local function AutoLoot()
     while autoLootAtivo do
         for _, comodo in pairs(workspace.CurrentRooms:GetChildren()) do
@@ -506,10 +507,7 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
     end
 end
 
-
-
--- ANTI LAG
-
+--------------------[[ 👾 ANTILAG 👾 ]]--------------------------------
 local antiLagEnabled = false
 local antiLagConnection
 
@@ -606,8 +604,8 @@ end
 local latestRoom = game.ReplicatedStorage:WaitForChild("GameData"):WaitForChild("LatestRoom")
 latestRoom:GetPropertyChangedSignal("Value"):Connect(onRoomChanged)
 
---[[ Notificar Entidades ]]--
--- Tabela de Entidades para notificação.
+--------------------[[ 📝 NOTIFICAR ENTIDADE 📝 ]]--------------------------------
+--// Tabela de Entidades para notificação.
 local EntityTable = {
     ["Names"] = {"BackdoorRush", "BackdoorLookman", "RushMoving", "AmbushMoving", "Eyes", "JeffTheKiller", "A60", "A120"},
     ["NotifyReason"] = {
@@ -665,7 +663,7 @@ function NotifyEntity(entityName)
 end
 
 
---[[ Auto Library Code ]]---
+--------------------[[ 📚 AUTO LIBRARY CODE 📚 ]]--------------------------------
 local mainUI = Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("MainUI", 2.5)
 local function DoorsNotify(options)
     local title = options.Title or "No Title"
@@ -757,10 +755,10 @@ local function AutoLibrarySolver(value)
 end
 
 
---[ ORION LIB - MENU ]--
+--------------------// 📱 INTERFACE 📱\\--------------------------------
 --// CRÉDITOS \\--
 local CreditsTab = Window:MakeTab({
-    Name = "Creditos",
+    Name = "Créditos",
     Icon = "rbxassetid://7743871002",
     PremiumOnly = false
 })
@@ -771,26 +769,18 @@ local CdSc = CreditsTab:AddSection({
 CdSc:AddParagraph("Rhyan57", "Criador do RSeeker hub.")
 CdSc:AddParagraph("SeekAlegriaFla", "Pensador das funções e programador")
 
-local Livraria = CreditsTab:AddSection({
-    Name = "Livrarias"
-})
-
-Livraria:AddParagraph("Mstudio45", "Disponibilizou a API de esps para uso")
-Livraria:AddParagraph("MsPaint V2", "Algun Recursos/funções foram feitas com base no código da MsPaint")
-
--- ESPS
+--------------------[[ 💻 VISUAL 💻 ]]--------------------------------
 local VisualsEsp = Window:MakeTab({
-    Name = "Visual",
+    Name = "Configuração Visual",
     Icon = "rbxassetid://7743874674",
     PremiumOnly = false
 })
-VisualsEsp:AddParagraph("Esp", "Ver objetos através da parede.")
---[BOTÕES ORGANIZADOS POR rhyan57]--
+--// 🔄 ELEMENTOS --  VisualEsp \\--
+VisualsEsp:AddParagraph("🎨 ESP", "• Ver Objetos itens e mais através da parede.")
 
--- DOORS ESP
-
+--{ 🚪 DOOR ESP / BOTÃO }--
 VisualsEsp:AddToggle({
-    Name = "Door ESP",
+    Name = "door esp",
     Default = false,
     Callback = function(state)
         doorEspAtivo = state
@@ -804,9 +794,9 @@ VisualsEsp:AddToggle({
     end
 })
 
---[ esp functions ]--
+--{ 👾 ESP ENTIDADES / BOTÃO }--
 VisualsEsp:AddToggle({
-    Name = "Esp Entidade",
+    Name = "esp entidade",
     Default = false,
     Callback = function(state)
         espAtivo = state
@@ -819,9 +809,10 @@ VisualsEsp:AddToggle({
         end
     end
 })
--- OBJETIVO
+
+--{ 📝 ESP OBJETIVO / BOTÃO }--
 VisualsEsp:AddToggle({
-    Name = "Esp Objetivo",
+    Name = "esp de objetivo",
     Default = false,
     Callback = function(state)
         espAtivoObjetos = state
@@ -835,9 +826,9 @@ VisualsEsp:AddToggle({
     end
 })
 
--- LOOT ESP
+--{ 🛍️ ESP ITENS / BOTÃO }--
 VisualsEsp:AddToggle({
-    Name = "Esp Loot",
+    Name = "esp loot",
     Default = false,
     Callback = function(state)
         esp_loot_ativado = state
@@ -851,10 +842,11 @@ VisualsEsp:AddToggle({
     end
 })
 
-VisualsEsp:AddParagraph("Local Player", "Funções visuais do jogador.")
+VisualsEsp:AddParagraph("📸 Player", "Funções visuais do jogador.")
 
+--{ ♻️ ANTI LAG / BOTÃO }--
 VisualsEsp:AddToggle({
-    Name = "Anti-Lag",
+    Name = "Anti Lag",
     Default = false,
     Callback = function(Value)
         antiLagEnabled = Value
@@ -866,9 +858,9 @@ VisualsEsp:AddToggle({
     end
 })
 
-
+--{ 📸 REMOVE CUTSCENE / BOTÃO }--
 VisualsEsp:AddToggle({
-    Name = "No Cutscenes",
+    Name = "Remover Cutscenes",
     Default = false,
     Callback = function(enabled)
         if enabled then
@@ -885,8 +877,9 @@ VisualsEsp:AddToggle({
 local notifsTab = VisualsEsp:AddSection({
     Name = "Notificações"
 })
-notifsTab:AddParagraph("Notificações", "Aba de Notificações de entidades ou outros.")
+notifsTab:AddParagraph("🔔 Notificações", "Painel de controlhe para notificações.")
 
+--{ 🔔 Notificação de Entidades / BOTÃO }--
 notifsTab:AddToggle({
     Name = "Notificar Entidades",
     Default = false,
@@ -901,7 +894,7 @@ notifsTab:AddToggle({
             sound.Ended:Connect(function()
                 sound:Destroy()
             end)
-            MsdoorsNotify("🔔 Notificação", "Notificações de Entidades ativas!", "", "rbxassetid://123071339850669", Color3.new(0, 1, 0), 3)
+            MsdoorsNotify("MsDoors", "Notificações de Entidades ativas!", "", "rbxassetid://133997875469993", Color3.new(0, 1, 0), 3)
         else
             sound.SoundId = "rbxassetid://4590662766"
             sound.Volume = 1
@@ -910,19 +903,19 @@ notifsTab:AddToggle({
             sound.Ended:Connect(function()
                 sound:Destroy()
             end)
-            MsdoorsNotify("🔔 Notificação", "Notificações de Entidades desativadas!", "", "rbxassetid://13264701341", Color3.new(1, 0, 0), 3)
+            MsdoorsNotify("MsDoors", "Notificações de Entidades desativadas!", "", "rbxassetid://133997875469993", Color3.new(1, 0, 0), 3)
         end
     end
 })
 
-
---[ Funções de automação ]--
+--------------------[[ 💻 AUTOMAÇÃO 💻 ]]--------------------------------
 local autoIn = Window:MakeTab({
     Name = "Automoção",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
+--{ 📚 Auto Library Code/ BOTÃO }--
 autoIn:AddToggle({
     Name = "Auto Library Code",
     Default = false,
@@ -974,6 +967,7 @@ local function ChildCheck(child)
     end
 end
 
+--{ ☝️ AUTO INTERACT / BOTÃO }--
 local autoInteractEnabled = false
 autoIn:AddToggle({
     Name = "Auto Interact",
