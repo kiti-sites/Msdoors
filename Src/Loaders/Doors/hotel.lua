@@ -736,11 +736,16 @@ local VisualsEsp = Window:MakeTab({
     Icon = "rbxassetid://7733741741",
     PremiumOnly = false
 })
+
+local EspVisu = VisualsEsp:AddSection({
+	Name = "Esp functions"
+})
+
 --// 🔄 ELEMENTOS --  VisualEsp \\--
-VisualsEsp:AddParagraph("🎨 ESP", "• Ver Objetos itens e mais através da parede.")
+EspVisu:AddParagraph("🎨 ESP", "• Ver Objetos itens e mais através da parede.")
 
 --{ 🚪 DOOR ESP / BOTÃO }--
-VisualsEsp:AddToggle({
+EspVisu:AddToggle({
     Name = "door esp",
     Default = false,
     Callback = function(state)
@@ -756,7 +761,7 @@ VisualsEsp:AddToggle({
 })
 
 --{ 👾 ESP ENTIDADES / BOTÃO }--
-VisualsEsp:AddToggle({
+EspVisu:AddToggle({
     Name = "esp entidade",
     Default = false,
     Callback = function(state)
@@ -772,7 +777,7 @@ VisualsEsp:AddToggle({
 })
 
 --{ 📝 ESP OBJETIVO / BOTÃO }--
-VisualsEsp:AddToggle({
+EspVisu:AddToggle({
     Name = "esp de objetivo",
     Default = false,
     Callback = function(state)
@@ -789,7 +794,7 @@ VisualsEsp:AddToggle({
 
 --{ 🛍️ ESP ITENS / BOTÃO }--
 
-VisualsEsp:AddToggle({
+EspVisu:AddToggle({
     Name = "esp loot",
     Default = false,
     Callback = function(state)
@@ -804,10 +809,14 @@ VisualsEsp:AddToggle({
     end
 })
 
-VisualsEsp:AddParagraph("📸 Player", "Funções visuais do jogador.")
+local playerVisu = VisualsEsp:AddSection({
+	Name = "Player Functions"
+})
+
+playerVisu:AddParagraph("📸 Player", "Funções visuais do jogador.")
 
 --{ ♻️ ANTI LAG / BOTÃO }--
-VisualsEsp:AddToggle({
+playerVisu:AddToggle({
     Name = "Anti Lag",
     Default = false,
     Callback = function(Value)
@@ -820,20 +829,70 @@ VisualsEsp:AddToggle({
     end
 })
 --{ 📸 REMOVE CUTSCENE / BOTÃO }--
-VisualsEsp:AddToggle({
-    Name = "Remover Cutscenes",
+
+playerVisu:AddToggle({
+    Name = "No Cutscenes",
     Default = false,
-    Callback = function(enabled)
-        if enabled then
-            for _, cutsceneName in ipairs(CutsceneExclude) do
-                local cutscene = workspace:FindFirstChild(cutsceneName)
-                if cutscene then
-                    cutscene:Destroy()
+    Callback = function(value)
+        if mainGame then
+            local cutscenes = mainGame:FindFirstChild("Cutscenes", true)
+            if cutscenes then
+                for _, cutscene in pairs(cutscenes:GetChildren()) do
+                    if table.find(CutsceneExclude, cutscene.Name) then continue end
+
+                    local defaultName = cutscene.Name:gsub("_", "")
+                    cutscene.Name = value and "_" .. defaultName or defaultName
                 end
+            end
+        end
+
+        if floorReplicated then
+            for _, cutscene in pairs(floorReplicated:GetChildren()) do
+                if not cutscene:IsA("ModuleScript") or table.find(CutsceneExclude, cutscene.Name) then continue end
+
+                local defaultName = cutscene.Name:gsub("_", "")
+                cutscene.Name = value and "_" .. defaultName or defaultName
             end
         end
     end
 })
+
+
+playerVisu:AddToggle({
+    Name = "Fullbright",
+    Default = false,
+    Callback = function(value)
+        if value then
+            Lighting.Ambient = Color3.new(1, 1, 1)
+        else
+            if alive then
+                Lighting.Ambient = workspace.CurrentRooms[localPlayer:GetAttribute("CurrentRoom")]:GetAttribute("Ambient")
+            else
+                Lighting.Ambient = Color3.new(0, 0, 0)
+            end
+        end
+    end
+})
+
+playerVisu:AddToggle({
+    Name = "No Fog",
+    Default = false,
+    Callback = function(value)
+        if not Lighting:GetAttribute("FogStart") then Lighting:SetAttribute("FogStart", Lighting.FogStart) end
+        if not Lighting:GetAttribute("FogEnd") then Lighting:SetAttribute("FogEnd", Lighting.FogEnd) end
+
+        Lighting.FogStart = value and 0 or Lighting:GetAttribute("FogStart")
+        Lighting.FogEnd = value and math.huge or Lighting:GetAttribute("FogEnd")
+
+        local fog = Lighting:FindFirstChildOfClass("Atmosphere")
+        if fog then
+            if not fog:GetAttribute("Density") then fog:SetAttribute("Density", fog.Density) end
+
+            fog.Density = value and 0 or fog:GetAttribute("Density")
+        end
+    end
+})
+
 
 local notifsTab = VisualsEsp:AddSection({
     Name = "Notificações"
