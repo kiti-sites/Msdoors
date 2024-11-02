@@ -967,20 +967,6 @@ local GameLocal = Window:MakeTab({
     PremiumOnly = false
 })
 
-GameLocal:AddToggle({
-    Name = "Noclip",
-    Default = false,
-    Callback = function(value)
-        if noclipEnabled ~= value then
-            noclipEnabled = value
-            Noclip()
-        end
-    end
-})
-
-
-
-
 local FloorTab = Window:MakeTab({
     Name = "Floors",
     Icon = "rbxassetid://4483345998",
