@@ -1,5 +1,5 @@
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
-local Window = OrionLib:MakeWindow({IntroText = "Seeker Hub × Paint", Name = "👁️ | RSeeKer Hub", HidePremium = false, SaveConfig = true, ConfigFolder = ".seeker"})
+local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1", Name = "MsDoors", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors"})
 --// APIS \\--
 --[[ MSDOORS API ]]--
 local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
@@ -7,23 +7,9 @@ local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
 --[[ ELEMENTOS ]]--
 
-local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://4590657171"
-sound.Volume = 3
-sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-sound:Play()
-sound.Ended:Connect(function()
-    sound:Destroy()
-end)
-game:GetService("StarterGui"):SetCore("SendNotification", {
-    Title = "🔔 Notificação | Rseeker System",
-    Text = "O Menu foi iniciado com sucesso!(Caso não tenha aparece nenhuma função eles está quebrado ou em manutenção! 🤝)",
-    Icon = "rbxassetid://123071339850669",
-    Duration = 5
-})
-
+MsdoorsNotify("Msdoors","Inicializado com sucesso!","Execução","rbxassetid://133997875469993", Color3.new(0.5, 0, 0.5), 5)
 if game.PlaceId == 6516141723 then
-MsdoorsNotify("Aviso","Por favor, execute quando estiver no jogo, não no lobby.","","rbxassetid://123071339850669", Color3.new(0.5, 0, 0.5), 6)
+MsdoorsNotify("Msdoors","Por favor, execute no jogo não no lobby!","Execução","rbxassetid://133997875469993", Color3.new(0.5, 0, 0.5), 6)
 end
 
 --// Serviços \\--
