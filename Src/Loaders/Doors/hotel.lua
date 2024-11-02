@@ -511,7 +511,7 @@ end
 local antiLagEnabled = false
 local antiLagConnection
 
-local function ActivateAntiLag()
+local function ActivateAntiLag(notify)
     if not antiLagEnabled then return end  
 
     game.Lighting.FogEnd = 1e10
@@ -529,29 +529,35 @@ local function ActivateAntiLag()
         end
     end
 
-    antiLagConnection = workspace.DescendantAdded:Connect(function(obj)
-        if obj:IsA("BasePart") and obj.Material ~= Enum.Material.Plastic then
-            obj.Material = Enum.Material.Plastic
-        elseif obj:IsA("Decal") then
-            obj.Transparency = 1
-        end
-    end)
+    -- Conectar função para definir o material dos novos objetos como "Plastic"
+    if not antiLagConnection then
+        antiLagConnection = workspace.DescendantAdded:Connect(function(obj)
+            if obj:IsA("BasePart") and obj.Material ~= Enum.Material.Plastic then
+                obj.Material = Enum.Material.Plastic
+            elseif obj:IsA("Decal") then
+                obj.Transparency = 1
+            end
+        end)
+    end
 
-    local sound = Instance.new("Sound")
-    sound.SoundId = "rbxassetid://4590657391"
-    sound.Volume = 1
-    sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-    sound:Play()
-    sound.Ended:Connect(function()
-        sound:Destroy()
-    end)
+    -- Notificação inicial somente se o usuário ativar pelo botão
+    if notify then
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "🔔 Notificação",
+            Text = "Anti Lag Carregado...",
+            Icon = "rbxassetid://13264701341",
+            Duration = 5
+        })
 
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "🔔 Notificação",
-        Text = "Anti Lag Carregado...",
-        Icon = "rbxassetid://13264701341",
-        Duration = 5
-    })
+        local sound = Instance.new("Sound")
+        sound.SoundId = "rbxassetid://4590657391"
+        sound.Volume = 1
+        sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+        sound:Play()
+        sound.Ended:Connect(function()
+            sound:Destroy()
+        end)
+    end
 end
 
 local function DeactivateAntiLag()
@@ -575,6 +581,13 @@ local function DeactivateAntiLag()
         antiLagConnection = nil
     end
 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "🔔 Notificação",
+        Text = "Anti Lag Desativado",
+        Icon = "rbxassetid://13264701341",
+        Duration = 5
+    })
+
     local sound = Instance.new("Sound")
     sound.SoundId = "rbxassetid://4590657391"
     sound.Volume = 1
@@ -583,26 +596,17 @@ local function DeactivateAntiLag()
     sound.Ended:Connect(function()
         sound:Destroy()
     end)
-
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "🔔 Notificação",
-        Text = "Anti Lag Desativado",
-        Icon = "rbxassetid://13264701341",
-        Duration = 5
-    })
 end
 
 local function onRoomChanged()
     if antiLagEnabled then
-        local currentRoom = game.ReplicatedStorage:WaitForChild("GameData"):WaitForChild("LatestRoom").Value
-        print("[Seekee Logs] AntiLag Adicionado a sala " .. currentRoom)
-
-        ActivateAntiLag()
+        ActivateAntiLag(false)
     end
 end
 
 local latestRoom = game.ReplicatedStorage:WaitForChild("GameData"):WaitForChild("LatestRoom")
 latestRoom:GetPropertyChangedSignal("Value"):Connect(onRoomChanged)
+
 
 --------------------[[ 📝 NOTIFICAR ENTIDADE 📝 ]]--------------------------------
 --// Tabela de Entidades para notificação.
@@ -851,13 +855,12 @@ VisualsEsp:AddToggle({
     Callback = function(Value)
         antiLagEnabled = Value
         if Value then
-            ActivateAntiLag() 
+            ActivateAntiLag(true)
         else
             DeactivateAntiLag()
         end
     end
 })
-
 --{ 📸 REMOVE CUTSCENE / BOTÃO }--
 VisualsEsp:AddToggle({
     Name = "Remover Cutscenes",
