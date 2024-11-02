@@ -5,7 +5,7 @@ local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1", Name = "MsDoors"
 local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
 --[[ MS ESP(@mstudio45) - thanks for the API! ]]--
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
---[[ ELEMENTOS ]]--
+---[[ ELEMENTOS ]]--
 
 MsdoorsNotify("Msdoors","Inicializado com sucesso!","Execução","rbxassetid://133997875469993", Color3.new(0.5, 0, 0.5), 5)
 if game.PlaceId == 6516141723 then
@@ -100,8 +100,7 @@ local function AutoLoot()
     end
 end
 
--- [ ESP, TRAÇOS ETC... ]--
--- OBJETOS ESP
+--[[ 🏃 OBJETIVOS ESP ]]--
 local objetos_esp = { 
     {"KeyObtain", "Chave", Color3.fromRGB(0, 255, 0)},
     {"LeverForGate", "Alavanca", Color3.fromRGB(0, 255, 0)},
@@ -168,7 +167,7 @@ local function ativarESPObjetos()
                 table.insert(espAtivosObjetos, espElementos)
             end
         else
-            warn("[Seeker Logs] O Objeto " .. objData[1] .. " não foi encontrado!")
+            warn("[ ⚠️ MsDoors - Aviso ] O objeto " .. objData[1] .. " não foi encontrado!")
         end
     end
 end
@@ -191,8 +190,7 @@ local function verificarNovosObjetos()
     end
 end
 
--- ENTIDADES ESP
-
+--[[ 👾 ESP ENTIDADE ]]--
 local entidades = { 
     {"RushMoving", "Rush", Color3.fromRGB(255, 0, 0)},
     {"AmbushMoving", "Ambush", Color3.fromRGB(0, 255, 0)},
@@ -258,7 +256,7 @@ local function ativarESP()
                 table.insert(espAtivos, espElementos)
             end
         else
-            warn("[Seeker Logs] A Entidade " .. entData[1] .. " não foi encontrada!")
+            warn("[ ⚠️ MsDoors - Aviso ] A Entidade " .. entData[1] .. " não foi encontrada para aplicar o esp!")
         end
     end
 end
@@ -281,7 +279,7 @@ local function verificarNovasEntidades()
     end
 end
 
--- LOOT ESP
+--[[ 💺 ESP PARA ITENS ]]--
 local esp_loot = {
     {"Item", "+", Color3.fromRGB(0, 255, 0)}
     }
@@ -338,7 +336,7 @@ local function ativarESPLoot()
                 table.insert(esp_loot_ativos, espElementos)
             end
         else
-            warn("[Seeker Logs] O Loot " .. lootData[1] .. " não foi encontrado!")
+            warn("[ ⚠️ MsDoors - Aviso ] imp adicionar esp a " .. lootData[1] .. " pois não foi encontrado!")
         end
     end
 end
@@ -455,8 +453,8 @@ local function verificarNovasPortas()
     end
 end
 
---[ FUNÇÕES ]--
--- NOCLIP FUNÇÃO 
+--------------------[[ 🌟 FUNÇÕES DO MSDOORS 🌟 ]]--------------------
+--------------------[[ 🏃 NOCLIP 🏃 ]]--------------------------------
 local noclipEnabled = false
 local noclipConnection
 
