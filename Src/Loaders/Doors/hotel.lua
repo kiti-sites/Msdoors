@@ -32,13 +32,16 @@ local LatestRoom = ReplicatedStorage:WaitForChild("GameData"):WaitForChild("Late
 local PromptTable = {
     GamePrompts = {},
     Aura = {
-        ["ActivateEventPrompt"] = false,
+	["ActivateEventPrompt"] = false,
+        ["AwesomePrompt"] = true,
         ["FusesPrompt"] = true,
         ["HerbPrompt"] = false,
         ["LeverPrompt"] = true,
-        ["LootPrompt"] = true,
+        ["LootPrompt"] = false,
+        ["ModulePrompt"] = true,
         ["SkullPrompt"] = false,
-        ["ValvePrompt"] = true,
+        ["UnlockPrompt"] = true,
+        ["ValvePrompt"] = false,
     },
     Clip = {
         "AwesomePrompt",
