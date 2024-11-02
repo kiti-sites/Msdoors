@@ -1133,6 +1133,9 @@ local GameLocal = Window:MakeTab({
     Icon = "rbxassetid://7733799795",
     PremiumOnly = false
 })
+local playerLocal = GameLocal:AddSection({
+	Name = "Player Functions"
+})
 
 local FloorTab = Window:MakeTab({
     Name = "Floors",
