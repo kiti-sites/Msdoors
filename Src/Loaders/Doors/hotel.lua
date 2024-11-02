@@ -1,5 +1,5 @@
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
-local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1", Name = "MsDoors", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors"})
+local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",IntroIcon = "rbxassetid://133997875469993", Name = "MsDoors", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors"})
 --// APIS \\--
 --[[ MSDOORS API ]]--
 local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
@@ -772,7 +772,7 @@ CdSc:AddParagraph("SeekAlegriaFla", "Pensador das funções e programador")
 --------------------[[ 💻 VISUAL 💻 ]]--------------------------------
 local VisualsEsp = Window:MakeTab({
     Name = "Configuração Visual",
-    Icon = "rbxassetid://7743874674",
+    Icon = "rbxassetid://7733741741",
     PremiumOnly = false
 })
 --// 🔄 ELEMENTOS --  VisualEsp \\--
