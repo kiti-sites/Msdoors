@@ -459,86 +459,62 @@ end
 local noclipEnabled = false
 local noclipConnection
 
-function Noclip()
+local function Noclip()
     if noclipEnabled then
-        noclipConnection = game:GetService("RunService").Stepped:Connect(function()
-            for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-                if v:IsA("BasePart") and v.CanCollide then
-                    v.CanCollide = false
+        if not noclipConnection then
+            noclipConnection = game:GetService("RunService").Stepped:Connect(function()
+                for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+                    if v:IsA("BasePart") and v.CanCollide then
+                        v.CanCollide = false
+                    end
                 end
-            end
-        end)
+            end)
 
-        local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://8486683243"
-sound.Volume = 1
-sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-sound:Play()
-sound.Ended:Connect(function()
-    sound:Destroy()
-end)
-game:GetService("StarterGui"):SetCore("SendNotification", {
-    Title = "🔔 Notificação",
-    Text = "Agora você pode atravessar paredes!",
-    Icon = "rbxassetid://17328930447",
-    Duration = 5
-})
-        
+            local sound = Instance.new("Sound")
+            sound.SoundId = "rbxassetid://8486683243"
+            sound.Volume = 1
+            sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+            sound:Play()
+            sound.Ended:Connect(function()
+                sound:Destroy()
+            end)
+
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "🔔 Notificação",
+                Text = "Agora você pode atravessar paredes!",
+                Icon = "rbxassetid://17328930447",
+                Duration = 5
+            })
+        end
     else
         if noclipConnection then
             noclipConnection:Disconnect()
             noclipConnection = nil
-        end
 
-        local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://8486683243"
-sound.Volume = 1
-sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-sound:Play()
-sound.Ended:Connect(function()
-    sound:Destroy()
-end)
-game:GetService("StarterGui"):SetCore("SendNotification", {
-    Title = "🔔 Notificação",
-    Text = "Noclip foi desativado!",
-    Icon = "rbxassetid://17328930447",
-    Duration = 5
-})
+            for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+                if v:IsA("BasePart") then
+                    v.CanCollide = true
+                end
+            end
+
+            local sound = Instance.new("Sound")
+            sound.SoundId = "rbxassetid://8486683243"
+            sound.Volume = 1
+            sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+            sound:Play()
+            sound.Ended:Connect(function()
+                sound:Destroy()
+            end)
+
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "🔔 Notificação",
+                Text = "Noclip foi desativado!",
+                Icon = "rbxassetid://17328930447",
+                Duration = 5
+            })
+        end
     end
 end
-
---------------------[[ 👾 ANTILAG 👾 ]]--------------------------------
-local antiLagEnabled = false
-local antiLagConnection
-
-local function ActivateAntiLag(notify)
-    if not antiLagEnabled then return end  
-
-    game.Lighting.FogEnd = 1e10
-    game.Lighting.FogStart = 1e10
-    game.Lighting.Brightness = 2
-    game.Lighting.GlobalShadows = false
-    game.Lighting.EnvironmentDiffuseScale = 0
-    game.Lighting.EnvironmentSpecularScale = 0
-
-    for _, obj in pairs(workspace:GetDescendants()) do
-        if obj:IsA("BasePart") and obj.Material ~= Enum.Material.Plastic then
-            obj.Material = Enum.Material.Plastic
-        elseif obj:IsA("Decal") then
-            obj.Transparency = 1
-        end
-    end
-
-    -- Conectar função para definir o material dos novos objetos como "Plastic"
-    if not antiLagConnection then
-        antiLagConnection = workspace.DescendantAdded:Connect(function(obj)
-            if obj:IsA("BasePart") and obj.Material ~= Enum.Material.Plastic then
-                obj.Material = Enum.Material.Plastic
-            elseif obj:IsA("Decal") then
-                obj.Transparency = 1
-            end
-        end)
-    end
 
     -- Notificação inicial somente se o usuário ativar pelo botão
     if notify then
@@ -1121,10 +1097,14 @@ GameLocal:AddToggle({
     Name = "Noclip",
     Default = false,
     Callback = function(value)
-        noclipEnabled = value
-        Noclip()
+        if noclipEnabled ~= value then
+            noclipEnabled = value
+            Noclip()
+        end
     end
 })
+
+
 
 
 local FloorTab = Window:MakeTab({
