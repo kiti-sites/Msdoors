@@ -5,6 +5,14 @@ local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxasseti
 --[[ APIS ]]--
 local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
 
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://4590656842"
+sound.Volume = 2
+sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+sound:Play()
+sound.Ended:Connect(function()
+    sound:Destroy()
+end)
 MsdoorsNotify("Msdoors", " Painel do lobby carregado! ", "Execução", "rbxassetid://130949777442519", Color3.new(128, 0, 128), 6)
 
 --//Serviços\\--
@@ -101,13 +109,13 @@ PresetManager.PresetData = {}
 PresetManager.PresetList = {}
 
 function PresetManager:BuildPresetStructure()
-    if not isfolder(".msdoors/lobby/presets/") then
-        makefolder(".msdoors/lobby/presets/")
+    if not isfolder(".msdoors/places/presets/") then
+        makefolder(".msdoors/places/presets/")
     end
 end
 
 function PresetManager:CreatePreset(name, data)
-    if isfile(".msdoors/lobby/presets/" .. name .. ".json") then
+    if isfile(".msdoors/places/presets/" .. name .. ".json") then
         return false, "Preset já existe!"
     end
 
@@ -119,7 +127,7 @@ function PresetManager:CreatePreset(name, data)
     }
     
     self:BuildPresetStructure()
-    writefile(".msdoors/lobby/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
+    writefile(".msdoors/places/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
     return true, "Preset criado com sucesso!"
 end
 
@@ -127,7 +135,7 @@ function PresetManager:LoadPresets()
     self.PresetList = {}
     self.PresetData = {}
 
-    for _, file in pairs(listfiles(".msdoors/lobby/presets/")) do
+    for _, file in pairs(listfiles(".msdoors/places/presets/")) do
         local success, data = pcall(function()
             return HttpService:JSONDecode(readfile(file))
         end)
@@ -181,8 +189,8 @@ function PresetManager:LoadPreset(name)
 end
 
 function PresetManager:DeletePreset(name)
-    if isfile(".msdoors/lobby/presets/" .. name .. ".json") then
-        delfile("msdoors/lobby/presets/" .. name .. ".json")
+    if isfile(".msdoors/places/presets/" .. name .. ".json") then
+        delfile(".msdoors/places/presets/" .. name .. ".json")
         self.PresetData[name] = nil
         return true, "Preset deletado: " .. name
     else
@@ -198,8 +206,8 @@ function PresetManager:OverridePreset(name, data)
         FriendsOnly = data.FriendsOnly or true
     }
 
-    writefile(".msdoors/lobby/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
-    return true, "Preset sobrescrito:" .. name
+    writefile(".msdoors/places/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
+    return true, "Preset sobrescrito: " .. name
 end
 
 local PresetTab = Window:MakeTab({
@@ -254,7 +262,7 @@ PresetTab:AddButton({
     Callback = function()
         if _G.SelectedPreset then
             local success, message = PresetManager:LoadPreset(_G.SelectedPreset)
-        OrionLib:MakeNotification({
+            OrionLib:MakeNotification({
                 Name = success and "Sucesso" or "Erro",
                 Content = message,
                 Image = "rbxassetid://4483345998",
@@ -282,8 +290,6 @@ PresetTab:AddButton({
     end
 })
 
---[[ 
-• REMOVIDO
 PresetTab:AddButton({
     Name = "Sobrescrever Preset",
     Callback = function()
@@ -303,10 +309,9 @@ PresetTab:AddButton({
         end
     end
 })
-]]--
 
 PresetTab:AddButton({
-    Name = "Atualizar lista",
+    Name = "Atualizar Presets",
     Callback = function()
         local newOptions = PresetManager:LoadPresets()
         PresetDropdown:SetOptions(newOptions)
@@ -450,9 +455,17 @@ local function CreateRetroModeElevator()
     end)
 
     if success then
-        MsdoorsNotify("Msdoors", "Elevador Retro criado com sucesso!", "Msdoors", "rbxassetid://130949777442519", Color3.new(128, 0, 128), 5)
-    else    
-    MsdoorsNotify("Msdoors", "Falha ao criar o Elevador Retro: " .. err, "Msdoors", "rbxassetid://130949777442519", Color3.new(128, 0, 128), 5)
+        OrionLib:MakeNotification({
+            Name = "Sucesso",
+            Content = "Elevador Retro criado com sucesso!",
+            Time = 5
+        })
+    else
+        OrionLib:MakeNotification({
+            Name = "Erro",
+            Content = "Falha ao criar o Elevador Retro: " .. err,
+            Time = 5
+        })
     end
 end
 
@@ -469,10 +482,17 @@ local function CreateElevator()
     end)
 
     if success then
-        MsdoorsNotify("Msdoors", "Elevador criado com sucesso!", "Msdoors", "rbxassetid://130949777442519", Color3.new(128, 0, 128), 5)
-    
+        OrionLib:MakeNotification({
+            Name = "Sucesso",
+            Content = "Elevador criado com sucesso!",
+            Time = 5
+        })
     else
-    MsdoorsNotify("Msdoors", "Falha ao criar o Elevador: " ..err, "Msdoors", "rbxassetid://130949777442519", Color3.new(128, 0, 128), 5)
+        OrionLib:MakeNotification({
+            Name = "Erro",
+            Content = "Falha ao criar o elevador: " .. err,
+            Time = 5
+        })
     end
 end
 
@@ -570,10 +590,8 @@ local CdSc = CreditsTab:AddSection({
     Name = "Créditos"
 })
 
-CdSc:AddParagraph("Rhyan57", "• Criador e Fundador do Msdoors")
+CdSc:AddParagraph("Rhyan57", "Msdoors")
 CdSc:AddParagraph("SeekAlegriaFla", "Pensador das funções e programador")
 
-local Livraria = CreditsTab:AddSection({
-    Name = "Livrarias"
-})
+
 OrionLib:Init()
