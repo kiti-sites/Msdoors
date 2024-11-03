@@ -1,8 +1,9 @@
 --//Serviços\\--
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 --//APIS\\--
+
 --//FUNCTIONS\\--
-local scriptUrl = "https://raw.githubusercontent.com/Sc-Rhyan57/Sc-script/refs/heads/main/Functions/hotels/"
+local scriptUrl = "https://github.com/Sc-Rhyan57/Msdoors/tree/main/Src/Loaders/Doors/"
 local gameId = game.GameId
 local placeId = game.PlaceId
 
