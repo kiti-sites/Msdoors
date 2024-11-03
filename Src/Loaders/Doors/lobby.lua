@@ -1,6 +1,6 @@
+--//BACKUP SALVO\\--
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
-local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://133997875469993", IntroIcon = "rbxassetid://133997875469993", Name = "MsDoors | Lobby", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/lobby"})
-
+local Window = OrionLib:MakeWindow({IntroText = "Seeker Hub × Paint", Name = "🚪 Rseeker Lobby", HidePremium = false, SaveConfig = true, ConfigFolder = ".seekerLobby"})
 
 --[[ APIS ]]--
 local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
@@ -13,7 +13,7 @@ sound:Play()
 sound.Ended:Connect(function()
     sound:Destroy()
 end)
-MsdoorsNotify("Msdoors", " Painel do lobby carregado! ", "Execução", "rbxassetid://130949777442519", Color3.new(128, 0, 128), 6)
+MsdoorsNotify("Sistema", "Rseeker carregado com sucesso! ", "", "rbxassetid://130949777442519", Color3.new(128, 0, 128), 6)
 
 --//Serviços\\--
 local HttpService = game:GetService("HttpService")
@@ -109,13 +109,13 @@ PresetManager.PresetData = {}
 PresetManager.PresetList = {}
 
 function PresetManager:BuildPresetStructure()
-    if not isfolder(".msdoors/places/presets/") then
-        makefolder(".msdoors/places/presets/")
+    if not isfolder(".msdooors/places/presets/") then
+        makefolder(".msdooors/places/presets/")
     end
 end
 
 function PresetManager:CreatePreset(name, data)
-    if isfile(".msdoors/places/presets/" .. name .. ".json") then
+    if isfile(".msdooors/places/presets/" .. name .. ".json") then
         return false, "Preset já existe!"
     end
 
@@ -127,7 +127,7 @@ function PresetManager:CreatePreset(name, data)
     }
     
     self:BuildPresetStructure()
-    writefile(".msdoors/places/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
+    writefile(".msdooors/places/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
     return true, "Preset criado com sucesso!"
 end
 
@@ -135,7 +135,7 @@ function PresetManager:LoadPresets()
     self.PresetList = {}
     self.PresetData = {}
 
-    for _, file in pairs(listfiles(".msdoors/places/presets/")) do
+    for _, file in pairs(listfiles(".msdooors/places/presets/")) do
         local success, data = pcall(function()
             return HttpService:JSONDecode(readfile(file))
         end)
@@ -189,8 +189,8 @@ function PresetManager:LoadPreset(name)
 end
 
 function PresetManager:DeletePreset(name)
-    if isfile(".msdoors/places/presets/" .. name .. ".json") then
-        delfile(".msdoors/places/presets/" .. name .. ".json")
+    if isfile(".msdooors/places/presets/" .. name .. ".json") then
+        delfile(".msdooors/places/presets/" .. name .. ".json")
         self.PresetData[name] = nil
         return true, "Preset deletado: " .. name
     else
@@ -206,7 +206,7 @@ function PresetManager:OverridePreset(name, data)
         FriendsOnly = data.FriendsOnly or true
     }
 
-    writefile(".msdoors/places/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
+    writefile(".msdooors/places/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
     return true, "Preset sobrescrito: " .. name
 end
 
@@ -590,8 +590,8 @@ local CdSc = CreditsTab:AddSection({
     Name = "Créditos"
 })
 
-CdSc:AddParagraph("Rhyan57", "Msdoors")
+CdSc:AddParagraph("Rhyan57", "Criador do Msdoors")
 CdSc:AddParagraph("SeekAlegriaFla", "Pensador das funções e programador")
 
-
 OrionLib:Init()
+
