@@ -505,7 +505,7 @@ local function ActivateAntiLag(notify)
     if notify then
         game:GetService("StarterGui"):SetCore("SendNotification", {
             Title = "🔔 Notificação",
-            Text = "Anti Lag Carregado...",
+            Text = "Anti Lag ativo",
             Icon = "rbxassetid://13264701341",
             Duration = 5
         })
@@ -575,7 +575,7 @@ local EntityTable = {
     ["NotifyReason"] = {
         ["A60"] = { ["Image"] = "12350986086", ["Title"] = "Alerta A-60", ["Description"] = "Entidade A-60 detectada!" },
         ["A120"] = { ["Image"] = "12351008553", ["Title"] = "Cuidado com A-120", ["Description"] = "Entidade A-120 se aproximando!" },
-        ["HaltRoom"] = { ["Image"] = "11331795398", ["Title"] = "Halt Detected", ["Description"] = "Prepare-se para o Halt!" },
+        ["HaltRoom"] = { ["Image"] = "11331795398", ["Title"] = "Halt Detected", ["Description"] = "Prepare-se para o Halt!",  ["Spawned"] = true },
         ["BackdoorRush"] = { ["Image"] = "11102256553", ["Title"] = "Backdoor Rush", ["Description"] = "Rush se aproximando pelo backdoor!" },
         ["RushMoving"] = { ["Image"] = "11102256553", ["Title"] = "Rush em Movimento", ["Description"] = "Rush foi visto se movendo." },
         ["AmbushMoving"] = { ["Image"] = "10938726652", ["Title"] = "Ambush em Movimento", ["Description"] = "Ambush está ativo." },
@@ -611,7 +611,7 @@ function NotifyEntity(entityName)
             notificationData.Description,
             "Entidade nasceu!",
             "rbxassetid://" .. notificationData.Image,
-            Color3.new(1, 1, 1), 
+            Color3.new(255, 0, 0), 
             6
         )
         
@@ -730,8 +730,8 @@ local CdSc = CreditsTab:AddSection({
     Name = "Créditos"
 })
 
-CdSc:AddParagraph("Rhyan57", "• Criador do RSeeker hub.")
-CdSc:AddParagraph("SeekAlegriaFla", "• Pensador das funções e programador")
+CdSc:AddParagraph("Rhyan57", "• Criador e fundador do Msdoors.")
+CdSc:AddParagraph("SeekAlegriaFla", "• Ajudante e coletor de files.")
 
 --------------------[[ 💻 VISUAL 💻 ]]--------------------------------
 local VisualsEsp = Window:MakeTab({
