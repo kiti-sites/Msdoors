@@ -1,5 +1,5 @@
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
-local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://133997875469993", IntroIcon = "rbxassetid://133997875469993", Name = "MsDoors", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors"})
+local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://133997875469993", IntroIcon = "rbxassetid://133997875469993", Name = "MsDoors", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/hotel"})
 --// APIS \\--
 --[[ MSDOORS API ]]--
 local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
@@ -934,7 +934,7 @@ notifsTab:AddToggle({
 --------------------[[ 💻 AUTOMAÇÃO 💻 ]]--------------------------------
 local autoIn = Window:MakeTab({
     Name = "Automoção",
-    Icon = "rbxassetid:///7733765045",
+    Icon = "rbxassetid://7733765045",
     PremiumOnly = false
 })
 
@@ -1051,15 +1051,17 @@ local function antiHalt()
     end
 end
 
---------------------[[ 💻 BYPASS ENTITIES 💻 ]]--------------------------------
-local AntiMonstersTab = Window:MakeTab({
-    Name = "Anti Monsters",
-    Icon = "rbxassetid://7733701545",
+--------------------[[ 💻 EXPLOITS 💻 ]]--------------------------------
+local ExploitsTab = Window:MakeTab({
+    Name = "Exploits",
+    Icon = "rbxassetid://7743873633",
     PremiumOnly = false
 })
+--// Anti Entity Tab \\--
+local AntiMonstersTab = ExploitsTab:AddSection({Name = "Anti-Entity"})
 
 AntiMonstersTab:AddToggle({
-    Name = "Anti Eyes",
+    Name = "Anti Eyes(it broke)",
     Default = false,
     Callback = function(Value)
         if Value then
@@ -1071,7 +1073,7 @@ AntiMonstersTab:AddToggle({
 })
 
 AntiMonstersTab:AddToggle({
-    Name = "Anti Screech",
+    Name = "Anti Screech(it broke)",
     Default = false,
     Callback = function(Value)
         if Value then
@@ -1093,16 +1095,6 @@ AntiMonstersTab:AddToggle({
         end
     end
 })
-
--- Exploits
-local ExploitsTab = Window:MakeTab({
-    Name = "Exploits",
-    Icon = "rbxassetid://7743873633",
-    PremiumOnly = false
-})
---// Anti Entity Tab \\--
-local AntiEntitySection = ExploitsTab:AddSection({Name = "Anti-Entity"})
-
 
 
 --[EM BREVE]--
