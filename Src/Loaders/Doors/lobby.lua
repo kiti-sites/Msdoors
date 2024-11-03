@@ -109,13 +109,13 @@ PresetManager.PresetData = {}
 PresetManager.PresetList = {}
 
 function PresetManager:BuildPresetStructure()
-    if not isfolder(".msdooors/places/presets/") then
-        makefolder(".msdooors/places/presets/")
+    if not isfolder(".msdoors/places/presets/") then
+        makefolder(".msdoors/places/presets/")
     end
 end
 
 function PresetManager:CreatePreset(name, data)
-    if isfile(".msdooors/places/presets/" .. name .. ".json") then
+    if isfile(".msdoors/places/presets/" .. name .. ".json") then
         return false, "Preset já existe!"
     end
 
@@ -127,7 +127,7 @@ function PresetManager:CreatePreset(name, data)
     }
     
     self:BuildPresetStructure()
-    writefile(".msdooors/places/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
+    writefile(".msdoors/places/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
     return true, "Preset criado com sucesso!"
 end
 
@@ -135,7 +135,7 @@ function PresetManager:LoadPresets()
     self.PresetList = {}
     self.PresetData = {}
 
-    for _, file in pairs(listfiles(".msdooors/places/presets/")) do
+    for _, file in pairs(listfiles(".msdoors/places/presets/")) do
         local success, data = pcall(function()
             return HttpService:JSONDecode(readfile(file))
         end)
@@ -189,8 +189,8 @@ function PresetManager:LoadPreset(name)
 end
 
 function PresetManager:DeletePreset(name)
-    if isfile(".msdooors/places/presets/" .. name .. ".json") then
-        delfile(".msdooors/places/presets/" .. name .. ".json")
+    if isfile(".msdoors/places/presets/" .. name .. ".json") then
+        delfile(".msdoors/places/presets/" .. name .. ".json")
         self.PresetData[name] = nil
         return true, "Preset deletado: " .. name
     else
@@ -206,7 +206,7 @@ function PresetManager:OverridePreset(name, data)
         FriendsOnly = data.FriendsOnly or true
     }
 
-    writefile(".msdooors/places/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
+    writefile(".msdoors/places/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
     return true, "Preset sobrescrito: " .. name
 end
 
@@ -233,8 +233,9 @@ PresetTab:AddButton({
                 Floor = "Hotel",
                 MaxPlayers = 4,
                 FriendsOnly = true,
-                Modifiers = {"RetroMode"}
+                Modifiers = {""}
             })
+                
             OrionLib:MakeNotification({
                 Name = success and "Sucesso" or "Erro",
                 Content = message,
