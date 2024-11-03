@@ -225,7 +225,7 @@ PresetTab:AddButton({
                 Floor = "Hotel",
                 MaxPlayers = 4,
                 FriendsOnly = true,
-                Modifiers = {""}
+                Modifiers = {"RetroMode"}
             })
             OrionLib:MakeNotification({
                 Name = success and "Sucesso" or "Erro",
