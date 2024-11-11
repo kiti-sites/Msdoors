@@ -500,6 +500,20 @@ end
 
 local function SetupElevatorUI()
 
+local MSoldLobby = Window:MakeTab({
+	Name = "Funções",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+MSoldLobby:AddButton({
+	Name = "Teleport to PRE HOTEL LOBBY",
+	Callback = function()
+		game:GetService("TeleportService"):Teleport(110258689672367)
+	end    
+})
+
+
     local MainTab = Window:MakeTab({
         Name = "Elevadores",
         Icon = "rbxassetid://4483345998",
