@@ -655,8 +655,8 @@ task.spawn(function()
 
     local containAddonsLoaded = false
     
-    for _, file in pairs(listfiles("mspaint/addons")) do
-        print("[Msdoors] Carregando addon '" .. string.gsub(file, "mspaint/addons/", "") .. "'...")
+    for _, file in pairs(listfiles("msdoors/addons")) do
+        print("[Msdoors] Carregando addon '" .. string.gsub(file, "msdoors/addons/", "") .. "'...")
         if file:sub(-4) ~= ".lua" then continue end
 
         -- Tentativa de carregar o conteúdo do addon
