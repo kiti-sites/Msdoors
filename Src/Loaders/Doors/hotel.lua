@@ -832,23 +832,11 @@ playerVisu:AddToggle({
     end
 })
 --{ 📸 REMOVE CUTSCENE / BOTÃO }--
--- Serviços principais
-local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
-local StarterGui = game:GetService("StarterGui")
-local Workspace = game:GetService("Workspace")
-
--- Configuração inicial para `OrionLib`
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
-local Window = OrionLib:MakeWindow({Name = "Settings", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionConfig"})
 local Toggles = shared.Toggles or {}
 local Options = shared.Options or {}
 shared.LocalPlayer = Players.LocalPlayer
 shared.Character = shared.LocalPlayer and shared.LocalPlayer.Character
 local Script = shared.Script or {}
-
-local VisualsTab = Window:MakeTab({Name = "Visuals", Icon = "rbxassetid://4483345998", PremiumOnly = false})
 
 playerVisu:AddToggle({
     Name = "No Cutscenes",
@@ -1255,8 +1243,8 @@ task.spawn(function()
 
     local containAddonsLoaded = false
     
-    for _, file in pairs(listfiles("msdoors/addons")) do
-        print("[Msdoors] Carregando addon '" .. string.gsub(file, "msdoors/addons/", "") .. "'...")
+    for _, file in pairs(listfiles(".msdoors/addons")) do
+        print("[Msdoors] Carregando addon '" .. string.gsub(file, ".msdoors/addons/", "") .. "'...")
         if file:sub(-4) ~= ".lua" then continue end
 
         -- Tentativa de carregar o conteúdo do addon
@@ -1265,7 +1253,7 @@ task.spawn(function()
             local addon = loadstring(fileContent)()
 
             if typeof(addon.Name) ~= "string" or typeof(addon.Elements) ~= "table" then
-                warn("Addon '" .. string.gsub(file, "msdoors/addons/", "") .. "' não carregado: Nome/Elementos inválidos.")
+                warn("Addon '" .. string.gsub(file, ".msdoors/addons/", "") .. "' não carregado: Nome/Elementos inválidos.")
                 return 
             end
 
@@ -1280,15 +1268,16 @@ task.spawn(function()
         end)
 
         if not success then
-            warn("[msdoors] Falha ao carregar addon '" .. string.gsub(file, "msdoors/addons/", "") .. "':", errorMessage)
+            warn("[msdoors] Falha ao carregar addon '" .. string.gsub(file, ".msdoors/addons/", "") .. "':", errorMessage)
         end
     end
     
     if not containAddonsLoaded then
-        AddonTab:AddLabel("A pasta de addons está vazia. Adicione addons na pasta 'mspaint/addons' e reinicie o script.")
+        AddonTab:AddLabel("A pasta de addons está vazia. Adicione addons na pasta '.msdoors/addons' e reinicie o script.")
     end
 
 end)
+
 
 
 listModFiles()
