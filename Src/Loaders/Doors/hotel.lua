@@ -1177,14 +1177,13 @@ local FloorTab = Window:MakeTab({
 })
 
 --// ADDONS \\--
-if getgenv().mspaint_addons_activated then 
-    return {}
-end
-getgenv().mspaint_addons_activated = true
-
 task.spawn(function()
 
     local AddonTab = Window:MakeTab({Name = "Addons [BETA]", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+
+    if not isfolder(".msdoors/addons") then
+        makefolder(".msdoors/addons")
+    end
 
     local function AddAddonElement(Element)
         if not Element or typeof(Element) ~= "table" then return end
@@ -1237,23 +1236,23 @@ task.spawn(function()
                 Callback = Element.Arguments.Callback
             })
         else
-            warn("[msdoors] Elemento '" .. tostring(Element.Name) .. "' não carregado: Tipo de elemento inválido.")
+            warn("[MsDoors Addons] Elemento '" .. tostring(Element.Name) .. "' não foi carregado: Tipo de elemento inválido.")
         end
     end
 
+
     local containAddonsLoaded = false
-    
+
     for _, file in pairs(listfiles(".msdoors/addons")) do
-        print("[Msdoors] Carregando addon '" .. string.gsub(file, ".msdoors/addons/", "") .. "'...")
+        print("[MsDoors Addons] Carregando addon '" .. string.gsub(file, ".msdoors/addons/", "") .. "'...")
         if file:sub(-4) ~= ".lua" then continue end
 
-        -- Tentativa de carregar o conteúdo do addon
         local success, errorMessage = pcall(function()
             local fileContent = readfile(file)
             local addon = loadstring(fileContent)()
 
             if typeof(addon.Name) ~= "string" or typeof(addon.Elements) ~= "table" then
-                warn("Addon '" .. string.gsub(file, ".msdoors/addons/", "") .. "' não carregado: Nome/Elementos inválidos.")
+                warn("[MsDoors Addons] Addon '" .. string.gsub(file, ".msdoors/addons/", "") .. "' não carregado: Nome/Elementos inválidos.")
                 return 
             end
 
@@ -1268,16 +1267,15 @@ task.spawn(function()
         end)
 
         if not success then
-            warn("[msdoors] Falha ao carregar addon '" .. string.gsub(file, ".msdoors/addons/", "") .. "':", errorMessage)
+            warn("[MsDoors Addons] Falha ao carregar addon '" .. string.gsub(file, ".msdoors/addons/", "") .. "':", errorMessage)
         end
     end
     
+
     if not containAddonsLoaded then
         AddonTab:AddLabel("A pasta de addons está vazia. Adicione addons na pasta '.msdoors/addons' e reinicie o script.")
     end
-
 end)
-
 
 
 listModFiles()
