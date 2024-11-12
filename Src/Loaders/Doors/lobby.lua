@@ -588,6 +588,107 @@ MSoldLobby:AddButton({
 end
 
 SetupElevatorUI()
+--// ADDONS \\--
+if getgenv().mspaint_addons_activated then 
+    return {}
+end
+getgenv().mspaint_addons_activated = true
+
+task.spawn(function()
+
+    local AddonTab = Window:MakeTab({Name = "Addons [BETA]", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+
+    local function AddAddonElement(Element)
+        if not Element or typeof(Element) ~= "table" then return end
+
+        if Element.Type == "Label" then
+            AddonTab:AddLabel(Element.Arguments[1])
+        elseif Element.Type == "Toggle" then
+            AddonTab:AddToggle({
+                Name = Element.Name,
+                Default = Element.Arguments.Default or false,
+                Callback = Element.Arguments.Callback
+            })
+        elseif Element.Type == "Button" then
+            AddonTab:AddButton({
+                Name = Element.Arguments.Name,
+                Callback = Element.Arguments.Callback
+            })
+        elseif Element.Type == "Slider" then
+            AddonTab:AddSlider({
+                Name = Element.Name,
+                Min = Element.Arguments.Min,
+                Max = Element.Arguments.Max,
+                Default = Element.Arguments.Default,
+                Callback = Element.Arguments.Callback
+            })
+        elseif Element.Type == "Input" then
+            AddonTab:AddTextbox({
+                Name = Element.Name,
+                Default = Element.Arguments.Default,
+                TextDisappear = true,
+                Callback = Element.Arguments.Callback
+            })
+        elseif Element.Type == "Dropdown" then
+            AddonTab:AddDropdown({
+                Name = Element.Name,
+                Options = Element.Arguments.Options,
+                Default = Element.Arguments.Default,
+                Callback = Element.Arguments.Callback
+            })
+        elseif Element.Type == "ColorPicker" then
+            AddonTab:AddColorPicker({
+                Name = Element.Name,
+                Default = Element.Arguments.Default,
+                Callback = Element.Arguments.Callback
+            })
+        elseif Element.Type == "KeyPicker" then
+            AddonTab:AddKeybind({
+                Name = Element.Name,
+                Default = Element.Arguments.Default,
+                Callback = Element.Arguments.Callback
+            })
+        else
+            warn("[msdoors] Elemento '" .. tostring(Element.Name) .. "' não carregado: Tipo de elemento inválido.")
+        end
+    end
+
+    local containAddonsLoaded = false
+    
+    for _, file in pairs(listfiles("mspaint/addons")) do
+        print("[Msdoors] Carregando addon '" .. string.gsub(file, "mspaint/addons/", "") .. "'...")
+        if file:sub(-4) ~= ".lua" then continue end
+
+        -- Tentativa de carregar o conteúdo do addon
+        local success, errorMessage = pcall(function()
+            local fileContent = readfile(file)
+            local addon = loadstring(fileContent)()
+
+            if typeof(addon.Name) ~= "string" or typeof(addon.Elements) ~= "table" then
+                warn("Addon '" .. string.gsub(file, "msdoors/addons/", "") .. "' não carregado: Nome/Elementos inválidos.")
+                return 
+            end
+
+            containAddonsLoaded = true
+
+            AddonTab:AddLabel("Addon: " .. addon.Name)
+            AddonTab:AddParagraph("Descrição", addon.Description or "Sem descrição.")
+
+            for _, element in pairs(addon.Elements) do
+                AddAddonElement(element)
+            end
+        end)
+
+        if not success then
+            warn("[msdoors] Falha ao carregar addon '" .. string.gsub(file, "msdoors/addons/", "") .. "':", errorMessage)
+        end
+    end
+    
+    if not containAddonsLoaded then
+        AddonTab:AddLabel("A pasta de addons está vazia. Adicione addons na pasta 'mspaint/addons' e reinicie o script.")
+    end
+
+end)
 
 -- Notificação de carregamento completo
 OrionLib:MakeNotification({
