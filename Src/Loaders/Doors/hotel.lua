@@ -832,29 +832,78 @@ playerVisu:AddToggle({
     end
 })
 --{ 📸 REMOVE CUTSCENE / BOTÃO }--
+-- Serviços principais
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
+local Workspace = game:GetService("Workspace")
+
+-- Configuração inicial para `OrionLib`
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+local Window = OrionLib:MakeWindow({Name = "Settings", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionConfig"})
+local Toggles = shared.Toggles or {}
+local Options = shared.Options or {}
+shared.LocalPlayer = Players.LocalPlayer
+shared.Character = shared.LocalPlayer and shared.LocalPlayer.Character
+local Script = shared.Script or {}
+
+local VisualsTab = Window:MakeTab({Name = "Visuals", Icon = "rbxassetid://4483345998", PremiumOnly = false})
 
 playerVisu:AddToggle({
     Name = "No Cutscenes",
     Default = false,
     Callback = function(value)
-        if mainGame then
-            local cutscenes = mainGame:FindFirstChild("Cutscenes", true)
+        if Script.MainGame then
+            local cutscenes = Script.MainGame:FindFirstChild("Cutscenes", true)
             if cutscenes then
                 for _, cutscene in pairs(cutscenes:GetChildren()) do
-                    if table.find(CutsceneExclude, cutscene.Name) then continue end
-
+                    if table.find(Script.CutsceneExclude, cutscene.Name) then continue end
                     local defaultName = cutscene.Name:gsub("_", "")
                     cutscene.Name = value and "_" .. defaultName or defaultName
                 end
             end
         end
 
-        if floorReplicated then
-            for _, cutscene in pairs(floorReplicated:GetChildren()) do
-                if not cutscene:IsA("ModuleScript") or table.find(CutsceneExclude, cutscene.Name) then continue end
-
+        if Script.FloorReplicated then
+            for _, cutscene in pairs(Script.FloorReplicated:GetChildren()) do
+                if not cutscene:IsA("ModuleScript") or table.find(Script.CutsceneExclude, cutscene.Name) then continue end
                 local defaultName = cutscene.Name:gsub("_", "")
                 cutscene.Name = value and "_" .. defaultName or defaultName
+            end
+        end
+    end
+})
+
+
+playerVisu:AddToggle({
+    Name = "Translucent Hiding Spot",
+    Default = false,
+    Callback = function(value)
+        if value and shared.Character and shared.Character:GetAttribute("Hiding") then
+            for _, obj in pairs(Workspace.CurrentRooms:GetDescendants()) do
+                if not obj:IsA("ObjectValue") and obj.Name ~= "HiddenPlayer" then continue end
+                if obj.Value == shared.Character then
+                    task.spawn(function()
+                        local affectedParts = {}
+                        for _, v in pairs(obj.Parent:GetChildren()) do
+                            if not v:IsA("BasePart") then continue end
+                            v.Transparency = Options.HidingTransparency and Options.HidingTransparency.Value or 0.5
+                            table.insert(affectedParts, v)
+                        end
+
+                        repeat task.wait()
+                            for _, part in pairs(affectedParts) do
+                                part.Transparency = Options.HidingTransparency and Options.HidingTransparency.Value or 0.5
+                            end
+                        until not shared.Character:GetAttribute("Hiding") or not Toggles["Translucent Hiding Spot"].Value
+
+                        for _, v in pairs(affectedParts) do
+                            v.Transparency = 0
+                        end
+                    end)
+                    break
+                end
             end
         end
     end
@@ -1057,6 +1106,7 @@ local ExploitsTab = Window:MakeTab({
     Icon = "rbxassetid://7743873633",
     PremiumOnly = false
 })
+
 --// Anti Entity Tab \\--
 local AntiMonstersTab = ExploitsTab:AddSection({Name = "Anti-Entity"})
 
