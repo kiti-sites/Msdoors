@@ -12,7 +12,8 @@ sound:Play()
 sound.Ended:Connect(function()
     sound:Destroy()
 end)
-MsdoorsNotify("Msdoors", "Sistema carregado com sucesso! ", "Execução", "rbxassetid://130949777442519", Color3.new(128, 0, 128), 6)
+
+MsdoorsNotify("Msdoors", "Script Inicializado.", "Execução", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
 
 local MSoldLobby = Window:MakeTab({
 	Name = "Funções",
