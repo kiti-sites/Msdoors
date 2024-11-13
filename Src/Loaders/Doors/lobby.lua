@@ -686,6 +686,9 @@ task.spawn(function()
 
     if not containAddonsLoaded then
         AddonTab:AddLabel("A pasta de addons está vazia. Adicione addons na pasta '.msdoors/addons' e reinicie o script.")
+	warn("[MsDoors Addons] A pasta de addons está vazia. Adcione addons na pasta .msdoors/addons e execute novamente.")
+	MsdoorsNotify("Msdoors", "A pasta de addons está vazia.", "Addons", "rbxassetid://6023426923", Color3.new(128, 0, 128), 6)
+        		
     end
 end)
 
@@ -706,7 +709,7 @@ local CdSc = CreditsTab:AddSection({
 })
 
 CdSc:AddParagraph("Rhyan57", "Criador do Msdoors")
-CdSc:AddParagraph("SeekAlegriaFla", "Pensador das funções e programador")
+CdSc:AddParagraph("SeekAlegriaFla", "Mentor e criador de Conteúdo do script")
 
 OrionLib:Init()
 
