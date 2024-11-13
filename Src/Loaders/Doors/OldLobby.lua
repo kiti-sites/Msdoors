@@ -16,7 +16,7 @@ MsdoorsNotify("Msdoors", "Sistema carregado com sucesso! ", "Execução", "rbxas
 
 local MSoldLobby = Window:MakeTab({
 	Name = "Funções",
-	Icon = "rbxassetid://4483345998",
+	Icon = "rbxassetid://7733924046",
 	PremiumOnly = false
 })
 
