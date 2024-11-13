@@ -13,7 +13,7 @@ sound:Play()
 sound.Ended:Connect(function()
     sound:Destroy()
 end)
-MsdoorsNotify("Msdoors", "Sistema carregado com sucesso! ", "Execução", "rbxassetid://130949777442519", Color3.new(128, 0, 128), 6)
+MsdoorsNotify("Msdoors", "Script Inicializado.", "Execução", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
 
 --//Serviços\\--
 local HttpService = game:GetService("HttpService")
@@ -58,7 +58,7 @@ end
 
 local MainTab = Window:MakeTab({
     Name = "Elevator Sniper",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://7734021047",
     PremiumOnly = false
 })
 
@@ -212,7 +212,7 @@ end
 
 local PresetTab = Window:MakeTab({
     Name = "Presets",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://7743872758",
     PremiumOnly = false
 })
 
@@ -416,7 +416,7 @@ end
 
 local AchievementTab = Window:MakeTab({
     Name = "Conquistas",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://7733692043",
     PremiumOnly = false
 })
 
@@ -502,7 +502,7 @@ local function SetupElevatorUI()
 
 local MSoldLobby = Window:MakeTab({
 	Name = "Funções",
-	Icon = "rbxassetid://4483345998",
+	Icon = "rbxassetid://7733924046",
 	PremiumOnly = false
 })
 
@@ -516,7 +516,7 @@ MSoldLobby:AddButton({
 
     local MainTab = Window:MakeTab({
         Name = "Elevadores",
-        Icon = "rbxassetid://4483345998",
+        Icon = "rbxassetid://7743875759",
         PremiumOnly = false
     })
 
