@@ -12,6 +12,9 @@ if game.PlaceId == 6516141723 then
 MsdoorsNotify("Msdoors","Por favor, execute no jogo não no lobby!","Execução","rbxassetid://133997875469993", Color3.new(0.5, 0, 0.5), 6)
 end
 
+
+MsdoorsNotify("Atualização","Você está usando uma versão desatualizada do Msdoors!","Nova versão disponível no github","rbxassetid://133997875469993", Color3.new(255, 0, 0), 15)
+
 --// Serviços \\--
 local Lighting = game:GetService("Lighting")
 local Players = game:GetService("Players")
