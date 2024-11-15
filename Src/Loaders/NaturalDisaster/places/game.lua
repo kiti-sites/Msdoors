@@ -1,6 +1,127 @@
 --// LIBRARY \\--
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
 local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://133997875469993", IntroIcon = "rbxassetid://133997875469993", Name = "MsDoors | Natural Disaster", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/natural/game"})
+
+--// TROLL \\--
+
+-- [[ INÍCIO DA CONFIGURAÇÃO ]]
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local AllBool = false
+
+local Targets = {"All"}
+local WhitelistedUserId = 1414978355
+
+local function GetPlayer(Name)
+    Name = Name:lower()
+    if Name == "all" then
+        AllBool = true
+        return
+    elseif Name == "random" then
+        local PlayersList = Players:GetPlayers()
+        table.remove(PlayersList, table.find(PlayersList, LocalPlayer))
+        return PlayersList[math.random(#PlayersList)]
+    else
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and (player.Name:lower():match("^" .. Name) or player.DisplayName:lower():match("^" .. Name)) then
+                return player
+            end
+        end
+    end
+end
+
+local function Notify(Title, Content, Duration)
+    OrionLib:MakeNotification({
+        Name = Title,
+        Content = Content,
+        Image = "rbxassetid://4483345998",
+        Time = Duration
+    })
+end
+
+local function SkidFling(TargetPlayer)
+    local Character = LocalPlayer.Character
+    local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
+    local RootPart = Humanoid and Humanoid.RootPart
+
+    local TargetCharacter = TargetPlayer.Character
+    local TargetRootPart = TargetCharacter and TargetCharacter:FindFirstChild("HumanoidRootPart")
+
+    if not (Character and RootPart and TargetCharacter and TargetRootPart) then
+        Notify("Erro", "Dados insuficientes para executar o Fling.", 5)
+        return
+    end
+
+    local OriginalPosition = RootPart.CFrame
+    local BV = Instance.new("BodyVelocity", RootPart)
+    BV.Velocity = Vector3.new(9e8, 9e8, 9e8)
+    BV.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+
+    RootPart.CFrame = TargetRootPart.CFrame
+    task.wait(0.1)
+
+    BV:Destroy()
+    RootPart.CFrame = OriginalPosition
+    Notify("Fling Executado", "O alvo foi atingido com sucesso!", 5)
+end
+
+local TrollTab = Window:MakeTab({
+    Name = "Troll",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+TrollTab:AddButton({
+    Name = "Ativar Sistema",
+    Callback = function()
+        Notify("Sistema Ativado", "O sistema Orion Lib está ativo!", 5)
+    end
+})
+
+TrollTab:AddTextbox({
+    Name = "Definir Alvo",
+    Default = "all",
+    TextDisappear = true,
+    Callback = function(Value)
+        Targets = {Value}
+        Notify("Alvo Definido", "O alvo foi atualizado para: " .. Value, 5)
+    end
+})
+
+TrollTab:AddButton({
+    Name = "Executar Fling",
+    Callback = function()
+        if AllBool then
+            for _, player in ipairs(Players:GetPlayers()) do
+                if player.UserId ~= WhitelistedUserId then
+                    SkidFling(player)
+                else
+                    Notify("Aviso", "Usuário na whitelist! Fling ignorado.", 5)
+                end
+            end
+        else
+            for _, target in ipairs(Targets) do
+                local Player = GetPlayer(target)
+                if Player and Player.UserId ~= WhitelistedUserId then
+                    SkidFling(Player)
+                elseif Player and Player.UserId == WhitelistedUserId then
+                    Notify("Aviso", "Usuário whitelistado identificado! Fling ignorado.", 5)
+                else
+                    Notify("Erro", "Jogador inválido: " .. target, 5)
+                end
+            end
+        end
+    end
+})
+
+TrollTab:AddButton({
+    Name = "Desativar Sistema",
+    Callback = function()
+        Notify("Sistema Desativado", "O sistema foi desativado.", 5)
+    end
+})
+
+
 --// SCRIPT \\--
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -125,69 +246,6 @@ local function teleportLoop()
         end
     end
 end
-
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local AllBool = false
-
-local Targets = {"All"}
-local WhitelistedUserId = 1414978355
-
-local function GetPlayer(Name)
-    Name = Name:lower()
-    if Name == "all" then
-        AllBool = true
-        return
-    elseif Name == "random" then
-        local PlayersList = Players:GetPlayers()
-        table.remove(PlayersList, table.find(PlayersList, LocalPlayer))
-        return PlayersList[math.random(#PlayersList)]
-    else
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player ~= LocalPlayer and (player.Name:lower():match("^" .. Name) or player.DisplayName:lower():match("^" .. Name)) then
-                return player
-            end
-        end
-    end
-end
-
-local function Notify(Title, Content, Duration)
-    OrionLib:MakeNotification({
-        Name = Title,
-        Content = Content,
-        Image = "rbxassetid://4483345998",
-        Time = Duration
-    })
-end
-
-local function SkidFling(TargetPlayer)
-    local Character = LocalPlayer.Character
-    local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
-    local RootPart = Humanoid and Humanoid.RootPart
-
-    local TargetCharacter = TargetPlayer.Character
-    local TargetRootPart = TargetCharacter and TargetCharacter:FindFirstChild("HumanoidRootPart")
-
-    if not (Character and RootPart and TargetCharacter and TargetRootPart) then
-        Notify("Erro", "Dados insuficientes para executar o Fling.", 5)
-        return
-    end
-
-    local OriginalPosition = RootPart.CFrame
-    local BV = Instance.new("BodyVelocity", RootPart)
-    BV.Velocity = Vector3.new(9e8, 9e8, 9e8)
-    BV.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-
-    RootPart.CFrame = TargetRootPart.CFrame
-    task.wait(0.1)
-
-    BV:Destroy()
-    RootPart.CFrame = OriginalPosition
-    Notify("Fling Executado", "O alvo foi atingido com sucesso!", 5)
-end
-
-
-
 
 local function stopAllSystems()
     ToggleActive = false
@@ -383,56 +441,6 @@ ExploitTab:AddToggle({
     end
 })
 -- Troll
-
-TrollTab:AddButton({
-    Name = "Ativar Sistema",
-    Callback = function()
-        Notify("Sistema Ativado", "O sistema Orion Lib está ativo!", 5)
-    end
-})
-
-TrollTab:AddTextbox({
-    Name = "Definir Alvo",
-    Default = "",
-    TextDisappear = true,
-    Callback = function(Value)
-        Targets = {Value}
-        Notify("Alvo Definido", "O alvo foi atualizado para: " .. Value, 5)
-    end
-})
-
-TrollTab:AddButton({
-    Name = "Executar Fling",
-    Callback = function()
-        if AllBool then
-            for _, player in ipairs(Players:GetPlayers()) do
-                if player.UserId ~= WhitelistedUserId then
-                    SkidFling(player)
-                else
-                    Notify("Aviso", "Usuário na whitelist! Fling ignorado.", 5)
-                end
-            end
-        else
-            for _, target in ipairs(Targets) do
-                local Player = GetPlayer(target)
-                if Player and Player.UserId ~= WhitelistedUserId then
-                    SkidFling(Player)
-                elseif Player and Player.UserId == WhitelistedUserId then
-                    Notify("Aviso", "Usuário whitelistado identificado! Fling ignorado.", 5)
-                else
-                    Notify("Erro", "Jogador inválido: " .. target, 5)
-                end
-            end
-        end
-    end
-})
-
-TrollTab:AddButton({
-    Name = "Desativar Sistema",
-    Callback = function()
-        Notify("Sistema Desativado", "O sistema foi desativado.", 5)
-    end
-})
 
 -- Teleports
 TeleportTab:AddButton({
