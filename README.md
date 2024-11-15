@@ -10,7 +10,11 @@
 # 📂 **SCRIPT**
 > ``Logo Abaixo você tem acesso ao script de forma totalmente gratuita.``
 
-## **Scripts;**
+![IMPORTANT]
+> Suporte para:
+> Doors, Natural Disaster.
+
+# **Scripts**
 > **Msdoors Loadstring**
 ```js
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/refs/heads/main/download/main.lua"))()
