@@ -10,7 +10,7 @@ local LocalPlayer = Players.LocalPlayer
 local AllBool = false
 
 local Targets = {"All"}
-local WhitelistedUserId = 1414978355
+local WhitelistedUserId = 
 
 local function GetPlayer(Name)
     Name = Name:lower()
@@ -256,6 +256,11 @@ local function stopAllSystems()
     updateHUD()
 end
 
+local TrollTab = Window:MakeTab({
+    Name = "Troll",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 
 local ExploitTab = Window:MakeTab({
     Name = "Exploits",
@@ -263,11 +268,6 @@ local ExploitTab = Window:MakeTab({
     PremiumOnly = false
 })
 
-local TrollTab = Window:MakeTab({
-    Name = "Troll",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
 
 local TeleportTab = Window:MakeTab({
     Name = "Teleports",
@@ -425,8 +425,6 @@ ExploitTab:AddButton({
 local ExploitTroll = ExploitsTab:AddSection({
 	Name = "force player Tp"
 })
-
-ExploitTroll:AddParagraph("Player Sniper","Use esses comandos no Infinite yield para trollagem: ;fly 1, ;swim, ;invisfling")
 ExploitTroll:AddToggle({
     Name = "Player Sniper",
     Default = false,
