@@ -114,38 +114,7 @@ TrollTab:AddButton({
     end
 })
 
-TrollTab:AddButton({
-    Name = "Desativar Sistema",
-    Callback = function()
-        Notify("Sistema Desativado", "O sistema foi desativado.", 5)
-    end
-})
 
-local Troll2 = TrollTab:AddSection({
-	Name = "force player Tp"
-})
-
-Troll2:AddParagraph("Player Sniper","Use esses comandos no Infinite yield para trollagem: ;fly 1, ;swim, ;invisfling")
-Troll2:AddToggle({
-    Name = "Player Sniper",
-    Default = false,
-    Callback = function(value)
-        ToggleActive = value
-        if ToggleActive then
-            task.spawn(teleportLoop)
-        else
-            stopAllSystems()
-        end
-    end
-})
-
-Troll2:AddToggle({
-    Name = "Forçar Sniper",
-    Default = false,
-    Callback = function(value)
-        ForceTPActive = value
-    end
-})
 
 --// SCRIPT \\--
 local Players = game:GetService("Players")
@@ -446,7 +415,38 @@ ExploitTab:AddButton({
 })
 
 -- Troll
+TrollTab:AddButton({
+    Name = "Desativar Sistema",
+    Callback = function()
+        Notify("Sistema Desativado", "O sistema foi desativado.", 5)
+    end
+})
 
+local Troll2 = TrollTab:AddSection({
+	Name = "force player Tp"
+})
+
+Troll2:AddParagraph("Player Sniper","Use esses comandos no Infinite yield para trollagem: ;fly 1, ;swim, ;invisfling")
+Troll2:AddToggle({
+    Name = "Player Sniper",
+    Default = false,
+    Callback = function(value)
+        ToggleActive = value
+        if ToggleActive then
+            task.spawn(teleportLoop)
+        else
+            stopAllSystems()
+        end
+    end
+})
+
+Troll2:AddToggle({
+    Name = "Forçar Sniper",
+    Default = false,
+    Callback = function(value)
+        ForceTPActive = value
+    end
+})
 -- Teleports
 TeleportTab:AddButton({
     Name = "Island",
