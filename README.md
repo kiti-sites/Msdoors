@@ -1,4 +1,4 @@
-# **Msdoors V1 + PRE HOTEL**
+# **Msdoors V1**
 - ⭐ **APRESENTAÇÃO**
 > 📄 Um Script Simples que Source Code que usa Orion Lib para Funcionar, fique a vontade para Utilizar os códigos desse Script para fazer o seu.
 
@@ -9,10 +9,6 @@
 
 # 📂 **SCRIPT**
 > ``Logo Abaixo você tem acesso ao script de forma totalmente gratuita.``
-
-![IMPORTANT]
-> Suporte para:
-> Doors, Natural Disaster.
 
 # **Scripts**
 > **Msdoors Loadstring**
