@@ -121,6 +121,31 @@ TrollTab:AddButton({
     end
 })
 
+local Troll2 = TrollTab:AddSection({
+	Name = "Enforce TP"
+})
+
+Tab:AddParagraph("Player Sniper","Teleporta o seu personagem atual parq todos players do mapa a cada 5s \ Você pode usar os seguintes comandos no infinite yield para usar isso: ;fly 1, ;swim, ;invisfling")
+Troll2:AddToggle({
+    Name = "Player Sniper",
+    Default = false,
+    Callback = function(value)
+        ToggleActive = value
+        if ToggleActive then
+            task.spawn(teleportLoop)
+        else
+            stopAllSystems()
+        end
+    end
+})
+
+Troll2:AddToggle({
+    Name = "Forçar Sniper",
+    Default = false,
+    Callback = function(value)
+        ForceTPActive = value
+    end
+})
 
 --// SCRIPT \\--
 local Players = game:GetService("Players")
@@ -420,26 +445,6 @@ ExploitTab:AddButton({
     end
 })
 
-ExploitTab:AddToggle({
-    Name = "Player Sniper",
-    Default = false,
-    Callback = function(value)
-        ToggleActive = value
-        if ToggleActive then
-            task.spawn(teleportLoop)
-        else
-            stopAllSystems()
-        end
-    end
-})
-
-ExploitTab:AddToggle({
-    Name = "Forçar Sniper",
-    Default = false,
-    Callback = function(value)
-        ForceTPActive = value
-    end
-})
 -- Troll
 
 -- Teleports
