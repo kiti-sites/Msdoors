@@ -11,7 +11,7 @@
 > ``Logo Abaixo você tem acesso ao script de forma totalmente gratuita.``
 
 ## **Scripts;**
-> **Msdoors V1**
+> **Msdoors Loadstring**
 ```js
-loadstring(game:HttpGet('https://github.com/Sc-Rhyan57/Msdoors/releases/download/DOWNLOAD/TWT-msdoorsV1.lua'))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/refs/heads/main/download/main.lua"))()
 ```
