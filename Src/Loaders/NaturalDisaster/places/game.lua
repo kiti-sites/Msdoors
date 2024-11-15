@@ -300,6 +300,30 @@ ExploitTab:AddButton({
     end
 })
 
+
+
+ExploitTab:AddToggle({
+    Name = "Ativar Teleporte",
+    Default = false,
+    Callback = function(value)
+        ToggleActive = value
+        if ToggleActive then
+            task.spawn(teleportLoop)
+        else
+            stopAllSystems()
+        end
+    end
+})
+
+ExploitTab:AddToggle({
+    Name = "Forçar Teleporte",
+    Default = false,
+    Callback = function(value)
+        ForceTPActive = value
+    end
+})
+
+
 -- Teleports
 TeleportTab:AddButton({
     Name = "Island",
