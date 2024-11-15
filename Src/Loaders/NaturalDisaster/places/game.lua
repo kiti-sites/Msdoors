@@ -122,10 +122,10 @@ TrollTab:AddButton({
 })
 
 local Troll2 = TrollTab:AddSection({
-	Name = "Enforce TP"
+	Name = "force player Tp"
 })
 
-Troll2:AddParagraph("Player Sniper","Teleporta o seu personagem atual parq todos players do mapa a cada 5s \ Você pode usar os seguintes comandos no infinite yield para usar isso: ;fly 1, ;swim, ;invisfling")
+Troll2:AddParagraph("Player Sniper","Use esses comandos no Infinite yield para trollagem: ;fly 1, ;swim, ;invisfling")
 Troll2:AddToggle({
     Name = "Player Sniper",
     Default = false,
