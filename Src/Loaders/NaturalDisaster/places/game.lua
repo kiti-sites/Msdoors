@@ -422,12 +422,12 @@ ExploitTab:AddButton({
 
 
 
-local ExploitTab = TrollTab:AddSection({
+local ExploitTroll = ExploitsTab:AddSection({
 	Name = "force player Tp"
 })
 
-ExploitTab:AddParagraph("Player Sniper","Use esses comandos no Infinite yield para trollagem: ;fly 1, ;swim, ;invisfling")
-ExploitTab:AddToggle({
+ExploitTroll:AddParagraph("Player Sniper","Use esses comandos no Infinite yield para trollagem: ;fly 1, ;swim, ;invisfling")
+ExploitTroll:AddToggle({
     Name = "Player Sniper",
     Default = false,
     Callback = function(value)
@@ -440,7 +440,7 @@ ExploitTab:AddToggle({
     end
 })
 
-ExploitTab:AddToggle({
+ExploitTroll:AddToggle({
     Name = "Forçar Sniper",
     Default = false,
     Callback = function(value)
