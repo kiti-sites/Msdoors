@@ -15,6 +15,8 @@ end)
 
 MsdoorsNotify("Msdoors", "Script Inicializado.", "Execução", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
 
+MsdoorsNotify("Atualização","Você está usando uma versão desatualizada do Msdoors!","Nova versão disponível no github","rbxassetid://133997875469993", Color3.new(255, 0, 0), 15)
+
 local MSoldLobby = Window:MakeTab({
 	Name = "Funções",
 	Icon = "rbxassetid://7733924046",
