@@ -136,14 +136,164 @@ local function stopAllSystems()
 end
 
 
-
-local MainTab = Window:MakeTab({
-    Name = "player sniper",
-    Icon = "rbxassetid://7734021047",
+local ExploitTab = Window:MakeTab({
+    Name = "Exploits",
+    Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
-MainTab:AddToggle({
+local TeleportTab = Window:MakeTab({
+    Name = "Teleports",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local SettingsTab = Window:MakeTab({
+    Name = "Settings",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local CreditsTab = Window:MakeTab({
+    Name = "Credits",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Exploits
+ExploitTab:AddToggle({
+    Name = "Walk On Water",
+    Default = false,
+    Callback = function(state)
+        local water = game.Workspace.WaterLevel
+        if state then
+            water.CanCollide = true
+            water.Size = Vector3.new(1000, 1, 1000)
+        else
+            water.CanCollide = false
+            water.Size = Vector3.new(10, 1, 10)
+        end
+    end
+})
+
+ExploitTab:AddToggle({
+    Name = "Solid Island",
+    Default = false,
+    Callback = function(state)
+        for _, v in pairs(game.Workspace:GetDescendants()) do
+            if v.Name == "LowerRocks" then
+                v.CanCollide = state
+            end
+        end
+    end
+})
+
+ExploitTab:AddToggle({
+    Name = "Choose Map",
+    Default = false,
+    Callback = function(state)
+        game.Players.LocalPlayer.PlayerGui.MainGui.MapVotePage.Visible = state
+    end
+})
+
+ExploitTab:AddToggle({
+    Name = "Autofarm",
+    Default = false,
+    Callback = function(state)
+        if state then
+            autofarmEvent = game:GetService("RunService").RenderStepped:Connect(function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-264, 195, 288)
+            end)
+        else
+            if autofarmEvent then
+                autofarmEvent:Disconnect()
+            end
+        end
+    end
+})
+
+ExploitTab:AddButton({
+    Name = "Launch Rocket",
+    Callback = function()
+        pcall(function()
+            fireclickdetector(game:GetService("Workspace").Structure["Launch Land"]["SPACESHIP!!"].Shuttle.IgnitionButton.ClickDetector)
+            fireclickdetector(game:GetService("Workspace").Structure["Launch Land"].RocketStand.ConsoleLower.ReleaseButtonLower.ClickDetector)
+            fireclickdetector(game:GetService("Workspace").Structure["Launch Land"].RocketStand.ConsoleUpper.ReleaseButtonUpper.ClickDetector)
+            fireclickdetector(game:GetService("Workspace").Structure["Launch Land"].LoadingTower.Console.ReleaseEntryBridge.ClickDetector)
+        end)
+    end
+})
+
+ExploitTab:AddButton({
+    Name = "Say Current Disaster",
+    Callback = function()
+        local chatEvents = game:GetService("ReplicatedStorage"):FindFirstChild("DefaultChatSystemChatEvents")
+        local sayMessageRequest = chatEvents and chatEvents:FindFirstChild("SayMessageRequest")
+        local disasterTag = game.Players.LocalPlayer.Character:FindFirstChild("SurvivalTag")
+
+        if sayMessageRequest and disasterTag then
+            sayMessageRequest:FireServer(disasterTag.Value, "All")
+        else
+            OrionLib:MakeNotification({
+                Name = "Erro",
+                Content = "Não foi possível identificar o desastre ou enviar mensagem no chat.",
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        end
+    end
+})
+
+ExploitTab:AddSlider({
+    Name = "WalkSpeed",
+    Min = 16,
+    Max = 50,
+    Default = 16,
+    Color = Color3.fromRGB(255, 255, 255),
+    Increment = 1,
+    ValueName = "Speed",
+    Callback = function(value)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+    end
+})
+
+ExploitTab:AddSlider({
+    Name = "Gravity",
+    Min = 0,
+    Max = 196,
+    Default = 196,
+    Color = Color3.fromRGB(255, 255, 255),
+    Increment = 1,
+    ValueName = "Gravity",
+    Callback = function(value)
+        game.Workspace.Gravity = value
+    end
+})
+
+ExploitTab:AddButton({
+    Name = "Remove Sandstorm UI",
+    Callback = function()
+        game.Players.LocalPlayer.PlayerGui.SandStormGui:Destroy()
+    end
+})
+
+ExploitTab:AddButton({
+    Name = "Remove Blizzard UI",
+    Callback = function()
+        game.Players.LocalPlayer.PlayerGui.BlizzardGui:Destroy()
+    end
+})
+
+ExploitTab:AddButton({
+    Name = "Remove Ads",
+    Callback = function()
+        game:GetService("Workspace").BillboardAd:Destroy()
+        game:GetService("Workspace")["Main Portal Template "]:Destroy()
+        game:GetService("Workspace").ReturnPortal:Destroy()
+    end
+})
+
+ExploitTab:AddToggle({
     Name = "Player Sniper",
     Default = false,
     Callback = function(value)
@@ -156,13 +306,45 @@ MainTab:AddToggle({
     end
 })
 
-MainTab:AddToggle({
+ExploitTab:AddToggle({
     Name = "Forçar Sniper",
     Default = false,
     Callback = function(value)
         ForceTPActive = value
     end
 })
+-- Teleports
+TeleportTab:AddButton({
+    Name = "Island",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-108, 49, 0)
+    end
+})
+
+TeleportTab:AddButton({
+    Name = "Tower",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-264, 196, 288)
+    end
+})
+
+-- Settings
+SettingsTab:AddButton({
+    Name = "Destroy GUI",
+    Callback = function()
+        OrionLib:Destroy()
+    end
+})
+
+-- Credits
+CreditsTab:AddParagraph("Credits", [[
+Msdoors made by:
+Rhyan57 / https://github.com/Sc-rhyan57
+
+
+
+Agradecimentos especiais a:
+]] .. tostring(game.Players.LocalPlayer.Name) .. " / Você 🫵😃")
 
 createHUD()
 OrionLib:Init()
