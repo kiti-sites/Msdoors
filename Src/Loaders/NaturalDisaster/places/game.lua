@@ -114,6 +114,12 @@ TrollTab:AddButton({
     end
 })
 
+TrollTab:AddButton({
+    Name = "Desativar Sistema",
+    Callback = function()
+        Notify("Sistema Desativado", "O sistema foi desativado.", 5)
+    end
+})
 
 
 --// SCRIPT \\--
@@ -414,20 +420,14 @@ ExploitTab:AddButton({
     end
 })
 
--- Troll
-TrollTab:AddButton({
-    Name = "Desativar Sistema",
-    Callback = function()
-        Notify("Sistema Desativado", "O sistema foi desativado.", 5)
-    end
-})
 
-local Troll2 = TrollTab:AddSection({
+
+local ExploitTab = TrollTab:AddSection({
 	Name = "force player Tp"
 })
 
-Troll2:AddParagraph("Player Sniper","Use esses comandos no Infinite yield para trollagem: ;fly 1, ;swim, ;invisfling")
-Troll2:AddToggle({
+ExploitTab:AddParagraph("Player Sniper","Use esses comandos no Infinite yield para trollagem: ;fly 1, ;swim, ;invisfling")
+ExploitTab:AddToggle({
     Name = "Player Sniper",
     Default = false,
     Callback = function(value)
@@ -440,7 +440,7 @@ Troll2:AddToggle({
     end
 })
 
-Troll2:AddToggle({
+ExploitTab:AddToggle({
     Name = "Forçar Sniper",
     Default = false,
     Callback = function(value)
