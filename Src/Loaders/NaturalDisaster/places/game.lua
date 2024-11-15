@@ -1,7 +1,6 @@
 --// LIBRARY \\--
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
 local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://133997875469993", IntroIcon = "rbxassetid://133997875469993", Name = "MsDoors | Natural Disaster", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/natural/game"})
-
 --// SCRIPT \\--
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -144,7 +143,7 @@ local MainTab = Window:MakeTab({
     PremiumOnly = false
 })
 
-Tab:AddToggle({
+MainTab:AddToggle({
     Name = "Player Sniper",
     Default = false,
     Callback = function(value)
@@ -157,7 +156,7 @@ Tab:AddToggle({
     end
 })
 
-Tab:AddToggle({
+MainTab:AddToggle({
     Name = "Forçar Sniper",
     Default = false,
     Callback = function(value)
