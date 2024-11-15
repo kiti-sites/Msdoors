@@ -16,12 +16,6 @@ end)
 MsdoorsNotify("Msdoors", "Script Inicializado.", "Execução", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
 
 
-Oldversion:AddButton({
-    Name = "Atualizar",
-    Callback = function()
-        OrionLib:Destroy() loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/refs/heads/main/download/main.lua"))()
-    end
-})
 
 local MSoldLobby = Window:MakeTab({
 	Name = "Funções",
