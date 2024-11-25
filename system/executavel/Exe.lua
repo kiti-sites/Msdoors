@@ -1,5 +1,6 @@
 --// EXECUTANDO ARQUIVO DE EXECUÇÃO PRINCIPAL ".Exe.lua" \\--
---[[
+
+warn("
 
                                                                                                                      
      ______  _______            ______       _____           _____            _____         _____            ______  
@@ -15,7 +16,8 @@
     \(          )/         \(    )/       \(    )/        \(    )/         \(    )/      \(     )/      \(    )/     
      '          '           '    '         '    '          '    '           '    '        '     '        '    '      
                                                                                                                      
-]]--
+                                        Por Rhyan57 💜
+  ")
 
 --// Serviços \\--
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -46,13 +48,10 @@ local vipList = {
     [""] = true
 }
 
--- Função para criar o painel de carregamento com animações e efeitos
 local function criarPainelDeCarregamento()
-    -- Aplicar efeito de Blur ao fundo
     local blurEffect = Instance.new("BlurEffect", Lighting)
     blurEffect.Size = 15
 
-    -- Configuração da tela de carregamento
     local screenGui = Instance.new("ScreenGui", Players.LocalPlayer:WaitForChild("PlayerGui"))
     screenGui.Name = "LoadingScreen"
     screenGui.ResetOnSpawn = false
@@ -65,7 +64,6 @@ local function criarPainelDeCarregamento()
     mainFrame.BorderSizePixel = 0
     mainFrame.ClipsDescendants = true
 
-    -- Gradiente de fundo no quadrado
     local gradient = Instance.new("UIGradient", mainFrame)
     gradient.Color = ColorSequence.new{
         ColorSequenceKeypoint.new(0, Color3.fromRGB(138, 43, 226)),
@@ -76,19 +74,16 @@ local function criarPainelDeCarregamento()
         gradient.Rotation = gradient.Rotation + deltaTime * 15
     end)
 
-    -- Efeito de borda brilhante
     local borderGlow = Instance.new("UIStroke", mainFrame)
-    borderGlow.Thickness = 2
+    borderGlow.Thickness = 3
     borderGlow.Color = Color3.fromRGB(255, 255, 255)
     borderGlow.Transparency = 0.3
 
-    -- Cantos arredondados
     local corner = Instance.new("UICorner", mainFrame)
     corner.CornerRadius = UDim.new(0, 20)
 
-    -- Título no topo do quadrado
     local titleLabel = Instance.new("TextLabel", mainFrame)
-    titleLabel.Text = "[ Msdoors ]"
+    titleLabel.Text = "[ MsDoors ]"
     titleLabel.Size = UDim2.new(1, 0, 0.3, 0)
     titleLabel.BackgroundTransparency = 1
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -99,8 +94,7 @@ local function criarPainelDeCarregamento()
     local pulseTweenInfo = TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, -1, true)
     local titlePulseTween = TweenService:Create(titleLabel, pulseTweenInfo, {TextTransparency = 0.2})
     titlePulseTween:Play()
-
-    -- Imagem rotativa na frente do quadrado
+  
     local rotatingImage = Instance.new("ImageLabel", screenGui)
     rotatingImage.Size = UDim2.new(0, 120, 0, 120)
     rotatingImage.Position = UDim2.new(0.5, 0, 0.6, -40)
@@ -112,7 +106,6 @@ local function criarPainelDeCarregamento()
     local rotationTween = TweenService:Create(rotatingImage, rotationTweenInfo, {Rotation = 360})
     rotationTween:Play()
 
-    -- Texto de status
     local statusLabel = Instance.new("TextLabel", mainFrame)
     statusLabel.Text = "Status: Verificando..."
     statusLabel.Size = UDim2.new(1, 0, 0.2, 0)
@@ -123,9 +116,8 @@ local function criarPainelDeCarregamento()
     statusLabel.TextSize = 18
     statusLabel.TextStrokeTransparency = 0.8
 
-    -- Partículas voando pela tela
     local particles = Instance.new("ParticleEmitter", mainFrame)
-    particles.Texture = "rbxassetid://133997875469993"
+    particles.Texture = "rbxassetid://7733992358"
     particles.LightEmission = 1
     particles.Size = NumberSequence.new(0.2, 0.5)
     particles.Lifetime = NumberRange.new(1, 2)
@@ -144,7 +136,7 @@ local function atualizarStatus(statusLabel, texto, cor)
 end
 
 local function ocultarPainel(screenGui, mainFrame, blurEffect)
-    wait(2) -- Espera antes de sumir
+    wait(2)
     local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     local tween = TweenService:Create(mainFrame, tweenInfo, {Size = UDim2.new(0, 0, 0, 0), Transparency = 1})
     tween:Play()
@@ -167,19 +159,16 @@ local function verificarBlacklistEVip(statusLabel)
     local playerId = tostring(player.UserId)
     local playerName = player.Name
 
-    -- Notificação inicial
-    enviarNotificacao("MsDoors", "⏳ Verificando blacklist e VIP...", 5)
+    enviarNotificacao("MsDoors", "⏳ Verificando Blacklist e vip...", 5)
     atualizarStatus(statusLabel, "Verificando...", Color3.fromRGB(255, 255, 0))
-    wait(3)
+    wait(4)
 
-    -- Verificação de Blacklist
     if blacklist[playerId] or blacklist[playerName] then
         enviarNotificacao("🚫 MsDoors - Acesso Negado", "Você está na blacklist e não pode usar este script.", 8)
         atualizarStatus(statusLabel, "Acesso Negado", Color3.fromRGB(255, 0, 0))
         return false, false
     end
-
-    -- Verificação de VIP
+  
     if vipList[playerId] or vipList[playerName] then
         enviarNotificacao("⭐ MsDoors - Painel VIP Ativo", "Bem-vindo ao painel VIP!", 5)
         atualizarStatus(statusLabel, "Usuário VIP Acessado", Color3.fromRGB(0, 255, 215))
@@ -224,42 +213,33 @@ local function carregarScript(url)
 end
 
 local function iniciarCarregamento()
-    -- Criar o painel de carregamento e obter os elementos
     local screenGui, mainFrame, statusLabel, blurEffect = criarPainelDeCarregamento()
     
-    -- Verificar blacklist e status VIP
     local acessoLiberado, isVip = verificarBlacklistEVip(statusLabel)
     
-    -- Verificar se o usuário está na blacklist
     if not acessoLiberado then
         ocultarPainel(screenGui, mainFrame, blurEffect)
         return
     end
 
-    -- Verificar o suporte ao jogo atual
     local placeId = game.PlaceId
     local scriptName = verificarSuporteAoJogo(placeId, statusLabel)
     
-    -- Verificar se o jogo é suportado
     if not scriptName then
         ocultarPainel(screenGui, mainFrame, blurEffect)
         return
     end
 
-    -- Carregar o script correto com base no status VIP
     local url = isVip and (vipScriptUrl .. scriptName) or (scriptUrl .. scriptName)
     atualizarStatus(statusLabel, "Carregando Script...", Color3.fromRGB(0, 191, 255))
     enviarNotificacao("MsDoors", isVip and "Painel VIP Ativo!" or "Carregando script padrão...", 5)
     wait(1)
 
-    -- Carregar o script
     carregarScript(url)
 
-    -- Finalizar o carregamento
     atualizarStatus(statusLabel, "Carregamento Concluído!", Color3.fromRGB(0, 255, 0))
     enviarNotificacao("MsDoors", "Script carregado com sucesso!", 5)
     ocultarPainel(screenGui, mainFrame, blurEffect)
 end
 
--- Iniciar o processo de carregamento
 iniciarCarregamento()
