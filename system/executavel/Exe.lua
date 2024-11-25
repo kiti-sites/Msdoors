@@ -1,7 +1,5 @@
 --// EXECUTANDO ARQUIVO DE EXECUÇÃO PRINCIPAL ".Exe.lua" \\--
-
-warn("
-  --[[
+--[[
                                                                                                                      
      ______  _______            ______       _____           _____            _____         _____            ______  
     |      \/       \       ___|\     \  ___|\    \     ____|\    \      ____|\    \    ___|\    \       ___|\     \ 
@@ -17,8 +15,7 @@ warn("
      '          '           '    '         '    '          '    '           '    '        '     '        '    '      
                                                                                                                      
                                         Por Rhyan57 💜
-  ]]-
-  ")
+  ]]--
 
 --// Serviços \\--
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
