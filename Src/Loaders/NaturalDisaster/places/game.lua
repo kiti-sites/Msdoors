@@ -5,6 +5,17 @@ local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxasseti
 --// SCRIPT \\--
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local Player = Players.LocalPlayer
+
+--// GLOBAL VARIABLES \\--
+local CooldownTime = 3
+local TpCustomCooldown = 1
+local ForceTpActive = false
+local TpCustomActive = false
+local CurrentTarget = nil
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local TeleportList = {}
 local ToggleActive = false
@@ -14,6 +25,69 @@ local ForceTPActive = false
 local HUD 
 local FixConnection 
 local FixActive = false 
+
+local function sendNotification(title, content, duration)
+    OrionLib:MakeNotification({
+        Name = title,
+        Content = content,
+        Image = "rbxassetid://133997875469993",
+        Time = duration or 2
+    })
+end
+
+local function teleportToAll()
+    for _, targetPlayer in ipairs(Players:GetPlayers()) do
+        if targetPlayer ~= Player then
+            local Character = Player.Character
+            local TargetCharacter = targetPlayer.Character
+            if Character and TargetCharacter and TargetCharacter:FindFirstChild("HumanoidRootPart") then
+                Character:SetPrimaryPartCFrame(TargetCharacter.HumanoidRootPart.CFrame)
+                sendNotification("Force Tp", "Teleportado para: " .. targetPlayer.Name, 2)
+                task.wait(0.2)
+            end
+        end
+    end
+end
+
+local function ForceTpByMs()
+    ForceTpActive = true
+    while ForceTpActive do
+        teleportToAll()
+        task.wait(CooldownTime)
+    end
+end
+
+local function TpCustomByMs()
+    TpCustomActive = true
+    while TpCustomActive do
+        if CurrentTarget then
+            local targetPlayer = Players:FindFirstChild(CurrentTarget)
+            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                Player.Character:SetPrimaryPartCFrame(targetPlayer.Character.HumanoidRootPart.CFrame)
+                sendNotification("Tp Custom", "Teleportado para: " .. targetPlayer.Name, 2)
+            else
+                sendNotification("Erro", "Jogador selecionado não encontrado.", 2)
+                TpCustomActive = false
+            end
+        end
+        task.wait(TpCustomCooldown)
+    end
+end
+
+local function stopAllSystems()
+    ForceTpActive = false
+    TpCustomActive = false
+end
+
+local function getPlayerList()
+    local playerList = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= Player then
+            table.insert(playerList, player.Name)
+        end
+    end
+    return playerList
+end
 
 local function updateHUD()
     if HUD then
@@ -182,6 +256,52 @@ ExploitTab:AddToggle({
         end
     end
 })
+
+
+TrollTab:AddToggle({
+    Name = "Force Tp (Todos os jogadores)",
+    Default = false,
+    Callback = function(state)
+        if state then
+            task.spawn(ForceTpByMs)
+        else
+            stopAllSystems()
+        end
+    end
+})
+
+TrollTab:AddDropdown({
+    Name = "Selecionar Jogador",
+    Default = "",
+    Options = getPlayerList(),
+    Callback = function(value)
+        CurrentTarget = value
+    end
+})
+
+TrollTab:AddSlider({
+    Name = "Tempo de Teleporte (s)",
+    Min = 0.5,
+    Max = 5,
+    Default = 1,
+    Increment = 0.1,
+    Callback = function(value)
+        TpCustomCooldown = value
+    end
+})
+
+TrollTab:AddToggle({
+    Name = "Tp Custom",
+    Default = false,
+    Callback = function(state)
+        if state then
+            task.spawn(TpCustomByMs)
+        else
+            stopAllSystems()
+        end
+    end
+})
+
 
 ExploitTab:AddToggle({
     Name = "Solid Island",
