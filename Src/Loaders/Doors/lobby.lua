@@ -530,12 +530,8 @@ local MsFunctions = Window:MakeTab({
 	Icon = "rbxassetid://7733924046",
 	PremiumOnly = false
 })
-
-local MsTp = MSFunctions:AddSection({
-	Name = "Teleportes"
-})
 	
-MsTp:AddButton({
+MsFunctions:AddButton({
 	Name = "PRE HOTEL LOBBY",
 	Callback = function()
 		game:GetService("TeleportService"):Teleport(110258689672367)
