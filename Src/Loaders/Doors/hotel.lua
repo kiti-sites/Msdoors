@@ -32,12 +32,10 @@ local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
 ---[[ ELEMENTOS ]]--
 
-MsdoorsNotify("Msdoors","Inicializado com sucesso!","Execução","rbxassetid://133997875469993", Color3.new(0.5, 0, 0.5), 5)
+MsdoorsNotify("Msdoors","Msdoors foi carregado com sucesso!","Execução","rbxassetid://133997875469993", Color3.new(0.5, 0, 0.5), 5)
 if game.PlaceId == 6516141723 then
 MsdoorsNotify("Msdoors","Por favor, execute no jogo não no lobby!","Execução","rbxassetid://133997875469993", Color3.new(0.5, 0, 0.5), 6)
 end
-
-
 
 --// Serviços \\--
 local Lighting = game:GetService("Lighting")
