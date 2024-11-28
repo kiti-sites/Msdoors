@@ -542,11 +542,11 @@ MsTp:AddButton({
 	end    
 })
 
-local MSFcs = MSFunctions:AddSection({
+local Extras = MsFunctions:AddSection({
 	Name = "Extras"
 })
 
-MSFcs:AddButton({
+Extras:AddButton({
     Name = "Autoplay",
     Callback = function()
         task.spawn(queue_on_teleport or syn and syn.queue_on_teleport, game:HttpGet("https://raw.githubusercontent.com/ActualMasterOogway/Scripts/main/Doors/Death-Farm.lua"))
