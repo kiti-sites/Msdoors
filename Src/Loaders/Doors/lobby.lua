@@ -212,6 +212,7 @@ function PresetManager:OverridePreset(name, data)
     return true, "Preset sobrescrito: " .. name
 end
 
+--[[ PRESET TAB ]]--
 local PresetTab = Window:MakeTab({
     Name = "Presets",
     Icon = "rbxassetid://7743872758",
@@ -416,6 +417,7 @@ local function LoopAchievements()
     end)
 end
 
+--[[ CONWUISTAS TAB ]]--
 local AchievementTab = Window:MakeTab({
     Name = "Conquistas",
     Icon = "rbxassetid://7733692043",
@@ -444,7 +446,28 @@ AchievementTab:AddSlider({
     Callback = function(Value)
     end
 })
---// Elevadores Pages \\--
+
+local MSMods = AchievementTab:AddSection({
+	Name = "Modifiers"
+})
+
+MSMods:AddButton({
+    Name = "Habilitar The Mines",
+    Callback = function()
+        CustomModifiers:EnableFloor("Mines", true)
+    end,
+    Info = "Obtenha acesso ao andar 2 sem precisar do emblema."
+})
+
+MSMods:AddButton({
+    Name = "Habilitar Backdoor",
+    Callback = function()
+        CustomModifiers:EnableFloor("Backdoor", true)
+    end,
+    Info = "Obtenha acesso ao andar 0 sem precisar do emblema."
+}) 
+
+--// FUNÇÕES DO ELEVADOR \\--
 local function CreateRetroModeElevator()
     data = {
         ["FriendsOnly"] = friendsOnly,
@@ -502,21 +525,37 @@ end
 
 local function SetupElevatorUI()
 
-local MSoldLobby = Window:MakeTab({
+local MsFunctions = Window:MakeTab({
 	Name = "Funções",
 	Icon = "rbxassetid://7733924046",
 	PremiumOnly = false
 })
 
-MSoldLobby:AddButton({
-	Name = "Teleport to PRE HOTEL LOBBY",
+local MsTp = MSFunctions:AddSection({
+	Name = "Teleportes"
+})
+	
+MsTp:AddButton({
+	Name = "PRE HOTEL LOBBY",
 	Callback = function()
 		game:GetService("TeleportService"):Teleport(110258689672367)
 	end    
 })
 
+local MSFcs = MSFunctions:AddSection({
+	Name = "Extras"
+})
 
-    local MainTab = Window:MakeTab({
+MSFcs:AddButton({
+    Name = "Autoplay",
+    Callback = function()
+        task.spawn(queue_on_teleport or syn and syn.queue_on_teleport, game:HttpGet("https://raw.githubusercontent.com/ActualMasterOogway/Scripts/main/Doors/Death-Farm.lua"))
+    end,
+    Info = "Execute no lobby, depois entre em um jogo singleplayer (use mods para mais knobs)."
+})
+
+
+local MainTab = Window:MakeTab({
         Name = "Elevadores",
         Icon = "rbxassetid://7743875759",
         PremiumOnly = false
@@ -551,7 +590,7 @@ MSoldLobby:AddButton({
     MainTab:AddDropdown({
         Name = "Destino do Elevador",
         Default = "Hotel",
-        Options = {"Hotel","RetroMode", "Backdoor"},
+        Options = {"Hotel","HardMode", "Backdoor"},
         Callback = function(Value)
             destination = Value
         end
@@ -578,15 +617,6 @@ MSoldLobby:AddButton({
         end
     })
 
-    MainTab:AddToggle({
-        Name = "Modo Hard",
-        Default = false,
-        Callback = function(Value)
-            if Value then
-                table.insert(data.Mods, "HardMode")
-            end
-        end
-    })
 end
 
 SetupElevatorUI()
