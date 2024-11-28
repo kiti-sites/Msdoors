@@ -455,6 +455,7 @@ MSMods:AddButton({
     Name = "Habilitar The Mines",
     Callback = function()
         CustomModifiers:EnableFloor("Mines", true)
+	MsdoorsNotify("Msdoors", "Floors 2 ativo!", "Elevator", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
     end,
     Info = "Obtenha acesso ao andar 2 sem precisar do emblema."
 })
@@ -463,6 +464,8 @@ MSMods:AddButton({
     Name = "Habilitar Backdoor",
     Callback = function()
         CustomModifiers:EnableFloor("Backdoor", true)
+	MsdoorsNotify("Msdoors", "Backdoor ativo!", "Elevator", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
+    
     end,
     Info = "Obtenha acesso ao andar 0 sem precisar do emblema."
 }) 
@@ -535,6 +538,7 @@ MsFunctions:AddButton({
 	Name = "PRE HOTEL LOBBY",
 	Callback = function()
 		game:GetService("TeleportService"):Teleport(110258689672367)
+		MsdoorsNotify("Msdoors", "Teleportando para pre hotel...", "Tp", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
 	end    
 })
 
@@ -546,6 +550,8 @@ Extras:AddButton({
     Name = "Autoplay",
     Callback = function()
         task.spawn(queue_on_teleport or syn and syn.queue_on_teleport, game:HttpGet("https://raw.githubusercontent.com/ActualMasterOogway/Scripts/main/Doors/Death-Farm.lua"))
+	MsdoorsNotify("Msdoors", "AutoWin ativo, crie um elevador.", "AutoWin", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
+    
     end,
     Info = "Execute no lobby, depois entre em um jogo singleplayer (use mods para mais knobs)."
 })
