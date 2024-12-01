@@ -22,4 +22,4 @@ end
 if not isfolder(presetsFolder) then
     makefolder(presetsFolder)
 end
-print("[msdoors] A pasta foi criada com sucesso em:", presetsFolder)
+print("[msdoors] Pasta de presets criada, por favor reinicie o script e execute novamente!", presetsFolder)
