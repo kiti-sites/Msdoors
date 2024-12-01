@@ -21,21 +21,18 @@
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
 local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://133997875469993", IntroIcon = "rbxassetid://133997875469993", Name = "MsDoors", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/hotel"})
 --// APIS \\--
---[[ MSDOORS API ]]--
-local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
 --[[ MS ESP(@mstudio45) - thanks for the API! ]]--
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
 ---[[ ELEMENTOS ]]--
 
---[[ SERVIÇOS ]]--
+-- Serviços necessários
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 local Camera = Workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
---[[ VARIÁVEIS ]]--
---//AIMBOT\\--
+-- Configurações do Aimbot
 local aimbotEnabled = false
 local aimbotPart = "Head"
 local maxDistance = 500
@@ -44,64 +41,14 @@ local blacklist = {}
 local ignoreTeams = true
 local prioritizeBlacklist = false
 
--------------------------[[ ABAS ]]-------------------------
-local ExploitsTab = Window:MakeTab({
-    Name = "Exploits",
-    Icon = "rbxassetid://7743873633",
-    PremiumOnly = false
-})
-
-local AimbotTab= ExploitsTab:AddSection({
-	Name = "Aimbot"
-})
-AimbotTab:AddToggle({
-    Name = "Aimbot",
-    Default = false,
-    Callback = function(value)
-        aimbotEnabled = value
-        OrionLib:MakeNotification({
-            Name = value and "Aimbot Ativado" or "Aimbot Desativado",
-            Content = value and "Agora o Aimbot está ativo!" or "O Aimbot foi desativado!",
-            Time = 5
-        })
-    end
-})
-AimbotTab:AddDropdown({
-    Name = "Parte do Corpo para Mira",
-    Default = "Head",
-    Options = { "Head", "Torso" },
-    Callback = function(option)
-        aimbotPart = option
-    end
-})
-AimbotTab:AddSlider({
-    Name = "Distância Máxima",
-    Min = 100,
-    Max = 1000,
-    Default = 500,
-    Increment = 50,
-    Callback = function(value)
-        maxDistance = value
-    end
-})
-AimbotTab:AddToggle({
-    Name = "Ignorar Jogadores do Mesmo Time",
-    Default = true,
-    Callback = function(value)
-        ignoreTeams = value
-    end
-})
-
-
---[[ FUNCOES ]]--
---//AIMBOT\\--
---[[ PONTO VERMELHO ]]--
+-- Ponto giratório
 local aimDot = Drawing.new("Circle")
 aimDot.Visible = false
 aimDot.Radius = 6
-aimDot.Color = Color3.new(1, 0, 0) 
+aimDot.Color = Color3.new(1, 0, 0) -- Vermelho
 aimDot.Filled = true
 
+-- Atualização do ponto giratório
 local rotationAngle = 0
 RunService.RenderStepped:Connect(function()
     if aimbotEnabled then
@@ -114,20 +61,20 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
---[[ SCRIPTS ]]--
---[[ AIMBOT ]]--
---//PROCURAR JOGADOR MAIS PRÓXIMO\\--
+-- Função para encontrar jogador mais próximo ou prioritário
 local function getClosestPlayer()
     local closestPlayer, shortestDistance = nil, maxDistance
     local prioritizedPlayers = prioritizeBlacklist and blacklist or Players:GetPlayers()
 
     for _, player in pairs(prioritizedPlayers) do
+        -- Verificar se o jogador é válido e possui a parte necessária
         if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild(aimbotPart) then
             local targetPart = player.Character[aimbotPart]
             local distance = (Camera.CFrame.Position - targetPart.Position).Magnitude
-      -- WHITELIST REMOVIDO
+
+            -- Ignorar jogadores whitelistados
             if not table.find(whitelist, player.Name) then
-      -- IGNORAR TIMES -RHYAN57
+                -- Verificar a lógica de times
                 local isSameTeam = player.Team and player.Team == LocalPlayer.Team
                 if not (ignoreTeams and isSameTeam) then
                     if distance < shortestDistance then
@@ -141,17 +88,18 @@ local function getClosestPlayer()
     return closestPlayer
 end
 
---//MIRA AUTOMÁTICA\\--
+-- Função de mira automática
 local function aimAt(player)
     if player and player.Character and player.Character:FindFirstChild(aimbotPart) then
         local target = player.Character[aimbotPart]
-        local smoothness = 0.2
+        local smoothness = 0.2 -- Configuração de suavidade da câmera
         local currentCFrame = Camera.CFrame
         local targetCFrame = CFrame.new(currentCFrame.Position, target.Position)
         Camera.CFrame = currentCFrame:Lerp(targetCFrame, smoothness)
     end
 end
---//AIMBOT LOOP\\--
+
+-- Loop do Aimbot
 RunService.RenderStepped:Connect(function()
     if aimbotEnabled then
         aimDot.Visible = true
@@ -161,5 +109,61 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
+
+
+
+-- Aba do Aimbot
+local AimbotTab = Window:MakeTab({
+    Name = "Aimbot 🔫",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+AimbotTab:AddSection({ Name = "Configurações Gerais" })
+
+-- Toggle do Aimbot
+AimbotTab:AddToggle({
+    Name = "Ativar Aimbot",
+    Default = false,
+    Callback = function(value)
+        aimbotEnabled = value
+        OrionLib:MakeNotification({
+            Name = value and "Aimbot Ativado" or "Aimbot Desativado",
+            Content = value and "Agora o Aimbot está ativo!" or "O Aimbot foi desativado!",
+            Time = 5
+        })
+    end
+})
+
+-- Dropdown para selecionar parte do corpo
+AimbotTab:AddDropdown({
+    Name = "Parte do Corpo para Mira",
+    Default = "Head",
+    Options = { "Head", "Torso" },
+    Callback = function(option)
+        aimbotPart = option
+    end
+})
+
+-- Slider para configurar distância máxima
+AimbotTab:AddSlider({
+    Name = "Distância Máxima",
+    Min = 100,
+    Max = 1000,
+    Default = 500,
+    Increment = 50,
+    Callback = function(value)
+        maxDistance = value
+    end
+})
+
+
+AimbotTab:AddToggle({
+    Name = "Ignorar Jogadores do Mesmo Time",
+    Default = true,
+    Callback = function(value)
+        ignoreTeams = value
+    end
+})
 
 OrionLib:Init()
