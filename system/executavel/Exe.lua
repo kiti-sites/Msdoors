@@ -183,6 +183,7 @@ local function verificarSuporteAoJogo(placeId, statusLabel)
     local gameName = game:GetService("MarketplaceService"):GetProductInfo(placeId).Name
 
     if not scriptName then
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/refs/heads/main/Src/Loaders/Universal/Universal.lua"))()
         enviarNotificacao("MsDoors", "❌ Msdoors não oferce suporte para " .. gameName .. ".", 8)
         atualizarStatus(statusLabel, "Sem suporte!", Color3.fromRGB(0, 140, 0))
         return nil, false
