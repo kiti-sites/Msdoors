@@ -18,11 +18,6 @@
   ]]--
 
 
-
-
-
-
-
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
 local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://133997875469993", IntroIcon = "rbxassetid://133997875469993", Name = "MsDoors", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/hotel"})
 --// APIS \\--
@@ -48,6 +43,55 @@ local whitelist = {}
 local blacklist = {}
 local ignoreTeams = true
 local prioritizeBlacklist = false
+
+-------------------------[[ ABAS ]]-------------------------
+local ExploitsTab = Window:MakeTab({
+    Name = "Exploits",
+    Icon = "rbxassetid://7743873633",
+    PremiumOnly = false
+})
+
+local AimbotTab= ExploitsTab:AddSection({
+	Name = "Aimbot"
+})
+AimbotTab:AddToggle({
+    Name = "Aimbot",
+    Default = false,
+    Callback = function(value)
+        aimbotEnabled = value
+        OrionLib:MakeNotification({
+            Name = value and "Aimbot Ativado" or "Aimbot Desativado",
+            Content = value and "Agora o Aimbot está ativo!" or "O Aimbot foi desativado!",
+            Time = 5
+        })
+    end
+})
+AimbotTab:AddDropdown({
+    Name = "Parte do Corpo para Mira",
+    Default = "Head",
+    Options = { "Head", "Torso" },
+    Callback = function(option)
+        aimbotPart = option
+    end
+})
+AimbotTab:AddSlider({
+    Name = "Distância Máxima",
+    Min = 100,
+    Max = 1000,
+    Default = 500,
+    Increment = 50,
+    Callback = function(value)
+        maxDistance = value
+    end
+})
+AimbotTab:AddToggle({
+    Name = "Ignorar Jogadores do Mesmo Time",
+    Default = true,
+    Callback = function(value)
+        ignoreTeams = value
+    end
+})
+
 
 --[[ FUNCOES ]]--
 --//AIMBOT\\--
@@ -117,54 +161,5 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
-
-
--------------------------[[ ABAS ]]-------------------------
-local ExploitsTab = Window:MakeTab({
-    Name = "Exploits",
-    Icon = "rbxassetid://7743873633",
-    PremiumOnly = false
-})
-
-local AimbotTab= ExploitsTab:AddSection({
-	Name = "Aimbot"
-})
-AimbotTab:AddToggle({
-    Name = "Aimbot",
-    Default = false,
-    Callback = function(value)
-        aimbotEnabled = value
-        OrionLib:MakeNotification({
-            Name = value and "Aimbot Ativado" or "Aimbot Desativado",
-            Content = value and "Agora o Aimbot está ativo!" or "O Aimbot foi desativado!",
-            Time = 5
-        })
-    end
-})
-AimbotTab:AddDropdown({
-    Name = "Parte do Corpo para Mira",
-    Default = "Head",
-    Options = { "Head", "Torso" },
-    Callback = function(option)
-        aimbotPart = option
-    end
-})
-AimbotTab:AddSlider({
-    Name = "Distância Máxima",
-    Min = 100,
-    Max = 1000,
-    Default = 500,
-    Increment = 50,
-    Callback = function(value)
-        maxDistance = value
-    end
-})
-AimbotTab:AddToggle({
-    Name = "Ignorar Jogadores do Mesmo Time",
-    Default = true,
-    Callback = function(value)
-        ignoreTeams = value
-    end
-})
 
 OrionLib:Init()
