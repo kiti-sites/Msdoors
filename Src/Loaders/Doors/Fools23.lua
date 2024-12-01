@@ -32,17 +32,13 @@ if game.PlaceId == 6516141723 then
 MsdoorsNotify("Msdoors","Por favor, execute em SUPER HARD MODE.","Execução","rbxassetid://133997875469993", Color3.new(0.5, 0, 0.5), 6)
 end
 
---[[ PAINEL ]]--
--- Certifique-se de ter o OrionLib no jogo
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-
-local autoDestroy = false -- Variável de controle para ativar/desativar o script
-
--- Função para destruir todos os objetos com o nome "BananaPeel"
+--[[ SCRIPTS ]]--
+--//ANTI BANANA\\--
+local autoDestroy = false
 local function destroyAllBananaPeel()
     for _, child in ipairs(workspace:GetChildren()) do
         if child.Name == "BananaPeel" then
-            print("Apagando a pasta/arquivo:", child.Name)
+            print("[Msdoors] Apagando banana:", child.Name)
             child:Destroy()
         end
     end
@@ -50,32 +46,31 @@ end
 
 workspace.ChildAdded:Connect(function(child)
     if autoDestroy and child.Name == "BananaPeel" then
-        task.wait(0.1) -- Pequeno delay antes de destruir
-        print("Novo objeto encontrado:", child.Name)
+        task.wait(0.1)
+        print("[Msdoors]Banana encontrada e destruída:", child.Name)
         child:Destroy()
     end
 end)
 
--- Criar GUI com OrionLib
-local Window = OrionLib:MakeWindow({Name = "Controle de BananaPeel", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionConfig"})
-
--- Adicionar aba de controle
-local Exploits = Window:MakeTab({
-    Name = "BananaPeel",
-    Icon = "rbxassetid://4483345998",
+--[[ ELEMENTOS/UI ]]--
+local ExploitsTab = Window:MakeTab({
+    Name = "Exploits",
+    Icon = "rbxassetid://7743873633",
     PremiumOnly = false
 })
 
-Tab:AddToggle({
-    Name = "Ativar Destruição Automática",
+ExploitsTab:AddToggle({
+    Name = "Anti Banana",
     Default = false,
     Callback = function(value)
-        autoDestroy = value -- Atualizar estado de ativação
+        autoDestroy = value
         if autoDestroy then
-            print("Destruição Automática: ATIVADA")
-            destroyAllBananaPeel() -- Destruir imediatamente, se necessário
+            print("[Msdoors] Anti Banana: ATIVADA")
+            MsdoorsNotify( "Msdoors", "AntiBanana ativo", "Exploits", "rbxassetid://6023426923", Color3.new(0, 1, 0), 2)
+            destroyAllBananaPeel()
         else
-            print("Destruição Automática: DESATIVADA")
+            print("[Msdoors] Anti Banana: DESATIVADA")
+            MsdoorsNotify( "Msdoors", "AntiBanana desativado", "Exploits", "rbxassetid://6023426923", Color3.new(0, 1, 0), 2)
         end
     end
 })
