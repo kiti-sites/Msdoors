@@ -59,6 +59,19 @@ local ExploitsTab = Window:MakeTab({
     PremiumOnly = false
 })
 
+--// CRÉDITOS \\--
+local CreditsTab = Window:MakeTab({
+    Name = "Créditos - Msdoors",
+    Icon = "rbxassetid://7743875759",
+    PremiumOnly = false
+})
+local CdSc = CreditsTab:AddSection({
+    Name = "Créditos"
+})
+
+CdSc:AddParagraph("Rhyan57", "• Criador e fundador do Msdoors.")
+CdSc:AddParagraph("SeekAlegriaFla", "• Ajudante e coletor de files.")
+
 ExploitsTab:AddToggle({
     Name = "Anti Banana",
     Default = false,
