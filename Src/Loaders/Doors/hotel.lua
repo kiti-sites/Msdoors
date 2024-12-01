@@ -1191,6 +1191,70 @@ local playerLocal = GameLocal:AddSection({
 	Name = "Player Functions"
 })
 
+local Script = {
+    IsFools = false
+}
+
+local Player = game.Players.LocalPlayer
+local Character = Player.Character or Player.CharacterAdded:Wait()
+local Humanoid = Character:WaitForChild("Humanoid")
+
+local CanJumpEnabled = false
+
+local PlayerTab = Window:MakeTab({
+    Name = "PlayerLocal",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+playerLocal:AddToggle({
+    Name = "Enable Jump",
+    Default = false,
+    Callback = function(value)
+        CanJumpEnabled = value
+        if Script.IsFools then return end
+        Character:SetAttribute("CanJump", value)
+        if value then
+            OrionLib:MakeNotification({
+                Name = "Jump Enabled",
+                Content = "O pulo foi habilitado!",
+                Time = 3
+            })
+        else
+            OrionLib:MakeNotification({
+                Name = "Jump Disabled",
+                Content = "O pulo foi desabilitado!",
+                Time = 3
+            })
+            if Humanoid then
+                Humanoid.WalkSpeed = 22
+            end
+        end
+    end
+})
+
+playerLocal:AddSlider({
+    Name = "Jump Boost",
+    Min = 0,
+    Max = 50,
+    Default = 5,
+    Increment = 1,
+    Callback = function(value)
+        if not CanJumpEnabled then
+            OrionLib:MakeNotification({
+                Name = "Jump Boost Error",
+                Content = "Ative o pulo antes de ajustar a altura!",
+                Time = 3
+            })
+            return
+        end
+        if Humanoid then
+            Humanoid.UseJumpPower = false
+            Humanoid.JumpHeight = value
+        end
+    end
+})
+
 local Script = { IsFools = false }
 local Character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
 local Humanoid = Character:WaitForChild("Humanoid")
