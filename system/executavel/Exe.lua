@@ -31,7 +31,7 @@ local vipScriptUrl = "https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/main/
 local supportedPlaceIds = {
     [6516141723] = "Doors/lobby.lua", -- Lobby
     [6839171747] = "Doors/hotel.lua", -- Doors
-    [10549820578] = "Doors/hotel.lua", -- Fools2023
+    [10549820578] = "Doors/Fools23.lua", -- Fools2023
     [110258689672367] = "Doors/OldLobby.lua", -- Pre Hotel+
     [189707] = "NaturalDisaster/places/game.lua" -- Natural Disaster
 }
