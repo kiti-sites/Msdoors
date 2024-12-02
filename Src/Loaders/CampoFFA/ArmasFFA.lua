@@ -16,10 +16,28 @@
                                                                                                                      
                                         Por Rhyan57 💜
   ]]--
+local HttpService = game:GetService("HttpService")
+function LoadVariablesFromJSON(url)
+    local success, response = pcall(function()
+        return game:HttpGetAsync(url)
+    end)
+
+    if success then
+        local jsonData = HttpService:JSONDecode(response)
+        return jsonData
+    else
+        warn("[Msdoors]Erro ao carregar variáveis: " .. response)
+        return nil
+    end
+end
+local jsonUrl = "https://raw.githubusercontent.com/Msdoors/Msdoors.gg/refs/heads/main/Scripts/Msdoors/json/variables.json"
+local variables = LoadVariablesFromJSON(jsonUrl)
+
+if variables then
 
 
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
-local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://133997875469993", IntroIcon = "rbxassetid://133997875469993", Name = "MsDoors | Campos de armas FFA", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/CamposDeArmasFFA"})
+local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid:// .. variables["msdoors-nofundo"]", IntroIcon = "rbxassetid:// .. variables["msdoors-nofundo"]", Name = "MsDoors | Campos de armas FFA", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/CamposDeArmasFFA"})
 --// APIS \\--
 --[[ MS ESP(@mstudio45) - thanks for the API! ]]--
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
@@ -145,3 +163,7 @@ ExploitsTab:AddToggle({
 })
 
 OrionLib:Init()
+
+else
+    warn("[Msdoors]Não foi possível carregar as variáveis do JSON.")
+end
