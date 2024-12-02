@@ -19,7 +19,7 @@
 
 
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
-local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://133997875469993", IntroIcon = "rbxassetid://133997875469993", Name = "MsDoors | Super Hard Mode", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/fools23"})
+local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://100573561401335", IntroIcon = "rbxassetid://95869322194132", Name = "MsDoors | Super Hard Mode", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/fools23"})
 
 --// APIS \\--
 --[[ MSDOORS API ]]--
