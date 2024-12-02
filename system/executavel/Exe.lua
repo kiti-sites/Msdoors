@@ -33,7 +33,8 @@ local supportedPlaceIds = {
     [6839171747] = "Doors/hotel.lua", -- Doors
     [10549820578] = "Doors/Fools23.lua", -- Fools2023
     [110258689672367] = "Doors/OldLobby.lua", -- Pre Hotel+
-    [189707] = "NaturalDisaster/places/game.lua" -- Natural Disaster
+    [189707] = "NaturalDisaster/places/game.lua", -- Natural Disaster
+    [12137249458] = "CampoFFA/ArmasFFA.lua" -- Campos de armas FFA
 }
 
 local blacklist = { 
