@@ -17,7 +17,7 @@
                                         Por Rhyan57 💜
   ]]--
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
-local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1 ",Icon = "rbxassetid://133997875469993", IntroIcon = "rbxassetid://133997875469993", Name = "MsDoors | PRE HOTEL Lobby", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/CamposArmasFFA"})
+local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1 ",Icon = "rbxassetid://100573561401335", IntroIcon = "rbxassetid://95869322194132", Name = "MsDoors | PRE HOTEL Lobby", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/CamposArmasFFA"})
   --// APIS \\--
 --[[ MS ESP(@mstudio45) - thanks for the API! ]]--
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
