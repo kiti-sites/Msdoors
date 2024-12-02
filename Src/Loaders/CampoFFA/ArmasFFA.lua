@@ -17,25 +17,7 @@
                                         Por Rhyan57 💜
   ]]--
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
-local MsAPI = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/Msdoors/Msdoors.gg/refs/heads/main/Scripts/Msdoors/json/variables.json"))()
-
-local iconId = MsAPI.msVariables("msdoors-nofundo")
-local introIconId = MsAPI.msVariables("msdoors-fundo")
-local introText = MsAPI.msVariables("intro-text")
-
-if iconId and introIconId then
-    local Window = OrionLib:MakeWindow({
-        IntroText = introText,
-        Icon = "rbxassetid://" .. iconId,
-        IntroIcon = "rbxassetid://" .. introIconId,
-        Name = "MsDoors | Lobby",
-        HidePremium = false,
-        SaveConfig = true,
-        ConfigFolder = .msdoors/places/CamposDeArmasFFA
-    })
-
-end
-
+local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1 ",Icon = "rbxassetid://133997875469993", IntroIcon = "rbxassetid://133997875469993", Name = "MsDoors | PRE HOTEL Lobby", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/CamposArmasFFA"})
   --// APIS \\--
 --[[ MS ESP(@mstudio45) - thanks for the API! ]]--
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
