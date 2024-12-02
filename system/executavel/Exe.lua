@@ -34,7 +34,6 @@ local supportedPlaceIds = {
     [10549820578] = "Doors/Fools23.lua", -- Fools2023
     [110258689672367] = "Doors/OldLobby.lua", -- Pre Hotel+
     [189707] = "NaturalDisaster/places/game.lua" -- Natural Disaster
-    [4281211770] = "CampoFFA/ArmasFFA.lua" -- Campos de armas FFA
 }
 
 local blacklist = { 
@@ -184,8 +183,8 @@ local function verificarSuporteAoJogo(placeId, statusLabel)
     local gameName = game:GetService("MarketplaceService"):GetProductInfo(placeId).Name
 
     if not scriptName then
-    enviarNotificacao("MsDoors", "❌ Msdoors não oferce suporte para " .. gameName .. ".", 8)
-        atualizarStatus(statusLabel, "Sem suporte!", Color3.fromRGB(0, 140, 0))
+        enviarNotificacao("MsDoors", "🚫 MsDoors não oferece suporte para " .. gameName .. ".", 8)
+        atualizarStatus(statusLabel, "Jogo não suportado", Color3.fromRGB(255, 140, 0))
         return nil, false
     end
     return scriptName
