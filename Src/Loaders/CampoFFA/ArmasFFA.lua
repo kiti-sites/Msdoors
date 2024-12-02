@@ -94,6 +94,108 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
+--// ESP PLAYER \\--
+local Options = {
+    ESPColor = Color3.fromRGB(255, 0, 0), 
+    MaxDistance = 5000                  
+}
+
+local espAtivo = false
+local linhasAtivas = {}
+
+local function aplicarESPPlayer(player)
+    if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then return end
+
+    local character = player.Character
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+
+    local highlight = ESPLibrary.ESP.Highlight({
+        Name = player.Name,
+        Model = character,
+        MaxDistance = Options.MaxDistance,
+        FillColor = Options.ESPColor,
+        OutlineColor = Options.ESPColor,
+        FillTransparency = 0.5,
+        OutlineTransparency = 0.2
+    })
+
+    local billboard = ESPLibrary.ESP.Billboard({
+        Name = player.Name,
+        Model = humanoidRootPart,
+        MaxDistance = Options.MaxDistance,
+        Color = Options.ESPColor,
+        Text = string.format("[ %s ]", player.Name),
+        TextSize = 17
+    })
+  
+    local linha = Drawing.new("Line")
+    linha.Thickness = 1.5
+    linha.Color = Options.ESPColor
+    linha.Transparency = 1
+    linhasAtivas[player] = linha
+
+    local function atualizarTraco()
+        if humanoidRootPart and humanoidRootPart:IsDescendantOf(workspace) then
+            local humanoidPos, onScreen = workspace.CurrentCamera:WorldToViewportPoint(humanoidRootPart.Position)
+            if onScreen then
+                linha.Visible = true
+                linha.From = Vector2.new(workspace.CurrentCamera.ViewportSize.X / 2, workspace.CurrentCamera.ViewportSize.Y) 
+                linha.To = Vector2.new(humanoidPos.X, humanoidPos.Y)
+            else
+                linha.Visible = false
+            end
+        else
+            linha.Visible = false
+        end
+    end
+
+    local renderConnection = game:GetService("RunService").RenderStepped:Connect(atualizarTraco)
+
+    character.AncestryChanged:Connect(function()
+        if not character:IsDescendantOf(workspace) then
+            linha:Remove()
+            linhasAtivas[player] = nil
+            highlight.Destroy()
+            billboard.Destroy()
+            renderConnection:Disconnect()
+        end
+    end)
+end
+
+local function ativarESP()
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player.Character then
+            aplicarESPPlayer(player)
+        end
+        player.CharacterAdded:Connect(function()
+            aplicarESPPlayer(player)
+        end)
+    end
+end
+
+local function desativarESP()
+    ESPLibrary.ESP.Clear()
+    for _, linha in pairs(linhasAtivas) do
+        linha:Remove()
+    end
+    linhasAtivas = {}
+end
+game.Players.PlayerAdded:Connect(function(player)
+    if espAtivo then
+        player.CharacterAdded:Connect(function()
+            aplicarESPPlayer(player)
+        end)
+    end
+end)
+
+game.Players.PlayerRemoving:Connect(function(player)
+    if linhasAtivas[player] then
+        linhasAtivas[player]:Remove()
+        linhasAtivas[player] = nil
+    end
+end)
+
+
 local ExploitsTab = Window:MakeTab({
     Name = "Exploits",
     Icon = "rbxassetid://7743873633",
@@ -141,6 +243,26 @@ ExploitsTab:AddToggle({
         ignoreTeams = value
     end
 })
+
+local VisualsTab = Window:MakeTab({
+    Name = "Visuais",
+    Icon = "rbxassetid://7743873633",
+    PremiumOnly = false
+})
+
+VisualsTab:AddToggle({
+    Name = "Players Esp",
+    Default = false,
+    Callback = function(state)
+        espAtivo = state
+        if espAtivo then
+            ativarESP()
+        else
+            desativarESP()
+        end
+    end
+})
+
 
 OrionLib:Init()
 
