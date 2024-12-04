@@ -81,7 +81,7 @@ local function interactWithClickDetectors()
     end
 end
 
-
+--[[
 --// DOWN CART \\--
 getgenv().Down = false 
 local Building = game:GetService("Workspace"):FindFirstChild("Building")
@@ -108,6 +108,33 @@ local function spamClickDetectors()
         end
         task.wait(0.1) 
     end
+end
+]]--
+--// ON/PLAY CART \\--
+local Building = game:GetService("Workspace"):FindFirstChild("Building")
+local function getAllClickDetectors()
+    local clickDetectors = {}
+    if Building then
+        for _, descendant in ipairs(Building:GetDescendants()) do
+            if descendant:IsA("ClickDetector") and descendant.Parent and descendant.Parent.Name == "On" then
+                table.insert(clickDetectors, descendant)
+            end
+        end
+    end
+    return clickDetectors
+end
+local function interactOnce()
+    local clickDetectors = getAllClickDetectors()
+    for _, clickDetector in ipairs(clickDetectors) do
+        pcall(function()
+            fireclickdetector(clickDetector)
+        end)
+    end
+    OrionLib:MakeNotification({
+        Name = "Interação Completa",
+        Content = "Interagiu com todos os carts encontrados!",
+        Time = 5
+    })
 end
 
 --// UP CARTS \\--
@@ -222,6 +249,8 @@ CartsTab:AddToggle({
         end
     end
 })
+--// REMOVIDO \\
+--[[
 CartsTab:AddToggle({
     Name = "Spam menos velocidade",
     Default = false,
@@ -241,5 +270,13 @@ CartsTab:AddToggle({
                 Time = 5
             })
         end
+    end
+})
+]]--
+
+CartsTab:AddButton({
+    Name = "Ligar/Desligar Carts",
+    Callback = function()
+        interactOnce()
     end
 })
