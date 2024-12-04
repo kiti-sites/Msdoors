@@ -165,6 +165,50 @@ local function spamClickDetectors()
     end
 end
 
+--// JEEP \\--
+getgenv().AutoSpamCarrinhos = false
+local function getAllCarrinhos()
+    local carrinhos = {}
+    for _, descendant in ipairs(workspace:GetDescendants()) do
+        if descendant:IsA("Model") and descendant.Name:lower():find("jeep") then
+            table.insert(carrinhos, descendant)
+        end
+    end
+    return carrinhos
+end
+local function interactWithCarrinho(carrinho)
+    for _, part in ipairs(carrinho:GetDescendants()) do
+        if part:IsA("ClickDetector") then
+            pcall(function()
+                fireclickdetector(part)
+            end)
+        end
+        if part:IsA("ProximityPrompt") then
+            pcall(function()
+                fireproximityprompt(part)
+            end)
+        end
+        if part:IsA("TouchTransmitter") or part.Name == "TouchInterest" then
+            pcall(function()
+                firetouchinterest(part.Parent, game.Players.LocalPlayer.Character.HumanoidRootPart, 0)
+                task.wait(0.1)
+                firetouchinterest(part.Parent, game.Players.LocalPlayer.Character.HumanoidRootPart, 1)
+            end)
+        end
+    end
+end
+
+local function interactWithAllCarrinhos()
+    while getgenv().AutoSpamCarrinhos do
+        local carrinhos = getAllCarrinhos()
+        for _, carrinho in ipairs(carrinhos) do
+            pcall(function()
+                interactWithCarrinho(carrinho)
+            end)
+        end
+        task.wait(0.1) 
+    end
+end
 
 --// CRÉDITOS \\--
 local CreditsTab = Window:MakeTab({
@@ -278,5 +322,31 @@ CartsTab:AddButton({
     Name = "Ligar/Desligar Carts",
     Callback = function()
         interactOnce()
+    end
+})
+
+local JeepsTab = ExploitTab:AddSection({
+	Name = "Jeeps"
+})
+
+JeepsTab:AddToggle({
+    Name = "Spam Spawn Jeeps",
+    Default = false,
+    Callback = function(state)
+        getgenv().AutoSpamCarrinhos = state
+        if state then
+            OrionLib:MakeNotification({
+                Name = "Sistema Ativado",
+                Content = "Spam Jeeps iniciado!",
+                Time = 5
+            })
+            spawn(interactWithAllCarrinhos)
+        else
+            OrionLib:MakeNotification({
+                Name = "Sistema Desativado",
+                Content = "Spam Jeeps pausado.",
+                Time = 5
+            })
+        end
     end
 })
