@@ -81,6 +81,36 @@ local function interactWithClickDetectors()
     end
 end
 
+
+--// DOWN CART \\--
+getgenv().AutoClickDetectors = false
+local Building = game:GetService("Workspace"):FindFirstChild("Building")
+
+local function getAllClickDetectors()
+    local clickDetectors = {}
+    if Building then
+        for _, descendant in ipairs(Building:GetDescendants()) do
+            if descendant:IsA("ClickDetector") and descendant.Parent and descendant.Parent.Name == "Down" then
+                table.insert(clickDetectors, descendant)
+            end
+        end
+    end
+    return clickDetectors
+end
+
+local function spamClickDetectors()
+    while getgenv().AutoClickDetectors do
+        local clickDetectors = getAllClickDetectors() 
+        for _, clickDetector in ipairs(clickDetectors) do
+            pcall(function()
+                fireclickdetector(clickDetector)
+            end)
+        end
+        task.wait(0.1) 
+    end
+end
+
+
 --// CRÉDITOS \\--
 local CreditsTab = Window:MakeTab({
     Name = "Créditos - Msdoors",
@@ -143,3 +173,24 @@ CartsTab:AddSlider({
     end
 })
 
+CartsTab:AddToggle({
+    Name = "Spam menos velocidade",
+    Default = false,
+    Callback = function(state)
+        getgenv().AutoClickDetectors = state
+        if state then
+            OrionLib:MakeNotification({
+                Name = "Sistema Ativado",
+                Content = "Spam de ➖ iniciado!",
+                Time = 5
+            })
+            spawn(spamClickDetectors)
+        else
+            OrionLib:MakeNotification({
+                Name = "Sistema Desativado",
+                Content = "Spam de ➖ pausado.",
+                Time = 5
+            })
+        end
+    end
+})
