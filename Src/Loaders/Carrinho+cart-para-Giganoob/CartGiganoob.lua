@@ -83,7 +83,7 @@ end
 
 
 --// DOWN CART \\--
-getgenv().AutoClickDetectors = false
+getgenv().Down = false 
 local Building = game:GetService("Workspace"):FindFirstChild("Building")
 
 local function getAllClickDetectors()
@@ -99,7 +99,7 @@ local function getAllClickDetectors()
 end
 
 local function spamClickDetectors()
-    while getgenv().AutoClickDetectors do
+    while getgenv().Down do 
         local clickDetectors = getAllClickDetectors() 
         for _, clickDetector in ipairs(clickDetectors) do
             pcall(function()
@@ -222,12 +222,11 @@ CartsTab:AddToggle({
         end
     end
 })
-
 CartsTab:AddToggle({
     Name = "Spam menos velocidade",
     Default = false,
     Callback = function(state)
-        getgenv().AutoClickDetectors = state
+        getgenv().Down = state
         if state then
             OrionLib:MakeNotification({
                 Name = "Sistema Ativado",
