@@ -4,6 +4,8 @@ local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1 ",Icon = "rbxasset
 --[[ APIS ]]--
 local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
 
+--[[ EVENTOS ]]--
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/refs/heads/main/Events/eventos.lua"))()
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://4590656842"
 sound.Volume = 2
