@@ -23,6 +23,9 @@ local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxasseti
 
 --// APIS \\--
 --[[ MSDOORS API ]]--
+
+--[[ EVENTOS ]]--
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/refs/heads/main/Events/eventos.lua"))()
 local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
 --[[ MS ESP(@mstudio45) - thanks for the API! ]]--
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
