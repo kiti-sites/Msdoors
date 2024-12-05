@@ -651,96 +651,6 @@ function NotifyEntity(entityName)
 end
 
 
---------------------[[ 📚 AUTO LIBRARY CODE 📚 ]]--------------------------------
-local mainUI = Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("MainUI", 2.5)
-local function DoorsNotify(options)
-    local title = options.Title or "No Title"
-    local description = options.Description or "No Text"
-    local image = options.Image or "rbxassetid://6023426923"
-    local time = options.Time or 5
-    local color = options.Color
-
-    if mainUI then
-        local achievement = mainUI.AchievementsHolder.Achievement:Clone()
-        achievement.Size = UDim2.new(0, 0, 0, 0)
-        achievement.Frame.Position = UDim2.new(1.1, 0, 0, 0)
-        achievement.Name = "LiveAchievement"
-        achievement.Visible = true
-
-        achievement.Frame.Details.Desc.Text = description
-        achievement.Frame.Details.Title.Text = title
-        achievement.Frame.ImageLabel.Image = image
-
-        if color then
-            achievement.Frame.TextLabel.TextColor3 = color
-            achievement.Frame.UIStroke.Color = color
-            achievement.Frame.Glow.ImageColor3 = color
-        end
-
-        achievement.Parent = mainUI.AchievementsHolder
-        achievement.Sound.SoundId = "rbxassetid://10469938989"
-        achievement.Sound.Volume = 1
-        achievement.Sound:Play()
-
-        achievement:TweenSize(UDim2.new(1, 0, 0.2, 0), "In", "Quad", 0.8, true)
-        task.wait(0.8)
-        achievement.Frame:TweenPosition(UDim2.new(0, 0, 0, 0), "Out", "Quad", 0.5, true)
-
-        task.delay(time, function()
-            achievement.Frame:TweenPosition(UDim2.new(1.1, 0, 0, 0), "In", "Quad", 0.5, true)
-            task.wait(0.5)
-            achievement:Destroy()
-        end)
-    end
-end
-
-local function LogNotification(level, message)
-    local title, color, icon
-    if level == "SUCESSO" then
-        title, color, icon = "🟩 MsDoors", Color3.fromRGB(0, 255, 0), "rbxassetid://13311697821"
-    elseif level == "ERRO" then
-        title, color, icon = "🟥 MsDoors", Color3.fromRGB(255, 0, 0), "rbxassetid://13369776727"
-    else -- Em análise
-        title, color, icon = "🟨 MsDoors", Color3.fromRGB(255, 255, 0), "rbxassetid://97983317580515"
-    end
-
-    DoorsNotify({
-        Title = title,
-        Description = message,
-        Image = icon,
-        Time = 5,
-        Color = color
-    })
-end
-
-local function AutoLibrarySolver(value)
-    if value then
-        for _, otherPlayer in pairs(Players:GetPlayers()) do
-            if not otherPlayer.Character then continue end
-            local tool = otherPlayer.Character:FindFirstChildOfClass("Tool")
-
-            if tool and tool.Name:match("LibraryHintPaper") then
-                local code = Script.Functions.GetPadlockCode(tool)
-                local padlock = Workspace:FindFirstChild("Padlock", true)
-
-                if tonumber(code) then
-                    if Script.Functions.DistanceFromCharacter(padlock) <= Options.AutoLibraryDistance then
-                        Script.RemotesFolder.PL:FireServer(code)
-                        LogNotification("SUCESSO", "Cadeado desbloqueado com o código correto.")
-                    else
-                        LogNotification("ERRO", "Distância insuficiente para desbloquear o cadeado.")
-                    end
-                else
-                    LogNotification("ERRO", "Código inválido detectado.")
-                end
-            else
-                LogNotification("+-", "Procurando LibraryHintPaper...")
-            end
-        end
-    else
-        LogNotification("ERRO", "Auto Library Solver desativado.")
-    end
-end
 
 
 --------------------// 📱 INTERFACE 📱\\--------------------------------
@@ -999,57 +909,6 @@ local autoIn = Window:MakeTab({
     PremiumOnly = false
 })
 
---{ 📚 Auto Library Code/ BOTÃO }--
-autoIn:AddToggle({
-    Name = "Auto Library Code",
-    Default = false,
-    Callback = function(value)
-        AutoLibrarySolver(value)
-    end
-})
-
-local function PromptCondition(prompt)
-    local modelAncestor = prompt:FindFirstAncestorOfClass("Model")
-    return prompt:IsA("ProximityPrompt") and 
-        not table.find(PromptTable.Excluded.Prompt, prompt.Name) and 
-        not table.find(PromptTable.Excluded.Parent, prompt.Parent and prompt.Parent.Name or "") and 
-        not table.find(PromptTable.Excluded.ModelAncestor, modelAncestor and modelAncestor.Name or "")
-end
-local function AutoInteractWithPrompt(prompt)
-    if prompt:IsA("ProximityPrompt") and prompt.Enabled then
-        fireproximityprompt(prompt)
-    end
-end
-local function CheckPrompts()
-    for _, prompt in pairs(workspace:GetDescendants()) do
-        if PromptCondition(prompt) then
-            AutoInteractWithPrompt(prompt)
-        end
-    end
-end
-
-local function AdjustPromptProperties(prompt)
-    task.defer(function()
-        if not prompt:GetAttribute("Hold") then prompt:SetAttribute("Hold", prompt.HoldDuration) end
-        if not prompt:GetAttribute("Distance") then prompt:SetAttribute("Distance", prompt.MaxActivationDistance) end
-        if not prompt:GetAttribute("Enabled") then prompt:SetAttribute("Enabled", prompt.Enabled) end
-        if not prompt:GetAttribute("Clip") then prompt:SetAttribute("Clip", prompt.RequiresLineOfSight) end
-    end)
-    
-    task.defer(function()
-        prompt.MaxActivationDistance = prompt:GetAttribute("Distance") * 1 -- Ajuste da distância multiplicada
-        prompt.HoldDuration = 0
-        prompt.RequiresLineOfSight = false
-    end)
-    
-    table.insert(PromptTable.GamePrompts, prompt)
-end
-
-local function ChildCheck(child)
-    if PromptCondition(child) then
-        AdjustPromptProperties(child)
-    end
-end
 
 --{ ☝️ AUTO INTERACT / BOTÃO }--
 local autoInteractEnabled = false
@@ -1297,6 +1156,20 @@ local FloorTab = Window:MakeTab({
     PremiumOnly = false
 })
 
+local ModsTab = Window:MakeTab({
+    Name = "Mods",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+ModsTab:AddToggle({
+    Name = "SpeedRun Timer",
+    Default = false,
+    Callback = function(state)
+        TimerGui.Enabled = state 
+    end
+})
+
 --// MODS PAGE(NEW) \\--
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -1335,19 +1208,6 @@ UIStroke.Color = Color3.fromRGB(70, 70, 70)
 UIStroke.Thickness = 2
 UIStroke.Parent = TimerLabel
 
-local ModsTab = Window:MakeTab({
-    Name = "Mods",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-ModsTab:AddToggle({
-    Name = "SpeedRun Timer",
-    Default = false,
-    Callback = function(state)
-        TimerGui.Enabled = state 
-    end
-})
 
 task.spawn(function()
     if LatestRoom.Value < 1 then
