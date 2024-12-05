@@ -25,10 +25,10 @@ local eventos = {
         DataInicio = "12-05",
         DataFim = "12-05",
         Titulo = "😱 MENSAGEM SECRETA! 😱",
-        Descricao = "SECRET! ",
-        Som = "rbxassetid://138654538550134",
+        Descricao = "Eu sei que não tem evento nenhum hoje mais eu estou testando, então LOL.",
+        Som = "rbxassetid://4590657391",
         Emoji = "🤨",
-        Cor = Color3.new(1, 0.5, 0) -- Laranja
+        Cor = Color3.new(255,0,0) -- Laranja
     },
     {
         DataInicio = "01-01",
