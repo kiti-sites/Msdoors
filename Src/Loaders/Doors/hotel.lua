@@ -1297,6 +1297,82 @@ local FloorTab = Window:MakeTab({
     PremiumOnly = false
 })
 
+--// MODS PAGE(NEW) \\--
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local LocalPlayer = Players.LocalPlayer
+local LatestRoom = ReplicatedStorage:WaitForChild("GameData"):WaitForChild("LatestRoom")
+
+getgenv().SpeedRunTime = getgenv().SpeedRunTime or 0
+getgenv().SpeedRunStopped = false
+
+local TimerGui = Instance.new("ScreenGui")
+TimerGui.Enabled = false 
+TimerGui.IgnoreGuiInset = true
+TimerGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+local TimerLabel = Instance.new("TextLabel")
+TimerLabel.AnchorPoint = Vector2.new(0.5, 0)
+TimerLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30) 
+TimerLabel.BorderColor3 = Color3.fromRGB(70, 70, 70) 
+TimerLabel.TextColor3 = Color3.fromRGB(255, 255, 255) 
+TimerLabel.BorderSizePixel = 0
+TimerLabel.Position = UDim2.new(0.5, 0, 0.1, 0)
+TimerLabel.Size = UDim2.new(0, 262, 0, 64)
+TimerLabel.Font = Enum.Font.Code 
+TimerLabel.Text = "00:00.00"
+TimerLabel.TextScaled = true
+TimerLabel.Parent = TimerGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.Parent = TimerLabel
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(70, 70, 70)
+UIStroke.Thickness = 2
+UIStroke.Parent = TimerLabel
+
+local ModsTab = Window:MakeTab({
+    Name = "Mods",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+ModsTab:AddToggle({
+    Name = "SpeedRun Timer",
+    Default = false,
+    Callback = function(state)
+        TimerGui.Enabled = state 
+    end
+})
+
+task.spawn(function()
+    if LatestRoom.Value < 1 then
+        LatestRoom.Changed:Wait() -
+    end
+
+    if not OrionLib.Unloaded then
+        RunService.RenderStepped:Connect(function(delta)
+            if not getgenv().SpeedRunStopped then
+                getgenv().SpeedRunTime += delta
+                local minutes = math.floor(getgenv().SpeedRunTime / 60)
+                local seconds = math.floor(getgenv().SpeedRunTime % 60)
+                local milliseconds = math.floor((getgenv().SpeedRunTime % 1) * 100)
+                TimerLabel.Text = string.format("%02d:%02d.%02d", minutes, seconds, milliseconds)
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    repeat task.wait() until OrionLib.Unloaded
+    getgenv().SpeedRunStopped = tick()
+    TimerGui:Destroy()
+end)
+
 --// ADDONS \\--
 task.spawn(function()
 
