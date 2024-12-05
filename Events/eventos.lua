@@ -3,7 +3,7 @@ local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-local url = "https://raw.githubusercontent.com/usuario/repo/main/eventos.json"
+local url = "https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/refs/heads/main/Events/eventos.json"
 
 local function getEventData()
     local success, result = pcall(function()
