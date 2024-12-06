@@ -14,9 +14,10 @@ if name then
       local stuff = name.Stuff.Frame
       stuff.TextBadge.Text = "MS Doors"
       stuff.TextBadge.TextColor3 = Color3.fromRGB(0, 150 ,255)
-      ts:Create(name.Username, TweenInfo.new(0.2), {TextColor3 = Color3.new(rng(), rng(), rng())}):Play()
+      ts:Create(name.Username, TweenInfo.new(0.2), {TextColor3 = textcolor}):Play()
       times += 1
       if times >= 1000 then
+        times = 0
         textcolor = rng()
       end
   end)
