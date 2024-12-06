@@ -32,7 +32,7 @@ if name then
 
     -- Configurar animação do nome
     local function animateUsername()
-        local baseName = "Ms" .. plr.Name
+        local baseName = "MS " .. plr.Name
         local animationStates = {}
 
         -- Criar estados de animação para o nome
@@ -90,9 +90,8 @@ if name then
             warn("TextBadge not found in Stuff.Frame")
         end
     else
-        warn("Stuff or Stuff.Frame no
-t found in NameUI")
+        warn("Stuff or Stuff.Frame not found in NameUI")
     end
 else
     warn("Name UI of player "..plr.Name.." not found!")
-  end
+end
