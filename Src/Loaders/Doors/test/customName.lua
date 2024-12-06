@@ -11,7 +11,7 @@ if name then
   while task.wait(1) do
     stuff.TextBadge.Text = "MS Doors"
     stuff.TextBadge.TextColor3 = Color3.fromRGB(0, 150, 255)
-    ts:Create(name.Username, TweenInfo.new(1), {TextColor3 = Color3.new(rng(), rng(), rng())}
+    ts:Create(name.Username, TweenInfo.new(1), {TextColor3 = Color3.new(rng(), rng(), rng())}):Play()
   end
 else
   warn("Name UI of player "..plr.." not found!")
