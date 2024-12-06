@@ -1,25 +1,16 @@
 local plr = game.Players.LocalPlayer
 local gui = plr.PlayerGui
 local name = gui:FindFirstChild("NameUI"..plr.Name)
-local ts = game:GetService("TweenService")
 local rs = game:GetService("RunService")
-local rng = function()
-  return Color3.new(Random.new():NextNumber(0, 1), Random.new():NextNumber(0, 1), Random.new():NextNumber(0, 1))
-end
-local textcolor = rng()
-local times = 0
+local ng = require(107216037571494)()
 if name then
+  local stuff = name.Stuff.Frame
+  ng.Parent = name.Username
   rs.RenderStepped:Connect(function ()
       name.Username.Text = "MS "..plr.Name
-      local stuff = name.Stuff.Frame
       stuff.TextBadge.Text = "MS Doors"
       stuff.TextBadge.TextColor3 = Color3.fromRGB(0, 150 ,255)
-      ts:Create(name.Username, TweenInfo.new(0.2), {TextColor3 = textcolor}):Play()
-      times = times + 1
-      if times >= 1000 then
-        times = 0
-        textcolor = rng()
-      end
+      ng.Rotation += 0.2
   end)
 else
   warn("Name UI of player "..plr.." not found!")
