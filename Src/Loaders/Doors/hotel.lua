@@ -926,18 +926,6 @@ autoIn:AddToggle({
 workspace.DescendantAdded:Connect(ChildCheck)
 CheckPrompts()
 
---{ ☝️ AUTO LOOT / BOTÃO }--
-autoIn:AddToggle({
-    Name = "Auto Loot",
-    Default = false,
-    Callback = function(estado)
-        autoLootAtivo = estado
-        if autoLootAtivo then
-            task.spawn(AutoLoot) 
-        end
-    end
-})
-
 
 local connections = {}
 
