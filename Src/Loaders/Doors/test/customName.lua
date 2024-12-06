@@ -3,13 +3,17 @@ local gui = plr.PlayerGui
 local name = gui:FindFirstChild("NameUI"..plr.Name)
 local ts = game:GetService("TweenService")
 local rs = game:GetService("RunService")
+local rng = function()
+  return Random.new():NextNumber(0, 1)
+end
 if name then
   local stuff = name.Stuff.Frame
-  rs.RenderStepped:Connect(function ()
-      name.Username.Text = "MS "..plr.Name
-      stuff.TextBadge.Text = "MS Doors"
-      stuff.TextBadge.TextColor3 = Color3.fromRGB(0, 150, 255)
-  end)
+  while task.wait(1) do
+    name.Username.Text = "MS "..plr.Name
+    stuff.TextBadge.Text = "MS Doors"
+    stuff.TextBadge.TextColor3 = Color3.fromRGB(0, 150, 255)
+    ts:Create(name.Username, TweenInfo.new(1), {TextColor3 = Color3.new(rng(), rng(), rng())}
+  end
 else
   warn("Name UI of player "..plr.." not found!")
 end
