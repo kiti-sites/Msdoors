@@ -1,4 +1,3 @@
-warn("RHYAN MANDOU VOCÊ PRA CASA DO CARALHO - ")
 local plr = game.Players.LocalPlayer
 local gui = plr:WaitForChild("PlayerGui")
 local name = gui:FindFirstChild("NameUI"..plr.Name)
