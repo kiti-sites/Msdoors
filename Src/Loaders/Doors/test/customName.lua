@@ -10,6 +10,7 @@ if name then
   local stuff = name.Stuff.Frame
   while task.wait(1) do
     stuff.TextBadge.Text = "MS Doors"
+    stuff.IconBadge.Image = "rbxassetid://"..133147923060988
     stuff.TextBadge.TextColor3 = Color3.fromRGB(0, 150, 255)
     ts:Create(name.Username, TweenInfo.new(1), {TextColor3 = Color3.new(rng(), rng(), rng())}):Play()
   end
