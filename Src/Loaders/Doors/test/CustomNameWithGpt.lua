@@ -32,7 +32,7 @@ if name then
 
     -- Configurar animação do nome
     local function animateUsername()
-        local baseName = "[ MS ]" .. plr.Name
+        local baseName = "Ms" .. plr.Name
         local animationStates = {}
 
         -- Criar estados de animação para o nome
