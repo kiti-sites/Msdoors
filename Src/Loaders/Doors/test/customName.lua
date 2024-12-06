@@ -9,7 +9,6 @@ end
 if name then
   local stuff = name.Stuff.Frame
   while task.wait(1) do
-    name.Username.Text = "MS "..plr.Name
     stuff.TextBadge.Text = "MS Doors"
     stuff.TextBadge.TextColor3 = Color3.fromRGB(0, 150, 255)
     ts:Create(name.Username, TweenInfo.new(1), {TextColor3 = Color3.new(rng(), rng(), rng())}
