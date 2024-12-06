@@ -15,10 +15,10 @@ if name then
       name.Username.Text = "MS "..plr.Name
       local stuff = name.Stuff.Frame
       stuff.TextBadge.Text = "MS User"
-      stuff.TextBadge.Color = Color3.fromRGB(0, 150 ,255)
+      stuff.TextBadge.TextColor3 = Color3.fromRGB(0, 150 ,255)
       --stuff.TextBadge.ThemeGradient.Color = ColorSequence({ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255 ,255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 150 ,255))})
       stuff.TextDeaths.Text = "inf"
-      ts:Create(name.Username, TweenInfo.new(0.1), {TextColor3 = Color3.new(rng(), rng(), rng())}):Play()
+      ts:Create(name.Username, TweenInfo.new(1), {TextColor3 = Color3.new(rng(), rng(), rng())}):Play()
   end)
 else
   warn("Name UI of player "..plr.." not found!")
