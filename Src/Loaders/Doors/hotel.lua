@@ -93,39 +93,6 @@ local PromptTable = {
         }
     }
 }
---[[ 👾 AUTO LOOT ]]--
---// VARIÁVEIS \\--
-local autoLootEnabled = false
-local autoLootAtivo = false
-
-local function AutoLoot()
-    while autoLootAtivo do
-        for _, comodo in pairs(workspace.CurrentRooms:GetChildren()) do
-            local assets = comodo:FindFirstChild("Assets")
-            if assets then
-                for _, v in pairs(assets:GetChildren()) do
-                    if v.Name == "ChestBox" or 
-                       v.Name == "GoldPile" or 
-                       v.Name == "Crucifix" or 
-                       v.Name == "KeyObtain" or 
-                       v.Name == "Gold" or
-                       v.Name == "LootPrompt" or 
-                       v.Name == "LeverPrompt" or 
-                       v.Name == "SkullPrompt" or
-                       v.Name == "UnlockPrompt" or
-                       v.Name == "ValvePrompt" then
-
-                        local prompt = v:FindFirstChildWhichIsA("ProximityPrompt")
-                        if prompt and prompt.Enabled then
-                            fireproximityprompt(prompt)
-                        end
-                    end
-                end
-            end
-        end
-        wait(0.1)
-    end
-end
 
 --[[ 🏃 OBJETIVOS ESP ]]--
 local objetos_esp = { 
