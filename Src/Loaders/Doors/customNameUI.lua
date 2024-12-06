@@ -4,21 +4,21 @@ local name = gui:FindFirstChild("NameUI"..plr.Name)
 local ts = game:GetService("TweenService")
 local rs = game:GetService("RunService")
 local rng = function()
-  return Random.new():NextNumber(0, 1)
+  return Color3.new(Random.new():NextNumber(0, 1), Random.new():NextNumber(0, 1), Random.new():NextNumber(0, 1))
 end
+local textcolor = rng()
+local times = 0
 if name then
   rs.RenderStepped:Connect(function ()
-      --[[
-      local namegradient = Instance.new("UIGradient",name.Username)
-      namegradient.Color = ColorSequence({ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255 ,255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 150 ,255))})
-      ]]
       name.Username.Text = "MS "..plr.Name
       local stuff = name.Stuff.Frame
-      stuff.TextBadge.Text = "MS User"
+      stuff.TextBadge.Text = "MS Doors"
       stuff.TextBadge.TextColor3 = Color3.fromRGB(0, 150 ,255)
-      --stuff.TextBadge.ThemeGradient.Color = ColorSequence({ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255 ,255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 150 ,255))})
-      stuff.TextDeaths.Text = "inf"
-      ts:Create(name.Username, TweenInfo.new(1), {TextColor3 = Color3.new(rng(), rng(), rng())}):Play()
+      ts:Create(name.Username, TweenInfo.new(0.2), {TextColor3 = Color3.new(rng(), rng(), rng())}):Play()
+      times += 1
+      if times >= 1000 then
+        textcolor = rng()
+      end
   end)
 else
   warn("Name UI of player "..plr.." not found!")
