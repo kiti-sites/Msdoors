@@ -889,35 +889,6 @@ workspace.DescendantAdded:Connect(ChildCheck)
 CheckPrompts()
 
 
-local connections = {}
-
-local function antiEyes()
-    for _, instance in pairs(Workspace:GetChildren()) do
-        if instance.Name == "Eyes" then
-            instance:Destroy()
-        end
-    end
-end
-
-local function antiScreech()
-    local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
-    local head = character:FindFirstChild("Head")
-
-    if head then
-        local screechAttack = head:FindFirstChild("Screech")
-        if screechAttack then
-            screechAttack:Destroy()
-        end
-    end
-end
-
-local function antiHalt()
-    for _, instance in pairs(Workspace:GetChildren()) do
-        if instance.Name == "Halt" then
-            instance:Destroy()
-        end
-    end
-end
 
 --------------------[[ 💻 EXPLOITS 💻 ]]--------------------------------
 local ExploitsTab = Window:MakeTab({
@@ -925,46 +896,6 @@ local ExploitsTab = Window:MakeTab({
     Icon = "rbxassetid://7743873633",
     PremiumOnly = false
 })
-
---// Anti Entity Tab \\--
-local AntiMonstersTab = ExploitsTab:AddSection({Name = "Anti-Entity"})
-
-AntiMonstersTab:AddToggle({
-    Name = "Anti Eyes(it broke)",
-    Default = false,
-    Callback = function(Value)
-        if Value then
-            connections.antiEyes = RunService.RenderStepped:Connect(antiEyes) 
-        else
-            if connections.antiEyes then connections.antiEyes:Disconnect() end
-        end
-    end
-})
-
-AntiMonstersTab:AddToggle({
-    Name = "Anti Screech(it broke)",
-    Default = false,
-    Callback = function(Value)
-        if Value then
-            connections.antiScreech = RunService.RenderStepped:Connect(antiScreech)
-        else
-            if connections.antiScreech then connections.antiScreech:Disconnect() end
-        end
-    end
-})
-
-AntiMonstersTab:AddToggle({
-    Name = "Anti Halt",
-    Default = false,
-    Callback = function(Value)
-        if Value then
-            connections.antiHalt = RunService.RenderStepped:Connect(antiHalt)
-        else
-            if connections.antiHalt then connections.antiHalt:Disconnect() end
-        end
-    end
-})
-
 
 --[EM BREVE]--
 
