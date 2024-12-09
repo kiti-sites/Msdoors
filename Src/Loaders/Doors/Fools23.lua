@@ -39,8 +39,15 @@ local autoDestroy = false
 local function destroyAllBananaPeel()
     for _, child in ipairs(workspace:GetChildren()) do
         if child.Name == "BananaPeel" then
-            print("[Msdoors] Apagando banana:", child.Name)
-            child:Destroy()
+            if autoDestroy == true then
+                child.CanTouch = false
+                --[[
+                print("[Msdoors] Apagando banana:", child.Name)
+                child:Destroy()
+                ]]
+            else
+                child.CanTouch = true
+            end
         end
     end
 end
@@ -48,8 +55,11 @@ end
 workspace.ChildAdded:Connect(function(child)
     if autoDestroy and child.Name == "BananaPeel" then
         task.wait(0.1)
+        destroyAllBananaPeel()
+        --[[
         print("[Msdoors]Banana encontrada e destruída:", child.Name)
         child:Destroy()
+        ]]
     end
 end)
 
@@ -81,11 +91,11 @@ ExploitsTab:AddToggle({
         if autoDestroy then
             print("[Msdoors] Anti Banana: ATIVADA")
             MsdoorsNotify( "Msdoors", "AntiBanana ativo", "Exploits", "rbxassetid://6023426923", Color3.new(0, 1, 0), 2)
-            destroyAllBananaPeel()
         else
             print("[Msdoors] Anti Banana: DESATIVADA")
             MsdoorsNotify( "Msdoors", "AntiBanana desativado", "Exploits", "rbxassetid://6023426923", Color3.new(0, 1, 0), 2)
         end
+        destroyAllBananaPeel()
     end
 })
 
