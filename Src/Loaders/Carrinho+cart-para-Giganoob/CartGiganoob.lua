@@ -595,15 +595,6 @@ MsPlayer:AddButton({
     end
 })
 
-MsPlayer:AddButton({
-    Name = "Próxima Música",
-    Callback = function()
-        local nextIndex = musicPlayer.currentIndex + 1
-        if nextIndex > #musicPlayer.currentPlaylist then nextIndex = 1 end
-        playMusic(nextIndex)
-    end
-})
-
 MsPlayer:AddSlider({
     Name = "Volume",
     Min = 0,
