@@ -35,7 +35,7 @@ local musicPlayer = {
     playlists = {},
     currentIndex = 0,
     volume = 0.5,
-    folderName = ".msdoors/universal/music",
+    folderName = ".msdoors",
 }
 
 local function createFolderIfNotExists()
