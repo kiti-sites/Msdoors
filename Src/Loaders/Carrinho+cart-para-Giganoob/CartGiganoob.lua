@@ -524,6 +524,32 @@ MsPlayer:AddTextbox({
 })
 
 MsPlayer:AddLabel("Player")
+MsPlayer:AddTextbox({
+    Name = "Tocar Música (Id do Roblox)",
+    Default = "",
+    TextDisappear = true,
+    Callback = function(value)
+        if musicPlayer.currentSound then
+            musicPlayer.currentSound:Destroy()
+        end
+
+        local sound = Instance.new("Sound", game:GetService("Workspace"))
+        sound.SoundId = "rbxassetid://" .. value
+        sound.Volume = musicPlayer.volume
+        sound.Looped = false
+        sound:Play()
+
+        musicPlayer.isPlaying = true
+        musicPlayer.currentSound = sound
+
+        createNotification("Reprodutor", "Tocando música com ID: " .. value, 3)
+
+        sound.Ended:Connect(function()
+            musicPlayer.isPlaying = false
+            createNotification("Reprodutor", "Música finalizada.", 3)
+        end)
+    end
+})
 
 MsPlayer:AddButton({
     Name = "Tocar",
