@@ -437,7 +437,7 @@ JeepsTab:AddToggle({
 
 local MsPlayer = Window:MakeTab({
     Name = "Musica",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://7734020554",
     PremiumOnly = false
 })
 
