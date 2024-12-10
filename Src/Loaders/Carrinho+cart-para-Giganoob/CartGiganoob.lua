@@ -523,14 +523,24 @@ MsPlayer:AddTextbox({
     end
 })
 
-MsPlayer:AddLabel("Player")
+MsPlayer:AddLabel("Playe(Playlist)")
 MsPlayer:AddButton({
-    Name = "Tocar(PLAYLIST)",
+    Name = "Tocar Playlist",
     Callback = function()
         playMusic(musicPlayer.currentIndex > 0 and musicPlayer.currentIndex or 1)
     end
 })
 
+MsPlayer:AddButton({
+    Name = "Próxima Música",
+    Callback = function()
+        local nextIndex = musicPlayer.currentIndex + 1
+        if nextIndex > #musicPlayer.currentPlaylist then nextIndex = 1 end
+        playMusic(nextIndex)
+    end
+})
+
+MsPlayer:AddLabel("Player")
 local musicIdFromTextbox = ""
 
 MsPlayer:AddTextbox({
@@ -543,7 +553,7 @@ MsPlayer:AddTextbox({
 })
 
 MsPlayer:AddButton({
-    Name = "Tocar( ID INSERIDO )",
+    Name = "Tocar",
     Callback = function()
         if musicIdFromTextbox == "" then
             createNotification("Erro", "Insira um ID válido no textbox.", 3)
