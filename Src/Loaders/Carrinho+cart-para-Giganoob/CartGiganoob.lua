@@ -27,6 +27,90 @@ local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1 ",Icon = "rbxasset
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
+local musicPlayer = {
+    isPlaying = false,
+    currentSound = nil,
+    currentPlaylist = nil,
+    playlists = {},
+    currentIndex = 0,
+    volume = 0.5,
+    folderName = ".msdoors/universal/music",
+}
+
+local function createFolderIfNotExists()
+    if not isfolder(musicPlayer.folderName) then
+        makefolder(musicPlayer.folderName)
+    end
+end
+
+local function savePlaylist(name, data)
+    createFolderIfNotExists()
+    local filePath = musicPlayer.folderName .. "/" .. name .. ".json"
+    local jsonData = HttpService:JSONEncode(data)
+    writefile(filePath, jsonData)
+end
+
+local function loadPlaylist(name)
+    local filePath = musicPlayer.folderName .. "/" .. name .. ".json"
+    if isfile(filePath) then
+        local jsonData = readfile(filePath)
+        return HttpService:JSONDecode(jsonData)
+    else
+        return nil
+    end
+end
+
+local function deletePlaylist(name)
+    local filePath = musicPlayer.folderName .. "/" .. name .. ".json"
+    if isfile(filePath) then
+        delfile(filePath)
+    end
+end
+
+local function createNotification(title, content, duration)
+    OrionLib:MakeNotification({
+        Name = title,
+        Content = content,
+        Image = "rbxassetid://4483345998",
+        Time = duration or 5
+    })
+end
+
+local function playMusic(index)
+    if not musicPlayer.currentPlaylist or #musicPlayer.currentPlaylist == 0 then
+        createNotification("Erro", "Playlist vazia ou não carregada.(tente re-entrar)", 3)
+        return
+    end
+
+    if musicPlayer.currentSound then
+        musicPlayer.currentSound:Destroy()
+    end
+
+    local sound = Instance.new("Sound", game:GetService("Workspace"))
+    local musicData = musicPlayer.currentPlaylist[index]
+    if not musicData then
+        createNotification("Erro", "Nenhuma música encontrada.", 3)
+        return
+    end
+
+    sound.SoundId = "rbxassetid://" .. musicData.Id
+    sound.Volume = musicPlayer.volume
+    sound.Looped = false
+    sound:Play()
+
+    musicPlayer.isPlaying = true
+    musicPlayer.currentSound = sound
+    musicPlayer.currentIndex = index
+
+    createNotification("Reprodutor", "Tocando: " .. musicData.NAME, 3)
+
+    sound.Ended:Connect(function()
+        local nextIndex = musicPlayer.currentIndex + 1
+        if nextIndex > #musicPlayer.currentPlaylist then nextIndex = 1 end
+        playMusic(nextIndex)
+    end)
+end
 
 -- Variáveis globais para controle
 getgenv().AutoClickDetectors = false
@@ -347,6 +431,140 @@ JeepsTab:AddToggle({
                 Content = "Spam Jeeps pausado.",
                 Time = 5
             })
+        end
+    end
+})
+
+local MsPlayer = Window:MakeTab({
+    Name = "Musica",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+MsPlayer:AddLabel("Gerenciar Playlist")
+
+MsPlayer:AddTextbox({
+    Name = "Nome da Playlist",
+    Default = "",
+    TextDisappear = true,
+    Callback = function(value)
+        musicPlayer.currentPlaylistName = value
+    end
+})
+
+MsPlayer:AddButton({
+    Name = "Criar Playlist",
+    Callback = function()
+        if musicPlayer.currentPlaylistName and musicPlayer.currentPlaylistName ~= "" then
+            musicPlayer.playlists[musicPlayer.currentPlaylistName] = {}
+            savePlaylist(musicPlayer.currentPlaylistName, musicPlayer.playlists[musicPlayer.currentPlaylistName])
+            createNotification("Playlist", "Playlist criada com sucesso!", 3)
+        else
+            createNotification("Erro", "Insira um nome para a playlist.", 3)
+        end
+    end
+})
+
+MsPlayer:AddButton({
+    Name = "Carregar Playlist",
+    Callback = function()
+        if musicPlayer.currentPlaylistName and musicPlayer.currentPlaylistName ~= "" then
+            local loadedPlaylist = loadPlaylist(musicPlayer.currentPlaylistName)
+            if loadedPlaylist then
+                musicPlayer.currentPlaylist = loadedPlaylist
+                createNotification("Playlist", "Playlist carregada com sucesso!", 3)
+            else
+                createNotification("Erro", "Playlist não encontrada.", 3)
+            end
+        else
+            createNotification("Erro", "Insira o nome da playlist para carregar.", 3)
+        end
+    end
+})
+
+MsPlayer:AddButton({
+    Name = "Salvar Playlist",
+    Callback = function()
+        if musicPlayer.currentPlaylistName and musicPlayer.currentPlaylist then
+            savePlaylist(musicPlayer.currentPlaylistName, musicPlayer.currentPlaylist)
+            createNotification("Playlist", "Playlist salva com sucesso!", 3)
+        else
+            createNotification("Erro", "Nenhuma playlist carregada para salvar.", 3)
+        end
+    end
+})
+
+MsPlayer:AddButton({
+    Name = "Excluir Playlist",
+    Callback = function()
+        if musicPlayer.currentPlaylistName then
+            deletePlaylist(musicPlayer.currentPlaylistName)
+            musicPlayer.currentPlaylist = nil
+            createNotification("Playlist", "Playlist excluída com sucesso!", 3)
+        else
+            createNotification("Erro", "Insira o nome da playlist para excluir.", 3)
+        end
+    end
+})
+
+MsPlayer:AddTextbox({
+    Name = "Adicionar Música (Nome e Id) separados por vírgula)",
+    Default = "",
+    TextDisappear = true,
+    Callback = function(value)
+        if musicPlayer.currentPlaylist then
+            local splitValue = string.split(value, ",")
+            local musicData = { NAME = splitValue[1], Id = splitValue[2] }
+            table.insert(musicPlayer.currentPlaylist, musicData)
+            createNotification("Playlist", "Música adicionada à playlist.", 3)
+        else
+            createNotification("Erro", "Carregue uma playlist antes de adicionar músicas.", 3)
+        end
+    end
+})
+
+MsPlayer:AddLabel("Player")
+
+MsPlayer:AddButton({
+    Name = "Tocar",
+    Callback = function()
+        playMusic(musicPlayer.currentIndex > 0 and musicPlayer.currentIndex or 1)
+    end
+})
+
+MsPlayer:AddButton({
+    Name = "Pausar",
+    Callback = function()
+        if musicPlayer.currentSound and musicPlayer.isPlaying then
+            musicPlayer.currentSound:Pause()
+            musicPlayer.isPlaying = false
+            createNotification("Reprodutor", "Música pausada.", 3)
+        else
+            createNotification("Erro", "Nenhuma música está tocando ou já está pausada.", 3)
+        end
+    end
+})
+
+MsPlayer:AddButton({
+    Name = "Próxima Música",
+    Callback = function()
+        local nextIndex = musicPlayer.currentIndex + 1
+        if nextIndex > #musicPlayer.currentPlaylist then nextIndex = 1 end
+        playMusic(nextIndex)
+    end
+})
+
+MsPlayer:AddSlider({
+    Name = "Volume",
+    Min = 0,
+    Max = 1,
+    Default = 0.5,
+    Color = Color3.fromRGB(255, 255, 255),
+    Increment = 0.1,
+    Callback = function(value)
+        musicPlayer.volume = value
+        if musicPlayer.currentSound then
+            musicPlayer.currentSound.Volume = value
         end
     end
 })
