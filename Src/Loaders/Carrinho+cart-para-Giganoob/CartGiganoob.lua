@@ -524,17 +524,38 @@ MsPlayer:AddTextbox({
 })
 
 MsPlayer:AddLabel("Player")
+MsPlayer:AddButton({
+    Name = "Tocar(PLAYLIST)",
+    Callback = function()
+        playMusic(musicPlayer.currentIndex > 0 and musicPlayer.currentIndex or 1)
+    end
+})
+
+local musicIdFromTextbox = ""
+
 MsPlayer:AddTextbox({
-    Name = "Tocar Música (Id do Roblox)",
+    Name = "Música (ID do Roblox)",
     Default = "",
     TextDisappear = true,
     Callback = function(value)
+        musicIdFromTextbox = value 
+    end
+})
+
+MsPlayer:AddButton({
+    Name = "Tocar( ID INSERIDO )",
+    Callback = function()
+        if musicIdFromTextbox == "" then
+            createNotification("Erro", "Insira um ID válido no textbox.", 3)
+            return
+        end
+
         if musicPlayer.currentSound then
             musicPlayer.currentSound:Destroy()
         end
 
         local sound = Instance.new("Sound", game:GetService("Workspace"))
-        sound.SoundId = "rbxassetid://" .. value
+        sound.SoundId = "rbxassetid://" .. musicIdFromTextbox
         sound.Volume = musicPlayer.volume
         sound.Looped = false
         sound:Play()
@@ -542,19 +563,12 @@ MsPlayer:AddTextbox({
         musicPlayer.isPlaying = true
         musicPlayer.currentSound = sound
 
-        createNotification("Reprodutor", "Tocando música com ID: " .. value, 3)
+        createNotification("Reprodutor", "Tocando música com ID: " .. musicIdFromTextbox, 3)
 
         sound.Ended:Connect(function()
             musicPlayer.isPlaying = false
             createNotification("Reprodutor", "Música finalizada.", 3)
         end)
-    end
-})
-
-MsPlayer:AddButton({
-    Name = "Tocar",
-    Callback = function()
-        playMusic(musicPlayer.currentIndex > 0 and musicPlayer.currentIndex or 1)
     end
 })
 
