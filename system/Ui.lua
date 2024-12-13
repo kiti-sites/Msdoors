@@ -11,20 +11,9 @@ local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
 Library.ShowCustomCursor = true
 Library.NotifySide = "Left"
 
-if getgenv().LoadUI ~= false then
-    local Window = Library:CreateWindow({
-        Title = 'Msdoors v1 | (BETA)',
-        Center = true,
-        AutoShow = true,
-    })
-
-    SaveManager:SetLibrary(Library)
-    SaveManager:SetFolder('msdoors')
-
-    ThemeManager:SetLibrary(Library)
-    SaveManager:BuildConfigSection(Window:AddTab('Configurações'))
-    ThemeManager:ApplyToTab(Window:AddTab('Temas'))
-end
+SaveManager:SetLibrary(Library)
+SaveManager:SetFolder('msdoors')
+ThemeManager:SetLibrary(Library)
 
 getgenv().ActiveUI = {
     Library = Library,
