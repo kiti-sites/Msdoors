@@ -11,14 +11,27 @@ local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
 Library.ShowCustomCursor = true
 Library.NotifySide = "Left"
 
-SaveManager:SetLibrary(Library)
-SaveManager:SetFolder('msdoors')
-ThemeManager:SetLibrary(Library)
-
 getgenv().ActiveUI = {
     Library = Library,
     ThemeManager = ThemeManager,
     SaveManager = SaveManager
 }
+
+local function SetupTabs(Window)
+    if not Window then return end 
+
+    local ConfigTab = Window:AddTab('Configurações')
+    SaveManager:SetLibrary(Library)
+    SaveManager:SetFolder('msdoors')
+    SaveManager:BuildConfigSection(ConfigTab)
+
+    local ThemeTab = Window:AddTab('Temas')
+    ThemeManager:SetLibrary(Library)
+    ThemeManager:ApplyToTab(ThemeTab)
+end
+
+if getgenv().ActiveUI.Window then
+    SetupTabs(getgenv().ActiveUI.Window)
+end
 
 return getgenv().ActiveUI
