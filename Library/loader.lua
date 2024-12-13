@@ -4,7 +4,6 @@ local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
 
--- Configurações básicas
 Library.ShowCustomCursor = true
 Library.NotifySide = "Left"
 
@@ -14,12 +13,10 @@ local Window = Library:CreateWindow({
     AutoShow = true,
 })
 
--- Configurações de tema e salvamento
 ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
 SaveManager:SetFolder('msdoors')
 
--- Aplica tema e configurações
 SaveManager:BuildConfigSection(Window:AddTab('Configurações'))
 ThemeManager:ApplyToTab(Window:AddTab('Temas'))
 
