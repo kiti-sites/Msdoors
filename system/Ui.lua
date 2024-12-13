@@ -16,9 +16,6 @@ ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
 SaveManager:SetFolder('msdoors')
 
-SaveManager:BuildConfigSection(Window:AddTab('Configurações'))
-ThemeManager:ApplyToTab(Window:AddTab('Temas'))
-
 getgenv().ActiveUI = {
     Library = Library,
     ThemeManager = ThemeManager,
