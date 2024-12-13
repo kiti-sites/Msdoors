@@ -9,13 +9,8 @@ local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))
 local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
 
 Library.ShowCustomCursor = true
-Library.NotifySide = "Left"
+Library.NotifySide = "Right"
 
-local Window = Library:CreateWindow({
-    Title = 'Msdoors v1 | (BETA)',
-    Center = true,
-    AutoShow = true,
-})
 
 ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
