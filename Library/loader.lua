@@ -1,4 +1,4 @@
-local repo = 'https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/refs/heads/main/Library/'
+local repo = 'https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/'
 
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
