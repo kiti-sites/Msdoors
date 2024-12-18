@@ -105,7 +105,7 @@ local function createHUD()
     HUD.TextColor3 = Color3.fromRGB(255, 255, 255)
     HUD.Font = Enum.Font.SourceSansBold
     HUD.TextScaled = true
-    HUD.Text = "Alvo Atual: Nenhum"
+    HUD.Text = "Função desativada"
 end
 
 local function teleportToPlayer(targetPlayer)
