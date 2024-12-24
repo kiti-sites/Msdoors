@@ -47,12 +47,6 @@ local Workspace = game:GetService("Workspace")
 local localPlayer = Players.LocalPlayer
 local playerGui = localPlayer:WaitForChild("PlayerGui")
 local remotesFolder = ReplicatedStorage:WaitForChild("RemotesFolder")
-local createElevator = remotesFolder:WaitForChild("CreateElevator")
-local createElevator = game:GetService("ReplicatedStorage"):WaitForChild("RemotesFolder"):WaitForChild("CreateElevator")
-local createElevatorFrame = game:GetService("Players").LocalPlayer.PlayerGui.MainUI.LobbyFrame.CreateElevator
-local presetName, destination, maxPlayers, friendsOnly = "", "", 4, true
-local data = {}
-local lobbyElevators = Workspace:WaitForChild("Lobby"):WaitForChild("LobbyElevators")
 -- Serviços
 local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -123,230 +117,6 @@ RunService.RenderStepped:Connect(function()
 end)
 
 updatePlayerList()
-
---//New System Presets\\--
-local PresetManager = {}
-PresetManager.PresetData = {}
-PresetManager.PresetList = {}
-
-function PresetManager:BuildPresetStructure()
-    if not isfolder(".msdoors/places/presets/") then
-        makefolder(".msdoors/places/presets/")
-    end
-end
-
-function PresetManager:CreatePreset(name, data)
-    if isfile(".msdoors/places/presets/" .. name .. ".json") then
-        return false, "Preset já existe!"
-    end
-
-    local presetData = {
-        Floor = data.Floor or "Hotel",
-        MaxPlayers = data.MaxPlayers or 1,
-        Modifiers = data.Modifiers or {},
-        FriendsOnly = data.FriendsOnly or true
-    }
-    
-    self:BuildPresetStructure()
-    writefile(".msdoors/places/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
-    return true, "Preset criado com sucesso!"
-end
-
-function PresetManager:LoadPresets()
-    self.PresetList = {}
-    self.PresetData = {}
-
-    for _, file in pairs(listfiles(".msdoors/places/presets/")) do
-        local success, data = pcall(function()
-            return HttpService:JSONDecode(readfile(file))
-        end)
-
-        if success then
-            local name = self:GetFileNameFromPath(file)
-            self.PresetData[name] = data
-            table.insert(self.PresetList, name)
-        else
-            warn("Failed to load preset: " .. file)
-        end
-    end
-
-    return self.PresetList
-end
-
-function PresetManager:GetFileNameFromPath(path)
-    local fileExtension = ".json"
-    path = path:gsub("\\", "/")
-    local pos = path:find("/[^/]*$")
-    
-    if pos then
-        return path:sub(pos + 1, -#fileExtension - 1)
-    end
-end
-function PresetManager:LoadPreset(name)
-    local presetData = self.PresetData[name]
-    if not presetData then
-        return false, "Preset não encontrado!"
-    end
-    
-    local data = {
-        ["FriendsOnly"] = presetData.FriendsOnly,
-        ["Destination"] = presetData.Floor,
-        ["Mods"] = presetData.Modifiers or {},  -- Modificadores
-        ["MaxPlayers"] = tostring(presetData.MaxPlayers)  -- Certifique-se que é uma string
-    }
-
-
-    print("Carregando preset:", HttpService:JSONEncode(data))
-
-    local success, err = pcall(function()
-        createElevator:FireServer(data)
-    end)
-
-    if success then
-        return true, "Preset carregado: " .. name
-    else
-        return false, "Erro ao carregar preset: " .. err
-    end
-end
-
-function PresetManager:DeletePreset(name)
-    if isfile(".msdoors/places/presets/" .. name .. ".json") then
-        delfile(".msdoors/places/presets/" .. name .. ".json")
-        self.PresetData[name] = nil
-        return true, "Preset deletado: " .. name
-    else
-        return false, "Preset não encontrado!"
-    end
-end
-
-function PresetManager:OverridePreset(name, data)
-    local presetData = {
-        Floor = data.Floor or "Hotel",
-        MaxPlayers = data.MaxPlayers or 1,
-        Modifiers = data.Modifiers or {},
-        FriendsOnly = data.FriendsOnly or true
-    }
-
-    writefile(".msdoors/places/presets/" .. name .. ".json", HttpService:JSONEncode(presetData))
-    return true, "Preset sobrescrito: " .. name
-end
-
---[[ PRESET TAB ]]--
-local PresetTab = Window:MakeTab({
-    Name = "Presets",
-    Icon = "rbxassetid://7743872758",
-    PremiumOnly = false
-})
-
-PresetTab:AddTextbox({
-    Name = "Nome do Preset",
-    Default = "",
-    TextDisappear = true,
-    Callback = function(value)
-        _G.PresetName = value
-    end
-})
-
-PresetTab:AddButton({
-    Name = "Criar Preset",
-    Callback = function()
-        if _G.PresetName then
-            local success, message = PresetManager:CreatePreset(_G.PresetName, {
-                Floor = "Hotel",
-                MaxPlayers = 4,
-                FriendsOnly = true,
-                Modifiers = {""}
-            })
-                
-            OrionLib:MakeNotification({
-                Name = success and "Sucesso" or "Erro",
-                Content = message,
-                Image = "rbxassetid://4483345998",
-                Time = 5
-            })
-
-            local newOptions = PresetManager:LoadPresets()
-            Tab:SetDropdown("Selecione um Preset", newOptions)
-        end
-    end
-})
-
-local PresetDropdown = PresetTab:AddDropdown({
-    Name = "Selecione um Preset",
-    Default = "",
-    Options = PresetManager:LoadPresets(),
-    Callback = function(selectedPreset)
-        _G.SelectedPreset = selectedPreset
-    end
-})
-
-PresetTab:AddButton({
-    Name = "Carregar Preset",
-    Callback = function()
-        if _G.SelectedPreset then
-            local success, message = PresetManager:LoadPreset(_G.SelectedPreset)
-            OrionLib:MakeNotification({
-                Name = success and "Sucesso" or "Erro",
-                Content = message,
-                Image = "rbxassetid://4483345998",
-                Time = 5
-            })
-        end
-    end
-})
-
-PresetTab:AddButton({
-    Name = "Deletar Preset",
-    Callback = function()
-        if _G.SelectedPreset then
-            local success, message = PresetManager:DeletePreset(_G.SelectedPreset)
-            OrionLib:MakeNotification({
-                Name = success and "Sucesso" or "Erro",
-                Content = message,
-                Image = "rbxassetid://4483345998",
-                Time = 5
-            })
-
-            local newOptions = PresetManager:LoadPresets()
-            PresetDropdown:SetOptions(newOptions)
-        end
-    end
-})
-
-PresetTab:AddButton({
-    Name = "Sobrescrever Preset",
-    Callback = function()
-        if _G.SelectedPreset then
-            local success, message = PresetManager:OverridePreset(_G.SelectedPreset, {
-                Floor = "Hotel",
-                MaxPlayers = 5,
-                FriendsOnly = false,
-                Modifiers = {"HardMode"}
-            })
-            OrionLib:MakeNotification({
-                Name = success and "Sucesso" or "Erro",
-                Content = message,
-                Image = "rbxassetid://4483345998",
-                Time = 5
-            })
-        end
-    end
-})
-
-PresetTab:AddButton({
-    Name = "Atualizar Presets",
-    Callback = function()
-        local newOptions = PresetManager:LoadPresets()
-        PresetDropdown:SetOptions(newOptions)
-        OrionLib:MakeNotification({
-            Name = "Atualizado",
-            Content = "Lista de presets atualizada!",
-            Image = "rbxassetid://4483345998",
-            Time = 5
-        })
-    end
-})
-
 
 local Script = {
     CurrentBadge = 0,
@@ -469,180 +239,18 @@ AchievementTab:AddSlider({
 local MSMods = AchievementTab:AddSection({
 	Name = "Modifiers"
 })
-
-MSMods:AddButton({
-    Name = "Habilitar The Mines",
-    Callback = function()
-        CustomModifiers:EnableFloor("Mines", true)
-	MsdoorsNotify("Msdoors", "Floors 2 ativo!", "Elevator", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
-    end,
-    Info = "Obtenha acesso ao andar 2 sem precisar do emblema."
-})
-
-MSMods:AddButton({
-    Name = "Habilitar Backdoor",
-    Callback = function()
-        CustomModifiers:EnableFloor("Backdoor", true)
-	MsdoorsNotify("Msdoors", "Backdoor ativo!", "Elevator", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
-    
-    end,
-    Info = "Obtenha acesso ao andar 0 sem precisar do emblema."
-}) 
-
---// FUNÇÕES DO ELEVADOR \\--
-local function CreateRetroModeElevator()
-    data = {
-        ["FriendsOnly"] = friendsOnly,
-        ["Destination"] = destination,
-        ["Mods"] = {"RetroMode"},
-        ["MaxPlayers"] = tostring(maxPlayers)
-    }
-
-    local success, err = pcall(function()
-        createElevator:FireServer(data)
-    end)
-
-    if success then
-        OrionLib:MakeNotification({
-            Name = "Sucesso",
-            Content = "Elevador Retro criado com sucesso!",
-            Time = 5
-        })
-    else
-        OrionLib:MakeNotification({
-            Name = "Erro",
-            Content = "Falha ao criar o Elevador Retro: " .. err,
-            Time = 5
-        })
-    end
-end
-
-local function CreateElevator()
-    data = {
-        ["FriendsOnly"] = friendsOnly,
-        ["Destination"] = destination,
-        ["Mods"] = {},
-        ["MaxPlayers"] = tostring(maxPlayers)
-    }
-
-    local success, err = pcall(function()
-        createElevator:FireServer(data)
-    end)
-
-    if success then
-        OrionLib:MakeNotification({
-            Name = "Sucesso",
-            Content = "Elevador criado com sucesso!",
-            Time = 5
-        })
-    else
-        OrionLib:MakeNotification({
-            Name = "Erro",
-            Content = "Falha ao criar o elevador: " .. err,
-            Time = 5
-        })
-    end
-end
-
-
-local function SetupElevatorUI()
+--[[ EM BREVE ]]--
 
 local MsFunctions = Window:MakeTab({
 	Name = "Funções",
 	Icon = "rbxassetid://7733924046",
 	PremiumOnly = false
 })
-	
-MsFunctions:AddButton({
-	Name = "PRE HOTEL LOBBY",
-	Callback = function()
-		game:GetService("TeleportService"):Teleport(110258689672367)
-		MsdoorsNotify("Msdoors", "Teleportando para pre hotel...", "Tp", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
-	end    
-})
 
 local Extras = MsFunctions:AddSection({
 	Name = "Extras"
 })
 
-Extras:AddButton({
-    Name = "Autoplay",
-    Callback = function()
-        task.spawn(queue_on_teleport or syn and syn.queue_on_teleport, game:HttpGet("https://raw.githubusercontent.com/ActualMasterOogway/Scripts/main/Doors/Death-Farm.lua"))
-	MsdoorsNotify("Msdoors", "AutoWin ativo, crie um elevador.", "AutoWin", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
-    
-    end,
-    Info = "Execute no lobby, depois entre em um jogo singleplayer (use mods para mais knobs)."
-})
-
-
-local MainTab = Window:MakeTab({
-        Name = "Elevadores",
-        Icon = "rbxassetid://7743875759",
-        PremiumOnly = false
-    })
-
-    MainTab:AddParagraph("Elevator Controls", "Gerencie e crie elevadores com as configurações desejadas.")
-
-    -- Input para o nome do preset
-    MainTab:AddTextbox({
-        Name = "Nome do Preset",
-        Default = "",
-        TextDisappear = true,
-        Callback = function(Value)
-            presetName = Value
-        end
-    })
-
-    MainTab:AddButton({
-        Name = "Criar Elevador Retro",
-        Callback = function()
-            CreateRetroModeElevator()
-        end
-    })
-
-    MainTab:AddButton({
-        Name = "Criar Elevador",
-        Callback = function()
-            CreateElevator()
-        end
-    })
-
-    MainTab:AddDropdown({
-        Name = "Destino do Elevador",
-        Default = "Hotel",
-        Options = {"Hotel","HardMode", "Backdoor"},
-        Callback = function(Value)
-            destination = Value
-        end
-    })
-
-    MainTab:AddSlider({
-        Name = "Número Máximo de Jogadores",
-        Min = 1,
-        Max = 12,
-        Default = 4,
-        Color = Color3.fromRGB(255,255,255),
-        Increment = 1,
-        ValueName = "Jogadores",
-        Callback = function(Value)
-            maxPlayers = Value
-        end    
-    })
-
-    MainTab:AddToggle({
-        Name = "Somente Amigos",
-        Default = true,
-        Callback = function(Value)
-            friendsOnly = Value
-        end
-    })
-
-end
-
-SetupElevatorUI()
-
-task.spawn(function()
 
     local AddonTab = Window:MakeTab({Name = "Addons [BETA]", Icon = "rbxassetid://4483345998", PremiumOnly = false})
 
@@ -738,19 +346,12 @@ task.spawn(function()
     
 
     if not containAddonsLoaded then
-        AddonTab:AddLabel("A pasta de addons está vazia. Adicione addons na pasta '.msdoors/addons' e reinicie o script.")
+        AddonTab:AddLabel(" Adicione addons na pasta '.msdoors/addons' e reinicie o script.")
 	warn("[MsDoors Addons] A pasta de addons está vazia. Adcione addons na pasta .msdoors/addons e execute novamente.")
 	MsdoorsNotify("Msdoors", "A pasta de addons está vazia.", "Addons", "rbxassetid://6023426923", Color3.new(128, 0, 128), 6)
         		
     end
 end)
-
--- Notificação de carregamento completo
-OrionLib:MakeNotification({
-    Name = "Sistema Carregado",
-    Content = "Gerenciador de Elevadores pronto!",
-    Time = 5
-})
 
 local CreditsTab = Window:MakeTab({
     Name = "Creditos",
