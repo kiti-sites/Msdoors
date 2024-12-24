@@ -176,6 +176,4 @@ local CdSc = CreditsTab:AddSection({
 
 CdSc:AddParagraph("Rhyan57", "Criador do Msdoors")
 CdSc:AddParagraph("SeekAlegriaFla", "Mentor e criador de Conteúdo do script")
-
 OrionLib:Init()
-
