@@ -22,9 +22,7 @@ local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com
 local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://100573561401335", IntroIcon = "rbxassetid://95869322194132", Name = "MsDoors | Lobby", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/lobby"})
 local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
 
-MsdoorsNotify("Título", "Descrição", "SubDesc", "rbxassetid://ID", Color3.new(128, 0, 128), 5(TEMPO))
-
-
+MsdoorsNotify("Msdoors", "Iniciando...", " ", "rbxassetid://100573561401335", Color3.new(128, 0, 128), 2)
 
 --[[ SERVIÇOS ]]--
 local HttpService = game:GetService("HttpService")
