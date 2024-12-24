@@ -48,45 +48,6 @@ local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 local LatestRoom = ReplicatedStorage:WaitForChild("GameData"):WaitForChild("LatestRoom")
 
---// Tabela de Itens Prompt \\--
-local PromptTable = {
-    GamePrompts = {},
-    Aura = {
-	["ActivateEventPrompt"] = false,
-	["RiftPrompt"] = false,
-        ["FusesPrompt"] = true,
-        ["LeverPrompt"] = true,
-        ["LootPrompt"] = false,
-        ["UnlockPrompt"] = true,
-        ["ValvePrompt"] = false,
-    },
-    Clip = {
-        "AwesomePrompt",
-        "FusesPrompt",
-        "HerbPrompt",
-        "LeverPrompt",
-        "LootPrompt",
-        "ValvePrompt",
-        "LeverForGate",
-        "LiveBreakerPolePickup",
-        "LiveHintBook",
-        "Button",
-    },
-    Excluded = {
-        Prompt = {
-            "HintPrompt",
-            "HidePrompt",
-            "InteractPrompt"
-        },
-        Parent = {
-            "KeyObtainFake",
-            "Padlock"
-        },
-        ModelAncestor = {
-            "DoorFake"
-        }
-    }
-}
 
 --[[ 🏃 OBJETIVOS ESP ]]--
 local objetos_esp = { 
@@ -725,113 +686,6 @@ playerVisu:AddToggle({
         end
     end
 })
---{ 📸 REMOVE CUTSCENE / BOTÃO }--
-local Toggles = shared.Toggles or {}
-local Options = shared.Options or {}
-shared.LocalPlayer = Players.LocalPlayer
-shared.Character = shared.LocalPlayer and shared.LocalPlayer.Character
-local Script = shared.Script or {}
-
-playerVisu:AddToggle({
-    Name = "No Cutscenes",
-    Default = false,
-    Callback = function(value)
-        if Script.MainGame then
-            local cutscenes = Script.MainGame:FindFirstChild("Cutscenes", true)
-            if cutscenes then
-                for _, cutscene in pairs(cutscenes:GetChildren()) do
-                    if table.find(Script.CutsceneExclude, cutscene.Name) then continue end
-                    local defaultName = cutscene.Name:gsub("_", "")
-                    cutscene.Name = value and "_" .. defaultName or defaultName
-                end
-            end
-        end
-
-        if Script.FloorReplicated then
-            for _, cutscene in pairs(Script.FloorReplicated:GetChildren()) do
-                if not cutscene:IsA("ModuleScript") or table.find(Script.CutsceneExclude, cutscene.Name) then continue end
-                local defaultName = cutscene.Name:gsub("_", "")
-                cutscene.Name = value and "_" .. defaultName or defaultName
-            end
-        end
-    end
-})
-
-
-playerVisu:AddToggle({
-    Name = "Translucent Hiding Spot",
-    Default = false,
-    Callback = function(value)
-        if value and shared.Character and shared.Character:GetAttribute("Hiding") then
-            for _, obj in pairs(Workspace.CurrentRooms:GetDescendants()) do
-                if not obj:IsA("ObjectValue") and obj.Name ~= "HiddenPlayer" then continue end
-                if obj.Value == shared.Character then
-                    task.spawn(function()
-                        local affectedParts = {}
-                        for _, v in pairs(obj.Parent:GetChildren()) do
-                            if not v:IsA("BasePart") then continue end
-                            v.Transparency = Options.HidingTransparency and Options.HidingTransparency.Value or 0.5
-                            table.insert(affectedParts, v)
-                        end
-
-                        repeat task.wait()
-                            for _, part in pairs(affectedParts) do
-                                part.Transparency = Options.HidingTransparency and Options.HidingTransparency.Value or 0.5
-                            end
-                        until not shared.Character:GetAttribute("Hiding") or not Toggles["Translucent Hiding Spot"].Value
-
-                        for _, v in pairs(affectedParts) do
-                            v.Transparency = 0
-                        end
-                    end)
-                    break
-                end
-            end
-        end
-    end
-})
-
-
-playerVisu:AddToggle({
-    Name = "Fullbright",
-    Default = false,
-    Callback = function(value)
-        if value then
-            Lighting.Ambient = Color3.new(1, 1, 1)
-        else
-            if alive then
-                Lighting.Ambient = workspace.CurrentRooms[localPlayer:GetAttribute("CurrentRoom")]:GetAttribute("Ambient")
-            else
-                Lighting.Ambient = Color3.new(0, 0, 0)
-            end
-        end
-    end
-})
-
-playerVisu:AddToggle({
-    Name = "No Fog",
-    Default = false,
-    Callback = function(value)
-        if not Lighting:GetAttribute("FogStart") then Lighting:SetAttribute("FogStart", Lighting.FogStart) end
-        if not Lighting:GetAttribute("FogEnd") then Lighting:SetAttribute("FogEnd", Lighting.FogEnd) end
-
-        Lighting.FogStart = value and 0 or Lighting:GetAttribute("FogStart")
-        Lighting.FogEnd = value and math.huge or Lighting:GetAttribute("FogEnd")
-
-        local fog = Lighting:FindFirstChildOfClass("Atmosphere")
-        if fog then
-            if not fog:GetAttribute("Density") then fog:SetAttribute("Density", fog.Density) end
-
-            fog.Density = value and 0 or fog:GetAttribute("Density")
-        end
-    end
-})
-
-
-local notifsTab = VisualsEsp:AddSection({
-    Name = "Notificações"
-})
-notifsTab:AddParagraph("🔔 Notificações", "Painel de controlhe para notificações.")
 
 --{ 🔔 Notificação de Entidades / BOTÃO }--
 notifsTab:AddToggle({
@@ -869,27 +723,6 @@ local autoIn = Window:MakeTab({
     PremiumOnly = false
 })
 
-
---{ ☝️ AUTO INTERACT / BOTÃO }--
-local autoInteractEnabled = false
-autoIn:AddToggle({
-    Name = "Auto Interact",
-    Default = false,
-    Callback = function(Value)
-        autoInteractEnabled = Value
-        if Value then
-            while autoInteractEnabled do
-                CheckPrompts()
-                task.wait(1)
-            end
-        end
-    end
-})
-workspace.DescendantAdded:Connect(ChildCheck)
-CheckPrompts()
-
-
-
 --------------------[[ 💻 EXPLOITS 💻 ]]--------------------------------
 local ExploitsTab = Window:MakeTab({
     Name = "Exploits",
@@ -913,13 +746,6 @@ local ItensTab = Window:MakeTab({
     Name = "Itens",
     Icon = "rbxassetid://7733914390",
     PremiumOnly = false
-})
-
-ItensTab:AddButton({
-    Name = "💊 Vitamina Fake",
-    Callback = function()
-        loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/RhyanXG7/RseekerHub/Fun%C3%A7%C3%B5es/Sc/GiveVitamns.lua"))()
-    end
 })
 
 -- Local Player
