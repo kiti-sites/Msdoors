@@ -307,6 +307,61 @@ local CdSc = CreditsTab:AddSection({
 CdSc:AddParagraph("Rhyan57", "• Criador e fundador do Msdoors.")
 CdSc:AddParagraph("SeekAlegriaFla", "• Ajudante e coletor de files.")
 
+
+--[[ MAIN TAB ]]--
+local teleportLocations = {
+    ["Início"] = Vector3.new(233, 3, 7),
+    ["Meio"] = Vector3.new(271, 350, 466),
+    ["Fim"] = Vector3.new(163, 761, -1020)
+	
+local selectedLocation = "Início"
+local MainTab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://7733960981",
+    PremiumOnly = false
+})
+
+MainTab:AddDropdown({
+    Name = "Selecione um Local",
+    Default = "Início",
+    Options = {"Início", "Meio", "Fim"},
+    Callback = function(value)
+        selectedLocation = value
+    end    
+})
+
+local function teleportPlayerAndVehicle()
+    local player = game.Players.LocalPlayer
+    if not player or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then return end
+
+    local targetPosition = teleportLocations[selectedLocation]
+    if not targetPosition then return end
+
+    player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+
+    local function findVehicle()
+        local character = player.Character
+        if not character then return nil end
+        local seat = character:FindFirstChildWhichIsA("VehicleSeat", true)
+        if seat and seat.Occupant == character.Humanoid then
+            return seat.Parent
+        end
+        return nil
+    end
+
+    local vehicle = findVehicle()
+    if vehicle then
+        vehicle:SetPrimaryPartCFrame(CFrame.new(targetPosition))
+    end
+end
+
+MainTab:AddButton({
+    Name = "Teleporte",
+    Callback = function()
+        teleportPlayerAndVehicle()
+    end
+})
+
 local ExploitTab = Window:MakeTab({
     Name = "Exploits",
     Icon = "rbxassetid://7743873633",
