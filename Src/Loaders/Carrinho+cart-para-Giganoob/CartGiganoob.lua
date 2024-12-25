@@ -436,6 +436,32 @@ JeepsTab:AddToggle({
     end
 })
 
+local MainTab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local Section = MainTab:AddSection({
+    Name = "Teleporte"
+})
+
+MainTab:AddDropdown({
+    Name = "Selecione um Local",
+    Default = "Início",
+    Options = {"Início", "Meio", "Fim"},
+    Callback = function(value)
+        if value == "Início" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(233, 3, 7)
+        elseif value == "Meio" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(271, 350, 466)
+        elseif value == "Fim" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(163, 761, -1020)
+        end
+    end
+})
+
+
 local MsPlayer = Window:MakeTab({
     Name = "Musica",
     Icon = "rbxassetid://7734020554",
