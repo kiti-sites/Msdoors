@@ -63,6 +63,50 @@ workspace.ChildAdded:Connect(function(child)
     end
 end)
 
+--------------------[[ 💻 AUTOMAÇÃO 💻 ]]--------------------------------
+local autoIn = Window:MakeTab({
+    Name = "Automoção",
+    Icon = "rbxassetid://7733765045",
+    PremiumOnly = false
+})
+
+local Toggles = {}
+local InstaInteractEnabled = false
+
+local function UpdateProximityPrompts()
+    for _, prompt in pairs(workspace.CurrentRooms:GetDescendants()) do
+        if prompt:IsA("ProximityPrompt") then
+            if InstaInteractEnabled then
+                if not prompt:GetAttribute("Hold") then 
+                    prompt:SetAttribute("Hold", prompt.HoldDuration)
+                end
+                prompt.HoldDuration = 0
+            else
+                prompt.HoldDuration = prompt:GetAttribute("Hold") or 0
+            end
+        end
+    end
+end
+
+autoIn:AddToggle({
+    Name = "Interação instantânea",
+    Default = false,
+    Callback = function(value)
+        InstaInteractEnabled = value
+        UpdateProximityPrompts()
+    end
+})
+workspace.CurrentRooms.DescendantAdded:Connect(function(descendant)
+    if descendant:IsA("ProximityPrompt") then
+        if InstaInteractEnabled then
+            if not descendant:GetAttribute("Hold") then 
+                descendant:SetAttribute("Hold", descendant.HoldDuration)
+            end
+            descendant.HoldDuration = 0
+        end
+    end
+end)
+
 --[[ ELEMENTOS/UI ]]--
 local ExploitsTab = Window:MakeTab({
     Name = "Exploits",
