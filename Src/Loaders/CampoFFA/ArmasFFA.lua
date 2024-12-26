@@ -94,114 +94,127 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
---// ESP PLAYER \\--
-local Options = {
-    ESPColor = Color3.fromRGB(255, 0, 0),
-    MaxDistance = 5000
-}
+--// ESP PLAYER NEW \\--
+local ESPEnabled = false
+local ESPObjects = {}
 
-local espAtivo = false
-local linhasAtivas = {}
+local function getDistance(from, to)
+    return math.floor((from.Position - to.Position).Magnitude)
+end
 
-local function aplicarESPPlayer(player)
-    local function setupESP(character)
-        if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+local function createESP(player)
+    if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then return end
+    local rootPart = player.Character.HumanoidRootPart
+    local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
 
-        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    local function getRGB()
+        local hue = tick() % 5 / 5
+        return Color3.fromHSV(hue, 1, 1)
+    end
 
-        local highlight = ESPLibrary.ESP.Highlight({
-            Name = player.Name,
-            Model = character,
-            MaxDistance = Options.MaxDistance,
-            FillColor = Options.ESPColor,
-            OutlineColor = Options.ESPColor,
-            FillTransparency = 0.5,
-            OutlineTransparency = 0.2
-        })
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = rootPart
+    billboard.Size = UDim2.new(4, 0, 2, 0)
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Parent = game.CoreGui
 
-        local billboard = ESPLibrary.ESP.Billboard({
-            Name = player.Name,
-            Model = humanoidRootPart,
-            MaxDistance = Options.MaxDistance,
-            Color = Options.ESPColor,
-            Text = string.format("[ %s ]", player.Name),
-            TextSize = 17
-        })
+    local nameLabel = Instance.new("TextLabel")
+    nameLabel.Size = UDim2.new(1, 0, 0.3, 0)
+    nameLabel.BackgroundTransparency = 1
+    nameLabel.TextScaled = true
+    nameLabel.Text = player.Name
+    nameLabel.TextColor3 = getRGB()
+    nameLabel.Font = Enum.Font.SourceSansBold
+    nameLabel.Parent = billboard
 
-        local linha = Drawing.new("Line")
-        linha.Thickness = 1.5
-        linha.Color = Options.ESPColor
-        linha.Transparency = 1
-        linhasAtivas[player] = linha
+    local infoLabel = Instance.new("TextLabel")
+    infoLabel.Size = UDim2.new(1, 0, 0.3, 0)
+    infoLabel.Position = UDim2.new(0, 0, 0.3, 0)
+    infoLabel.BackgroundTransparency = 1
+    infoLabel.TextScaled = true
+    infoLabel.Text = ""
+    infoLabel.TextColor3 = Color3.new(1, 1, 1)
+    infoLabel.Font = Enum.Font.SourceSansBold
+    infoLabel.Parent = billboard
 
-        local function atualizarTraco()
-            if humanoidRootPart and humanoidRootPart:IsDescendantOf(workspace) then
-                local humanoidPos, onScreen = workspace.CurrentCamera:WorldToViewportPoint(humanoidRootPart.Position)
-                if onScreen then
-                    linha.Visible = true
-                    linha.From = Vector2.new(workspace.CurrentCamera.ViewportSize.X / 2, workspace.CurrentCamera.ViewportSize.Y)
-                    linha.To = Vector2.new(humanoidPos.X, humanoidPos.Y)
-                else
-                    linha.Visible = false
-                end
-            else
-                linha.Visible = false
-            end
+    local box = Instance.new("BoxHandleAdornment")
+    box.Adornee = player.Character
+    box.Size = Vector3.new(4, 7, 4)
+    box.Color3 = getRGB()
+    box.Transparency = 0.6
+    box.AlwaysOnTop = true
+    box.ZIndex = 2
+    box.Parent = game.CoreGui
+
+    local line = Drawing.new("Line")
+    line.Color = getRGB()
+    line.Thickness = 2
+    line.Visible = true
+
+    local function update()
+        if not ESPEnabled or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
+            return removeESP(player)
         end
 
-        local renderConnection = game:GetService("RunService").RenderStepped:Connect(atualizarTraco)
+        local camera = workspace.CurrentCamera
+        local screenPos, onScreen = camera:WorldToViewportPoint(rootPart.Position)
+        if onScreen then
+            line.Visible = true
+            line.From = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y)
+            line.To = Vector2.new(screenPos.X, screenPos.Y)
 
-        character.AncestryChanged:Connect(function()
-            if not character:IsDescendantOf(workspace) then
-                linha:Remove()
-                linhasAtivas[player] = nil
-                highlight.Destroy()
-                billboard.Destroy()
-                renderConnection:Disconnect()
+            nameLabel.TextColor3 = getRGB()
+            box.Color3 = getRGB()
+
+            local distance = getDistance(camera.CFrame, rootPart.CFrame)
+            infoLabel.Text = string.format("Health: %d | Distance: %d", math.floor(humanoid.Health), distance)
+        else
+            line.Visible = false
+        end
+    end
+
+    local connection = game:GetService("RunService").RenderStepped:Connect(update)
+
+    ESPObjects[player] = {Billboard = billboard, Box = box, Line = line, Connection = connection}
+end
+
+local function removeESP(player)
+    if ESPObjects[player] then
+        ESPObjects[player].Billboard:Destroy()
+        ESPObjects[player].Box:Destroy()
+        ESPObjects[player].Line:Remove()
+        ESPObjects[player].Connection:Disconnect()
+        ESPObjects[player] = nil
+    end
+end
+
+local function toggleESP(state)
+    ESPEnabled = state
+    if ESPEnabled then
+        for _, player in ipairs(game.Players:GetPlayers()) do
+            if player ~= game.Players.LocalPlayer then
+                createESP(player)
             end
-        end)
+        end
+    else
+        for player, _ in pairs(ESPObjects) do
+            removeESP(player)
+        end
     end
-
-    if player.Character then
-        setupESP(player.Character)
-    end
-
-    player.CharacterAdded:Connect(function(character)
-        setupESP(character)
-    end)
-end
-
-local function ativarESP()
-    for _, player in ipairs(game.Players:GetPlayers()) do
-        aplicarESPPlayer(player)
-    end
-end
-
-local function desativarESP()
-    ESPLibrary.ESP.Clear()
-    for _, linha in pairs(linhasAtivas) do
-        linha:Remove()
-    end
-    linhasAtivas = {}
 end
 
 game.Players.PlayerAdded:Connect(function(player)
-    if espAtivo then
-        player.CharacterAdded:Connect(function(character)
-            aplicarESPPlayer(player)
-        end)
+    if ESPEnabled then
+        player.CharacterAdded:Wait()
+        createESP(player)
     end
 end)
 
 game.Players.PlayerRemoving:Connect(function(player)
-    if linhasAtivas[player] then
-        linhasAtivas[player]:Remove()
-        linhasAtivas[player] = nil
-    end
+    removeESP(player)
 end)
-
-
-OrionLib:Init()
 
 --// CRÉDITOS \\--
 local CreditsTab = Window:MakeTab({
@@ -270,20 +283,13 @@ local VisualsTab = Window:MakeTab({
     PremiumOnly = false
 })
 
-
-
-
 VisualsTab:AddToggle({
-    Name = "Players Esp",
+    Name = "Players esp",
     Default = false,
-    Callback = function(state)
-        espAtivo = state
-        if espAtivo then
-            ativarESP()
-        else
-            desativarESP()
-        end
+    Callback = function(value)
+        toggleESP(value)
     end
 })
+
 OrionLib:Init()
 
