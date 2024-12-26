@@ -723,6 +723,46 @@ local autoIn = Window:MakeTab({
     PremiumOnly = false
 })
 
+local Toggles = {}
+local InstaInteractEnabled = false
+
+local function UpdateProximityPrompts()
+    for _, prompt in pairs(workspace.CurrentRooms:GetDescendants()) do
+        if prompt:IsA("ProximityPrompt") then
+            if InstaInteractEnabled then
+                if not prompt:GetAttribute("Hold") then 
+                    prompt:SetAttribute("Hold", prompt.HoldDuration)
+                end
+                prompt.HoldDuration = 0
+            else
+                prompt.HoldDuration = prompt:GetAttribute("Hold") or 0
+            end
+        end
+    end
+end
+
+autoIn:AddToggle({
+    Name = "Interação instantânea",
+    Default = false,
+    Callback = function(value)
+        InstaInteractEnabled = value
+        UpdateProximityPrompts()
+    end
+})
+workspace.CurrentRooms.DescendantAdded:Connect(function(descendant)
+    if descendant:IsA("ProximityPrompt") then
+        if InstaInteractEnabled then
+            if not descendant:GetAttribute("Hold") then 
+                descendant:SetAttribute("Hold", descendant.HoldDuration)
+            end
+            descendant.HoldDuration = 0
+        end
+    end
+end)
+
+
+
+
 --------------------[[ 💻 EXPLOITS 💻 ]]--------------------------------
 local ExploitsTab = Window:MakeTab({
     Name = "Exploits",
@@ -732,7 +772,7 @@ local ExploitsTab = Window:MakeTab({
 
 --[EM BREVE]--
 
---[[ Byppas Area ]]--
+--------------------[[ 💻 BYPPASS 💻 ]]--------------------------------
 local ByTab = Window:MakeTab({
     Name = "Byppas",
     Icon = "rbxassetid://7733964370",
@@ -741,14 +781,7 @@ local ByTab = Window:MakeTab({
 
 --[ EM BREVE ]--
 
---[ Itens ]--
-local ItensTab = Window:MakeTab({
-    Name = "Itens",
-    Icon = "rbxassetid://7733914390",
-    PremiumOnly = false
-})
-
--- Local Player
+--------------------[[ 💻 Player Functions ]]--------------------------------
 local GameLocal = Window:MakeTab({
     Name = "Funções do player",
     Icon = "rbxassetid://7733799795",
@@ -757,11 +790,9 @@ local GameLocal = Window:MakeTab({
 local playerLocal = GameLocal:AddSection({
 	Name = "Player Functions"
 })
-
 local Script = {
     IsFools = false
 }
-
 local Player = game.Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
 local Humanoid = Character:WaitForChild("Humanoid")
@@ -800,27 +831,6 @@ playerLocal:AddToggle({
     end
 })
 
-playerLocal:AddSlider({
-    Name = "Jump Boost",
-    Min = 0,
-    Max = 50,
-    Default = 5,
-    Increment = 1,
-    Callback = function(value)
-        if not CanJumpEnabled then
-            OrionLib:MakeNotification({
-                Name = "Jump Boost Error",
-                Content = "Ative o pulo antes de ajustar a altura!",
-                Time = 3
-            })
-            return
-        end
-        if Humanoid then
-            Humanoid.UseJumpPower = false
-            Humanoid.JumpHeight = value
-        end
-    end
-})
 
 local Script = { IsFools = false }
 local Character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
@@ -866,15 +876,6 @@ local ModsTab = Window:MakeTab({
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
-ModsTab:AddToggle({
-    Name = "SpeedRun Timer",
-    Default = false,
-    Callback = function(state)
-        TimerGui.Enabled = state 
-    end
-})
-
 
 
 --// ADDONS \\--
