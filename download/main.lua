@@ -3,23 +3,29 @@ local response = game:HttpGet(url, true)
 local script = loadstring(response)
 script()
 
-if not makefolder then
-    error("[Msdoors] Seu executor não suporta manipulação de arquivos locais (makefolder).")
-end
+print([[
 
-local baseFolder = ".msdoors"
-local placesFolder = baseFolder .. "/places"
-local presetsFolder = placesFolder .. "/presets"
+                                                                                                                     
+     ______  _______            ______       _____           _____            _____         _____            ______  
+    |      \/       \       ___|\     \  ___|\    \     ____|\    \      ____|\    \    ___|\    \       ___|\     \ 
+   /          /\     \     |    |\     \|    |\    \   /     /\    \    /     /\    \  |    |\    \     |    |\     \
+  /     /\   / /\     |    |    |/____/||    | |    | /     /  \    \  /     /  \    \ |    | |    |    |    |/____/|
+ /     /\ \_/ / /    /| ___|    \|   | ||    | |    ||     |    |    ||     |    |    ||    |/____/  ___|    \|   | |
+|     |  \|_|/ /    / ||    \    \___|/ |    | |    ||     |    |    ||     |    |    ||    |\    \ |    \    \___|/ 
+|     |       |    |  ||    |\     \    |    | |    ||\     \  /    /||\     \  /    /||    | |    ||    |\     \    
+|\____\       |____|  /|\ ___\|_____|   |____|/____/|| \_____\/____/ || \_____\/____/ ||____| |____||\ ___\|_____|   
+| |    |      |    | / | |    |     |   |    /    | | \ |    ||    | / \ |    ||    | /|    | |    || |    |     |   
+ \|____|      |____|/   \|____|_____|   |____|____|/   \|____||____|/   \|____||____|/ |____| |____| \|____|_____|   
+    \(          )/         \(    )/       \(    )/        \(    )/         \(    )/      \(     )/      \(    )/     
+     '          '           '    '         '    '          '    '           '    '        '     '        '    '      
+                                                                                                                     
+                                        Por Rhyan57 💜
+                               https://discord.gg/nGUHhRZby2
+]])
 
-if not isfolder(baseFolder) then
-    makefolder(baseFolder)
+for i = 1, 100 do
+    local progressBar = "[" .. string.rep("=", i) .. string.rep(" ", 100 - i) .. "]"
+    local message = string.format("[MsDoors] • %s %d%%", progressBar, i)
+    print(message)
+    task.wait(0.05)
 end
-
-if not isfolder(placesFolder) then
-    makefolder(placesFolder)
-end
-
-if not isfolder(presetsFolder) then
-    makefolder(presetsFolder)
-end
-print("[msdoors] Pasta de presets criada, por favor reinicie o script e execute novamente!", presetsFolder)
