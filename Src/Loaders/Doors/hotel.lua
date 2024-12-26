@@ -687,9 +687,10 @@ playerVisu:AddToggle({
     end
 })
 
-
---{ 🔔 Notificação de Entidades / BOTÃO }--
-notifsTab:AddToggle({
+local playerNotf = VisualsEsp:AddSection({
+	Name = "Notificações"
+})
+playerNotf:AddToggle({
     Name = "Notificar Entidades",
     Default = false,
     Callback = function(value)
