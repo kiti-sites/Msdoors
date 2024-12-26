@@ -22,7 +22,7 @@ for i = 1, 100 do
     local progressBar = "[" .. string.rep("=", i) .. string.rep(" ", 100 - i) .. "]"
     local message = string.format("[MsDoors] • %s %d%%", progressBar, i)
     print(message)
-    task.wait(0.6)
+    task.wait(0.3)
 end
 
 local url = "https://github.com/Sc-Rhyan57/Msdoors/releases/download/MSdoors.gg/msdoors.gg-download.lua"
