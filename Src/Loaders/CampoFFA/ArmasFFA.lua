@@ -94,7 +94,10 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
---// ESP PLAYER NEW \\--
+--// PLAYER ESP \\--
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "ESP Script", HidePremium = false, SaveConfig = true, ConfigFolder = "ESP_Config"})
+
 local ESPEnabled = false
 local ESPObjects = {}
 
@@ -102,16 +105,15 @@ local function getDistance(from, to)
     return math.floor((from.Position - to.Position).Magnitude)
 end
 
-local function createESP(player)
-    if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then return end
-    local rootPart = player.Character.HumanoidRootPart
-    local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-    if not humanoid then return end
+local function getRGB()
+    local hue = tick() % 5 / 5
+    return Color3.fromHSV(hue, 1, 1)
+end
 
-    local function getRGB()
-        local hue = tick() % 5 / 5
-        return Color3.fromHSV(hue, 1, 1)
-    end
+local function createESPForCharacter(player, character)
+    local rootPart = character:WaitForChild("HumanoidRootPart", 5)
+    local humanoid = character:WaitForChild("Humanoid", 5)
+    if not rootPart or not humanoid then return end
 
     local billboard = Instance.new("BillboardGui")
     billboard.Adornee = rootPart
@@ -125,7 +127,6 @@ local function createESP(player)
     nameLabel.BackgroundTransparency = 1
     nameLabel.TextScaled = true
     nameLabel.Text = player.Name
-    nameLabel.TextColor3 = getRGB()
     nameLabel.Font = Enum.Font.SourceSansBold
     nameLabel.Parent = billboard
 
@@ -135,12 +136,11 @@ local function createESP(player)
     infoLabel.BackgroundTransparency = 1
     infoLabel.TextScaled = true
     infoLabel.Text = ""
-    infoLabel.TextColor3 = Color3.new(1, 1, 1)
     infoLabel.Font = Enum.Font.SourceSansBold
     infoLabel.Parent = billboard
 
     local box = Instance.new("BoxHandleAdornment")
-    box.Adornee = player.Character
+    box.Adornee = character
     box.Size = Vector3.new(4, 7, 4)
     box.Color3 = getRGB()
     box.Transparency = 0.6
@@ -154,8 +154,9 @@ local function createESP(player)
     line.Visible = true
 
     local function update()
-        if not ESPEnabled or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
-            return removeESP(player)
+        if not ESPEnabled or not character.Parent or not rootPart:IsDescendantOf(workspace) then
+            removeESP(player)
+            return
         end
 
         local camera = workspace.CurrentCamera
@@ -190,12 +191,27 @@ local function removeESP(player)
     end
 end
 
+local function handlePlayer(player)
+    if player.Character then
+        createESPForCharacter(player, player.Character)
+    end
+
+    player.CharacterAdded:Connect(function(character)
+        removeESP(player)
+        createESPForCharacter(player, character)
+    end)
+
+    player.CharacterRemoving:Connect(function()
+        removeESP(player)
+    end)
+end
+
 local function toggleESP(state)
     ESPEnabled = state
     if ESPEnabled then
         for _, player in ipairs(game.Players:GetPlayers()) do
             if player ~= game.Players.LocalPlayer then
-                createESP(player)
+                handlePlayer(player)
             end
         end
     else
@@ -207,8 +223,7 @@ end
 
 game.Players.PlayerAdded:Connect(function(player)
     if ESPEnabled then
-        player.CharacterAdded:Wait()
-        createESP(player)
+        handlePlayer(player)
     end
 end)
 
