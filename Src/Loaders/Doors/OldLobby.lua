@@ -13,28 +13,8 @@ sound.Ended:Connect(function()
     sound:Destroy()
 end)
 
-MsdoorsNotify("Msdoors", "Script Inicializado.", "Execução", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
+MsdoorsNotify("Msdoors", "Em Breve...", "Execução", "rbxassetid://6023426923", Color3.new(128, 0, 128), 5)
 
 
-
-local MSoldLobby = Window:MakeTab({
-	Name = "Funções",
-	Icon = "rbxassetid://7733924046",
-	PremiumOnly = false
-})
-
-MSoldLobby:AddButton({
-	Name = "Teleport to PRE HOTEL LOBBY",
-	Callback = function()
-		game:GetService("TeleportService"):Teleport(110258689672367)
-	end    
-})
-
-MSoldLobby:AddButton({
-	Name = "Teleport to HOTEL LOBBY",
-	Callback = function()
-		game:GetService("TeleportService"):Teleport(6516141723)
-	end    
-})
 
 OrionLib:Init()
