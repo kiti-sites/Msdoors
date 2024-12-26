@@ -687,6 +687,7 @@ playerVisu:AddToggle({
     end
 })
 
+
 --{ 🔔 Notificação de Entidades / BOTÃO }--
 notifsTab:AddToggle({
     Name = "Notificar Entidades",
@@ -715,7 +716,6 @@ notifsTab:AddToggle({
         end
     end
 })
-
 --------------------[[ 💻 AUTOMAÇÃO 💻 ]]--------------------------------
 local autoIn = Window:MakeTab({
     Name = "Automoção",
