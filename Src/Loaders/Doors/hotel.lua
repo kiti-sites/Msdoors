@@ -411,9 +411,7 @@ local function verificarNovasPortas()
     end
 end
 
---------------------[[ 🌟 FUNÇÕES DO MSDOORS 🌟 ]]--------------------
---------------------[[ 🏃 NOCLIP 🏃 ]]--------------------------------
-
+--------------------[[ INÍCIO DO SCRIPT ]]--------------------
 
 --------------------[[ 💻 ANTI LAG ]]--------------------------------
 local antiLagEnabled = false
@@ -449,7 +447,7 @@ local function ActivateAntiLag(notify)
 
     if notify then
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "🔔 Notificação",
+            Title = "Msdoors",
             Text = "Anti Lag ativo",
             Icon = "rbxassetid://13264701341",
             Duration = 5
@@ -488,7 +486,7 @@ local function DeactivateAntiLag()
     end
 
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "🔔 Notificação",
+        Title = "Msdoors",
         Text = "Anti Lag Desativado",
         Icon = "rbxassetid://13264701341",
         Duration = 5
@@ -520,7 +518,8 @@ local EntityTable = {
     ["NotifyReason"] = {
         ["A60"] = { ["Image"] = "12350986086", ["Title"] = "Alerta A-60", ["Description"] = "Entidade A-60 detectada!" },
         ["A120"] = { ["Image"] = "12351008553", ["Title"] = "Cuidado com A-120", ["Description"] = "Entidade A-120 se aproximando!" },
-        ["HaltRoom"] = { ["Image"] = "11331795398", ["Title"] = "Halt Detected", ["Description"] = "Prepare-se para o Halt!",  ["Spawned"] = true },
+        ["HaltRoom"] = { ["Image"] = "11331795398", ["Title"] = "Halt Detectedo", ["Description"] = "Prepare-se para o Halt!",  ["Spawned"] = true },
+        ["Window_BrokenSally"] = { ["Image"] = "", ["Title"] = "Sally Detectedo", ["Description"] = "Corra!",  ["Spawned"] = true },
         ["BackdoorRush"] = { ["Image"] = "11102256553", ["Title"] = "Backdoor Rush", ["Description"] = "Rush se aproximando pelo backdoor!" },
         ["RushMoving"] = { ["Image"] = "11102256553", ["Title"] = "Rush em Movimento", ["Description"] = "Rush foi visto se movendo." },
         ["AmbushMoving"] = { ["Image"] = "10938726652", ["Title"] = "Ambush em Movimento", ["Description"] = "Ambush está ativo." },
@@ -570,12 +569,7 @@ function NotifyEntity(entityName)
         end)
     end
 end
-
-
-
-
---------------------// 📱 INTERFACE 📱\\--------------------------------
---// CRÉDITOS \\--
+	--// CRÉDITOS \\--
 local CreditsTab = Window:MakeTab({
     Name = "Créditos - Msdoors",
     Icon = "rbxassetid://7743875759",
@@ -671,9 +665,9 @@ local playerVisu = VisualsEsp:AddSection({
 	Name = "Player Functions"
 })
 
-playerVisu:AddParagraph("📸 Player", "Funções visuais do jogador.")
+playerVisu:AddParagraph("Player", "Funções visuais do jogador.")
 
---{ ♻️ ANTI LAG / BOTÃO }--
+
 playerVisu:AddToggle({
     Name = "Anti Lag",
     Default = false,
@@ -687,10 +681,8 @@ playerVisu:AddToggle({
     end
 })
 
-local playerNotf = VisualsEsp:AddSection({
-	Name = "Notificações"
-})
-playerNotf:AddToggle({
+
+playerVisu:AddToggle({
     Name = "Notificar Entidades",
     Default = false,
     Callback = function(value)
