@@ -123,7 +123,7 @@ local initialPosition = player.Character and player.Character:FindFirstChild("Hu
 local function destroyAllBuyHatGamePassSign()
     for _, child in ipairs(workspace:GetChildren()) do
         if child.Name == "Buy Hat Game Pass Sign" then
-            print("[MsDoors] Apagando pasta:", child.Name)
+            print("[Msdoors] • A seguinte pasta será apagada para evitar bugs:", child.Name)
             child:Destroy()
         end
     end
@@ -132,7 +132,7 @@ end
 workspace.ChildAdded:Connect(function(child)
     if autoDestroy and child.Name == "Buy Hat Game Pass Sign" then
         task.wait(0.1)
-        print("[Msdoors] 'Buy Hat Game Pass Sign' encontrada e destruída:", child.Name)
+        print("[Msdoors] • 'Buy Hat Game Pass Sign' encontrada e destruída:", child.Name)
         child:Destroy()
     end
 end)
@@ -145,10 +145,10 @@ local function teleportToBuyHatGamePassSign()
         task.wait(3)
         if initialPosition then
             player.Character.HumanoidRootPart.CFrame = CFrame.new(initialPosition)
-            print("[Msdoors] Jogador retornado à posição inicial.")
+            print("[Msdoors] • Jogador retornado à posição inicial.")
         end
     else
-        print("[Msdoors] Pasta 'Buy Hat Game Pass Sign' não encontrada para teleporte.")
+        print("[Msdoors] • Pasta 'Buy Hat Game Pass Sign' não encontrada para teleporte.")
     end
 end
 
@@ -215,7 +215,7 @@ local function interactOnce()
         end)
     end
     OrionLib:MakeNotification({
-        Name = "Interação Completa",
+        Name = "Msdoors",
         Content = "Interagiu com todos os carts encontrados!",
         Time = 5
     })
@@ -325,14 +325,14 @@ CartsTab:AddToggle({
         getgenv().AutoClickDetectors = state
         if state then
             OrionLib:MakeNotification({
-                Name = "Sistema Ativado",
+                Name = "Msdoors",
                 Content = "Auto Click está ativo!",
                 Time = 5
             })
             spawn(interactWithClickDetectors)
         else
             OrionLib:MakeNotification({
-                Name = "Sistema Desativado",
+                Name = "Msdoors",
                 Content = "Auto Click foi desativado!",
                 Time = 5
             })
