@@ -411,9 +411,6 @@ local function verificarNovasPortas()
     end
 end
 
---------------------[[ INÍCIO DO SCRIPT ]]--------------------
-
---------------------[[ 💻 ANTI LAG ]]--------------------------------
 local antiLagEnabled = false
 local antiLagConnection
 
@@ -516,16 +513,16 @@ latestRoom:GetPropertyChangedSignal("Value"):Connect(onRoomChanged)
 local EntityTable = {
     ["Names"] = {"BackdoorRush", "BackdoorLookman", "RushMoving", "AmbushMoving", "Eyes", "JeffTheKiller", "A60", "A120"},
     ["NotifyReason"] = {
-        ["A60"] = { ["Image"] = "12350986086", ["Title"] = "Alerta A-60", ["Description"] = "Entidade A-60 detectada!" },
-        ["A120"] = { ["Image"] = "12351008553", ["Title"] = "Cuidado com A-120", ["Description"] = "Entidade A-120 se aproximando!" },
-        ["HaltRoom"] = { ["Image"] = "11331795398", ["Title"] = "Halt Detectedo", ["Description"] = "Prepare-se para o Halt!",  ["Spawned"] = true },
-        ["Window_BrokenSally"] = { ["Image"] = "", ["Title"] = "Sally Detectedo", ["Description"] = "Corra!",  ["Spawned"] = true },
-        ["BackdoorRush"] = { ["Image"] = "11102256553", ["Title"] = "Backdoor Rush", ["Description"] = "Rush se aproximando pelo backdoor!" },
-        ["RushMoving"] = { ["Image"] = "11102256553", ["Title"] = "Rush em Movimento", ["Description"] = "Rush foi visto se movendo." },
-        ["AmbushMoving"] = { ["Image"] = "10938726652", ["Title"] = "Ambush em Movimento", ["Description"] = "Ambush está ativo." },
-        ["Eyes"] = { ["Image"] = "10865377903", ["Title"] = "Olhos!", ["Description"] = "Não olhe para os olhos!", ["Spawned"] = true },
-        ["BackdoorLookman"] = { ["Image"] = "16764872677", ["Title"] = "Backdoor Lookman", ["Description"] = "Lookman foi visto!", ["Spawned"] = true },
-        ["JeffTheKiller"] = { ["Image"] = "98993343", ["Title"] = "Jeff está Aqui", ["Description"] = "Fuja do Jeff the Killer!" }
+        ["A60"] = { ["Image"] = "12350986086", ["Title"] = "A-60", ["Description"] = "A-60 SPAWNOU!" },
+        ["A120"] = { ["Image"] = "12351008553", ["Title"] = "A-120", ["Description"] = "A-120 SPAWNOU!" },
+        ["HaltRoom"] = { ["Image"] = "11331795398", ["Title"] = "Halt", ["Description"] = "Prepare-se para Halt.",  ["Spawned"] = true },
+        ["Window_BrokenSally"] = { ["Image"] = "", ["Title"] = "Sally", ["Description"] = "Sally SPAWNOU!",  ["Spawned"] = true },
+        ["BackdoorRush"] = { ["Image"] = "11102256553", ["Title"] = "Backdoor Blitz", ["Description"] = "Blitz SPAWNOU!" },
+        ["RushMoving"] = { ["Image"] = "11102256553", ["Title"] = "Rush", ["Description"] = "Rush SPAWNOU!" },
+        ["AmbushMoving"] = { ["Image"] = "10938726652", ["Title"] = "Ambush", ["Description"] = "Ambush SPAWNOU!" },
+        ["Eyes"] = { ["Image"] = "10865377903", ["Title"] = "Eyes", ["Description"] = "Não olhe para os olhos!", ["Spawned"] = true },
+        ["BackdoorLookman"] = { ["Image"] = "16764872677", ["Title"] = "Backdoor Lookman", ["Description"] = "Olhe para baixo!", ["Spawned"] = true },
+        ["JeffTheKiller"] = { ["Image"] = "98993343", ["Title"] = "Jeff The Killer", ["Description"] = "Fuja do Jeff the Killer!" }
     }
 }
 
@@ -553,21 +550,12 @@ function NotifyEntity(entityName)
             MsdoorsNotify(
             notificationData.Title,
             notificationData.Description,
-            "Entidade nasceu!",
+            "",
             "rbxassetid://" .. notificationData.Image,
             Color3.new(255, 0, 0), 
-            6
+            5
         )
-        
-        local sound = Instance.new("Sound")
-        sound.SoundId = "rbxassetid://10469938989"
-        sound.Volume = 3
-        sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-        sound:Play()
-        sound.Ended:Connect(function()
-            sound:Destroy()
-        end)
-    end
+       
 end
 	--// CRÉDITOS \\--
 local CreditsTab = Window:MakeTab({
@@ -584,7 +572,7 @@ CdSc:AddParagraph("SeekAlegriaFla", "• Ajudante e coletor de files.")
 
 --------------------[[ 💻 VISUAL 💻 ]]--------------------------------
 local VisualsEsp = Window:MakeTab({
-    Name = "Configuração Visual",
+    Name = "Visual",
     Icon = "rbxassetid://7733741741",
     PremiumOnly = false
 })
@@ -612,7 +600,6 @@ EspVisu:AddToggle({
     end
 })
 
---{ 👾 ESP ENTIDADES / BOTÃO }--
 EspVisu:AddToggle({
     Name = "esp entidade",
     Default = false,
@@ -628,7 +615,6 @@ EspVisu:AddToggle({
     end
 })
 
---{ 📝 ESP OBJETIVO / BOTÃO }--
 EspVisu:AddToggle({
     Name = "esp de objetivo",
     Default = false,
@@ -643,8 +629,6 @@ EspVisu:AddToggle({
         end
     end
 })
-
---{ 🛍️ ESP ITENS / BOTÃO }--
 
 EspVisu:AddToggle({
     Name = "esp loot",
@@ -754,8 +738,6 @@ workspace.CurrentRooms.DescendantAdded:Connect(function(descendant)
 end)
 
 
-
-
 --------------------[[ 💻 EXPLOITS 💻 ]]--------------------------------
 local ExploitsTab = Window:MakeTab({
     Name = "Exploits",
@@ -793,13 +775,13 @@ local Humanoid = Character:WaitForChild("Humanoid")
 local CanJumpEnabled = false
 
 local PlayerTab = Window:MakeTab({
-    Name = "PlayerLocal",
+    Name = "principal",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
 playerLocal:AddToggle({
-    Name = "Enable Jump",
+    Name = "Habilitar Pulo",
     Default = false,
     Callback = function(value)
         CanJumpEnabled = value
@@ -807,13 +789,13 @@ playerLocal:AddToggle({
         Character:SetAttribute("CanJump", value)
         if value then
             OrionLib:MakeNotification({
-                Name = "Jump Enabled",
+                Name = "Msdoors",
                 Content = "O pulo foi habilitado!",
                 Time = 3
             })
         else
             OrionLib:MakeNotification({
-                Name = "Jump Disabled",
+                Name = "Msdoors",
                 Content = "O pulo foi desabilitado!",
                 Time = 3
             })
@@ -839,13 +821,13 @@ PlayerLocal:AddToggle({
         Character:SetAttribute("CanJump", value)
         if value then
             OrionLib:MakeNotification({
-                Name = "Jump Enabled",
+                Name = "MsDoors",
                 Content = "O pulo foi habilitado!",
                 Time = 3
             })
         else
             OrionLib:MakeNotification({
-                Name = "Jump Disabled",
+                Name = "Msdoors",
                 Content = "O pulo foi desabilitado!",
                 Time = 3
             })
