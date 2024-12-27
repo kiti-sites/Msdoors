@@ -22,8 +22,143 @@
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
 --[[ MS ESP(@mstudio45) - thanks for the API! ]]--
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
-
 local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1 ",Icon = "rbxassetid://100573561401335", IntroIcon = "rbxassetid://95869322194132", Name = "MsDoors | Carrinho + Cart Para GigaNoob!", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/carrinhoCartGiganoob"})
+
+--// Player Esp \\--
+local ESPEnabled = false
+local ESPObjects = {}
+
+local function getDistance(from, to)
+    return math.floor((from.Position - to.Position).Magnitude)
+end
+
+local function getRGB()
+    local hue = tick() % 5 / 5
+    return Color3.fromHSV(hue, 1, 1)
+end
+
+local function createESPForCharacter(player, character)
+    local rootPart = character:WaitForChild("HumanoidRootPart", 5)
+    local humanoid = character:WaitForChild("Humanoid", 5)
+    if not rootPart or not humanoid then return end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = rootPart
+    billboard.Size = UDim2.new(4, 0, 2, 0)
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Parent = game.CoreGui
+
+    local nameLabel = Instance.new("TextLabel")
+    nameLabel.Size = UDim2.new(1, 0, 0.3, 0)
+    nameLabel.BackgroundTransparency = 1
+    nameLabel.TextScaled = true
+    nameLabel.Text = player.Name
+    nameLabel.Font = Enum.Font.SourceSansBold
+    nameLabel.Parent = billboard
+
+    local infoLabel = Instance.new("TextLabel")
+    infoLabel.Size = UDim2.new(1, 0, 0.3, 0)
+    infoLabel.Position = UDim2.new(0, 0, 0.3, 0)
+    infoLabel.BackgroundTransparency = 1
+    infoLabel.TextScaled = true
+    infoLabel.Text = ""
+    infoLabel.Font = Enum.Font.SourceSansBold
+    infoLabel.Parent = billboard
+
+    local box = Instance.new("BoxHandleAdornment")
+    box.Adornee = character
+    box.Size = Vector3.new(4, 7, 4)
+    box.Color3 = getRGB()
+    box.Transparency = 0.6
+    box.AlwaysOnTop = true
+    box.ZIndex = 2
+    box.Parent = game.CoreGui
+
+    local line = Drawing.new("Line")
+    line.Color = getRGB()
+    line.Thickness = 2
+    line.Visible = true
+
+    local function update()
+        if not ESPEnabled or not character.Parent or not rootPart:IsDescendantOf(workspace) then
+            removeESP(player)
+            return
+        end
+
+        local camera = workspace.CurrentCamera
+        local screenPos, onScreen = camera:WorldToViewportPoint(rootPart.Position)
+        if onScreen then
+            line.Visible = true
+            line.From = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y)
+            line.To = Vector2.new(screenPos.X, screenPos.Y)
+
+            nameLabel.TextColor3 = getRGB()
+            box.Color3 = getRGB()
+
+            local distance = getDistance(camera.CFrame, rootPart.CFrame)
+            infoLabel.Text = string.format("Health: %d | Distance: %d", math.floor(humanoid.Health), distance)
+        else
+            line.Visible = false
+        end
+    end
+
+    local connection = game:GetService("RunService").RenderStepped:Connect(update)
+
+    ESPObjects[player] = {Billboard = billboard, Box = box, Line = line, Connection = connection}
+end
+
+local function removeESP(player)
+    if ESPObjects[player] then
+        ESPObjects[player].Billboard:Destroy()
+        ESPObjects[player].Box:Destroy()
+        ESPObjects[player].Line:Remove()
+        ESPObjects[player].Connection:Disconnect()
+        ESPObjects[player] = nil
+    end
+end
+
+local function handlePlayer(player)
+    if player.Character then
+        createESPForCharacter(player, player.Character)
+    end
+
+    player.CharacterAdded:Connect(function(character)
+        removeESP(player)
+        createESPForCharacter(player, character)
+    end)
+
+    player.CharacterRemoving:Connect(function()
+        removeESP(player)
+    end)
+end
+
+local function toggleESP(state)
+    ESPEnabled = state
+    if ESPEnabled then
+        for _, player in ipairs(game.Players:GetPlayers()) do
+            if player ~= game.Players.LocalPlayer then
+                handlePlayer(player)
+            end
+        end
+    else
+        for player, _ in pairs(ESPObjects) do
+            removeESP(player)
+        end
+    end
+end
+
+game.Players.PlayerAdded:Connect(function(player)
+    if ESPEnabled then
+        handlePlayer(player)
+    end
+end)
+
+game.Players.PlayerRemoving:Connect(function(player)
+    removeESP(player)
+end)
+
+
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -437,8 +572,8 @@ JeepsTab:AddToggle({
 })
 
 local MainTab = Window:MakeTab({
-    Name = "Main",
-    Icon = "rbxassetid://4483345998",
+    Name = "Extras",
+    Icon = "rbxassetid://7734068495",
     PremiumOnly = false
 })
 
@@ -461,6 +596,14 @@ MainTab:AddDropdown({
     end
 })
 
+
+MainTab:AddToggle({
+    Name = "Players esp",
+    Default = false,
+    Callback = function(value)
+        toggleESP(value)
+    end
+})
 
 local MsPlayer = Window:MakeTab({
     Name = "Musica",
