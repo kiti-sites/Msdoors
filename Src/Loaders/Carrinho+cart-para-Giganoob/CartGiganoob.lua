@@ -20,14 +20,18 @@
 
 --// SERVIÇOS \\--
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Giangplay/Script/main/Orion_Library_PE_V2.lua'))()
---[[ MS ESP(@mstudio45) - thanks for the API! ]]--
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
 local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1 ",Icon = "rbxassetid://100573561401335", IntroIcon = "rbxassetid://95869322194132", Name = "MsDoors | Carrinho + Cart Para GigaNoob!", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/carrinhoCartGiganoob"})
 
---// Player Esp \\--
+--// Player ESP \\--
 local ESPEnabled = false
 local ESPObjects = {}
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
 
+-- Helper functions
 local function getDistance(from, to)
     return math.floor((from.Position - to.Position).Magnitude)
 end
@@ -37,11 +41,7 @@ local function getRGB()
     return Color3.fromHSV(hue, 1, 1)
 end
 
-local function createESPForCharacter(player, character)
-    local rootPart = character:WaitForChild("HumanoidRootPart", 5)
-    local humanoid = character:WaitForChild("Humanoid", 5)
-    if not rootPart or not humanoid then return end
-
+local function createBillboard(player, rootPart)
     local billboard = Instance.new("BillboardGui")
     billboard.Adornee = rootPart
     billboard.Size = UDim2.new(4, 0, 2, 0)
@@ -62,9 +62,18 @@ local function createESPForCharacter(player, character)
     infoLabel.Position = UDim2.new(0, 0, 0.3, 0)
     infoLabel.BackgroundTransparency = 1
     infoLabel.TextScaled = true
-    infoLabel.Text = ""
     infoLabel.Font = Enum.Font.SourceSansBold
     infoLabel.Parent = billboard
+
+    return billboard, nameLabel, infoLabel
+end
+
+local function createESP(player, character)
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not rootPart or not humanoid then return end
+
+    local billboard, nameLabel, infoLabel = createBillboard(player, rootPart)
 
     local box = Instance.new("BoxHandleAdornment")
     box.Adornee = character
@@ -86,46 +95,45 @@ local function createESPForCharacter(player, character)
             return
         end
 
-        local camera = workspace.CurrentCamera
-        local screenPos, onScreen = camera:WorldToViewportPoint(rootPart.Position)
+        local screenPos, onScreen = Camera:WorldToViewportPoint(rootPart.Position)
         if onScreen then
             line.Visible = true
-            line.From = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y)
+            line.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
             line.To = Vector2.new(screenPos.X, screenPos.Y)
 
             nameLabel.TextColor3 = getRGB()
             box.Color3 = getRGB()
 
-            local distance = getDistance(camera.CFrame, rootPart.CFrame)
+            local distance = getDistance(Camera.CFrame, rootPart.CFrame)
             infoLabel.Text = string.format("Health: %d | Distance: %d", math.floor(humanoid.Health), distance)
         else
             line.Visible = false
         end
     end
 
-    local connection = game:GetService("RunService").RenderStepped:Connect(update)
-
+    local connection = RunService.RenderStepped:Connect(update)
     ESPObjects[player] = {Billboard = billboard, Box = box, Line = line, Connection = connection}
 end
 
 local function removeESP(player)
-    if ESPObjects[player] then
-        ESPObjects[player].Billboard:Destroy()
-        ESPObjects[player].Box:Destroy()
-        ESPObjects[player].Line:Remove()
-        ESPObjects[player].Connection:Disconnect()
+    local espObject = ESPObjects[player]
+    if espObject then
+        espObject.Billboard:Destroy()
+        espObject.Box:Destroy()
+        espObject.Line:Remove()
+        espObject.Connection:Disconnect()
         ESPObjects[player] = nil
     end
 end
 
 local function handlePlayer(player)
     if player.Character then
-        createESPForCharacter(player, player.Character)
+        createESP(player, player.Character)
     end
 
     player.CharacterAdded:Connect(function(character)
         removeESP(player)
-        createESPForCharacter(player, character)
+        createESP(player, character)
     end)
 
     player.CharacterRemoving:Connect(function()
@@ -136,8 +144,8 @@ end
 local function toggleESP(state)
     ESPEnabled = state
     if ESPEnabled then
-        for _, player in ipairs(game.Players:GetPlayers()) do
-            if player ~= game.Players.LocalPlayer then
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
                 handlePlayer(player)
             end
         end
@@ -148,17 +156,16 @@ local function toggleESP(state)
     end
 end
 
-game.Players.PlayerAdded:Connect(function(player)
+-- Player connections
+Players.PlayerAdded:Connect(function(player)
     if ESPEnabled then
         handlePlayer(player)
     end
 end)
 
-game.Players.PlayerRemoving:Connect(function(player)
-    removeESP(player)
-end)
+Players.PlayerRemoving:Connect(removeESP)
 
-
+--\\ FIM //--
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
