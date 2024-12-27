@@ -95,9 +95,6 @@ RunService.RenderStepped:Connect(function()
 end)
 
 --// PLAYER ESP \\--
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "ESP Script", HidePremium = false, SaveConfig = true, ConfigFolder = "ESP_Config"})
-
 local ESPEnabled = false
 local ESPObjects = {}
 
