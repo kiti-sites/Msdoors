@@ -289,6 +289,15 @@ ExploitsTab:AddToggle({
     end
 })
 
+ExploitsTab:AddButton({
+	Name = "Expandir Hitbox doa inimigos",
+	Callback = function()
+      		print("[Msdoors] • Hitbox dos jogadores expandidas.")
+          loadstring(game:HttpGet("https://mscripts.vercel.app/scfiles/hitbox-expander.lua"))()
+  	end    
+})
+
+
 local VisualsTab = Window:MakeTab({
     Name = "Visuais",
     Icon = "rbxassetid://7743873633",
