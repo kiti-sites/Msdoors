@@ -17,5 +17,23 @@
             "scriptPath": "Src/Loaders/Doors/fools.lua",
             "icon": "🃏",
             "description": "Doors April Fools"
+        },
+        "189707": {
+            "name": "Natural Disaster",
+            "scriptPath": "Src/Loaders/NaturalDisaster/places/game.lua",
+            "icon": "🌋",
+            "description": "Natural Disaster"
+        },
+        "12137249458": {
+            "name": "Campos de armas[FFA]",
+            "scriptPath": "Src/Loaders/CampoFFA/ArmasFFA.lua",
+            "icon": "🔫",
+            "description": "Campos de Armas [FFA]"
+        },
+        "5275822877": {
+            "name": "Carrinho + Cart para GigaNoob!",
+            "scriptPath": "Src/Loaders/Carrinho+cart-para-Giganoob/CartGiganoob.lua",
+            "icon": "🚎",
+            "description": "Carrinho+ Cart para GigaNoob!"
         }
     }
