@@ -1,0 +1,21 @@
+{
+    "games": {
+        "6516141723": {
+            "name": "Doors (Lobby)",
+            "scriptPath": "scripts/doors/lobby.lua",
+            "icon": "🚪",
+            "description": "Lobby do Doors"
+        },
+        "6839171747": {
+            "name": "Doors (Hotel)",
+            "scriptPath": "scripts/doors/hotel.lua",
+            "icon": "🏨",
+            "description": "Jogo principal do Doors"
+        },
+        "10549820578": {
+            "name": "Doors (Fools)",
+            "scriptPath": "scripts/doors/fools.lua",
+            "icon": "🃏",
+            "description": "Doors April Fools"
+        }
+    }
