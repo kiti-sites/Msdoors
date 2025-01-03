@@ -55,11 +55,11 @@ local function autoWin()
     local humanoid = character:FindFirstChildOfClass("Humanoid")
     local velocidadeOriginal = humanoid.WalkSpeed
 
-    humanoid.WalkSpeed = ativo and 100000 or velocidadeOriginal
+    humanoid.WalkSpeed = ativo and 900000 or velocidadeOriginal
 
     if ativo then
         local distancia = (humanoidRootPart.Position - destino).Magnitude
-        local passos = math.ceil(distancia / 10)
+        local passos = math.ceil(distancia / 20)
         for i = 1, passos do
             if not ativo then break end
             humanoidRootPart.CFrame = humanoidRootPart.CFrame:Lerp(CFrame.new(destino), i / passos)
