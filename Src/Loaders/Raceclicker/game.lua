@@ -57,7 +57,7 @@ local function autoWin()
     local humanoid = character:FindFirstChildOfClass("Humanoid")
     local velocidadeOriginal = humanoid.WalkSpeed
 
-    humanoid.WalkSpeed = ativo and 900000 or velocidadeOriginal
+    humanoid.WalkSpeed = ativo and 1000000 or velocidadeOriginal
 
     if ativo then
         local distancia = (humanoidRootPart.Position - destino).Magnitude
