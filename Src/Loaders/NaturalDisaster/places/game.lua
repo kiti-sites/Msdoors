@@ -474,10 +474,110 @@ CreditsTab:AddParagraph("Credits", [[
 Msdoors made by:
 Rhyan57 / https://github.com/Sc-rhyan57
 
-
-
-Agradecimentos especiais a:
+agradecimentos a
 ]] .. tostring(game.Players.LocalPlayer.Name) .. " / Você 🫵😃")
+
+
+--// ADDONS \\--
+task.spawn(function()
+
+    local AddonTab = Window:MakeTab({Name = "Addons [BETA]", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+
+    if not isfolder(".msdoors/addons") then
+        makefolder(".msdoors/addons")
+    end
+
+    local function AddAddonElement(Element)
+        if not Element or typeof(Element) ~= "table" then return end
+
+        if Element.Type == "Label" then
+            AddonTab:AddLabel(Element.Arguments[1])
+        elseif Element.Type == "Toggle" then
+            AddonTab:AddToggle({
+                Name = Element.Name,
+                Default = Element.Arguments.Default or false,
+                Callback = Element.Arguments.Callback
+            })
+        elseif Element.Type == "Button" then
+            AddonTab:AddButton({
+                Name = Element.Arguments.Name,
+                Callback = Element.Arguments.Callback
+            })
+        elseif Element.Type == "Slider" then
+            AddonTab:AddSlider({
+                Name = Element.Name,
+                Min = Element.Arguments.Min,
+                Max = Element.Arguments.Max,
+                Default = Element.Arguments.Default,
+                Callback = Element.Arguments.Callback
+            })
+        elseif Element.Type == "Input" then
+            AddonTab:AddTextbox({
+                Name = Element.Name,
+                Default = Element.Arguments.Default,
+                TextDisappear = true,
+                Callback = Element.Arguments.Callback
+            })
+        elseif Element.Type == "Dropdown" then
+            AddonTab:AddDropdown({
+                Name = Element.Name,
+                Options = Element.Arguments.Options,
+                Default = Element.Arguments.Default,
+                Callback = Element.Arguments.Callback
+            })
+        elseif Element.Type == "ColorPicker" then
+            AddonTab:AddColorPicker({
+                Name = Element.Name,
+                Default = Element.Arguments.Default,
+                Callback = Element.Arguments.Callback
+            })
+        elseif Element.Type == "KeyPicker" then
+            AddonTab:AddKeybind({
+                Name = Element.Name,
+                Default = Element.Arguments.Default,
+                Callback = Element.Arguments.Callback
+            })
+        else
+            warn("[MsDoors Addons] Elemento '" .. tostring(Element.Name) .. "' não foi carregado: Tipo de elemento inválido.")
+        end
+    end
+
+
+    local containAddonsLoaded = false
+
+    for _, file in pairs(listfiles(".msdoors/addons")) do
+        print("[MsDoors Addons] Carregando addon '" .. string.gsub(file, ".msdoors/addons/", "") .. "'...")
+        if file:sub(-4) ~= ".lua" then continue end
+
+        local success, errorMessage = pcall(function()
+            local fileContent = readfile(file)
+            local addon = loadstring(fileContent)()
+
+            if typeof(addon.Name) ~= "string" or typeof(addon.Elements) ~= "table" then
+                warn("[MsDoors Addons] Addon '" .. string.gsub(file, ".msdoors/addons/", "") .. "' não carregado: Nome/Elementos inválidos.")
+                return 
+            end
+
+            containAddonsLoaded = true
+
+            AddonTab:AddLabel("Addon: " .. addon.Name)
+            AddonTab:AddParagraph("Descrição", addon.Description or "Sem descrição.")
+
+            for _, element in pairs(addon.Elements) do
+                AddAddonElement(element)
+            end
+        end)
+
+        if not success then
+            warn("[MsDoors Addons] Falha ao carregar addon '" .. string.gsub(file, ".msdoors/addons/", "") .. "':", errorMessage)
+        end
+    end
+    
+
+    if not containAddonsLoaded then
+        AddonTab:AddLabel("A pasta de addons está vazia. Adicione addons na pasta '.msdoors/addons' e reinicie o script.")
+    end
+end)
 
 createHUD()
 OrionLib:Init()
