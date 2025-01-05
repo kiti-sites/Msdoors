@@ -69,8 +69,8 @@ local GroupCredits = Window:MakeTab({
     PremiumOnly = false
 })
 
-GroupCredits:AddParagraph("Dono","• Rhyan57 - <font color="#FF0000">Owner</font>
-  • SeekAlegriaFla - <font color="#FF0000">Sub-Owner</font>")
+GroupCredits:AddParagraph("Rhyan57","<font color="#FF7FFF">Owner</font>")
+GroupCredits:AddParagraph("SeekAlegriaFla","<font color="#FF0000">Sub-Owner</font>")
 
   
 -- Tabela de Entidades para notificação.
