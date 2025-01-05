@@ -64,13 +64,18 @@ local GroupVisual = Window:MakeTab({
 local NotificationGroup = GroupVisual:AddSection({Name = "Notification"})
 
 local GroupCredits = Window:MakeTab({
-    Name = "Créditos",
+    Name = "Msdoors",
     Icon = "rbxassetid://7733765045",
     PremiumOnly = false
 })
-GroupCredits:AddLabel('<font color="#FFA500">Rhyan57 - Dono</font>')
-GroupCredits:AddLabel('<font color="#FFA500">SeekAlegriaFla - Sub-Dono</font>')
-  
+
+GroupCredits:AddLabel('Créditos')
+GroupCredits:AddLabel('• Rhyan57 - <font color="#FFA500">DONO</font>')
+GroupCredits:AddLabel('• SeekAlegriaFla - <font color="#FFA500">SUB-DONO</font>')
+GroupCredits:AddLabel('Redes')
+GroupCredits:AddLabel('Discord: <font color="#FFA500">https://dsc.gg/msdoors-gg</font>')
+
+
 -- Tabela de Entidades para notificação.
 local EntityTable = {
     ["Names"] = {"BackdoorRush", "BackdoorLookman", "RushMoving", "AmbushMoving", "Eyes", "JeffTheKiller", "A60", "A120"},
