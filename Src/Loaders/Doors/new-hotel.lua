@@ -63,6 +63,81 @@ local GroupVisual = Window:MakeTab({
 })
 local NotificationGroup = GroupVisual:AddSection({Name = "Notification"})
 
+-- Tabela de Entidades para notificação.
+local EntityTable = {
+    ["Names"] = {"BackdoorRush", "BackdoorLookman", "RushMoving", "AmbushMoving", "Eyes", "JeffTheKiller", "A60", "A120"},
+    ["NotifyReason"] = {
+        ["A60"] = { ["Image"] = "12350986086", ["Title"] = "A-60", ["Description"] = "A-60 SPAWNOU!" },
+        ["A120"] = { ["Image"] = "12351008553", ["Title"] = "A-120", ["Description"] = "A-120 SPAWNOU!" },
+        ["HaltRoom"] = { ["Image"] = "11331795398", ["Title"] = "Halt", ["Description"] = "Prepare-se para Halt.",  ["Spawned"] = true },
+        ["Window_BrokenSally"] = { ["Image"] = "100573561401335", ["Title"] = "Sally", ["Description"] = "Sally SPAWNOU!",  ["Spawned"] = true },
+        ["BackdoorRush"] = { ["Image"] = "11102256553", ["Title"] = "Backdoor Blitz", ["Description"] = "Blitz SPAWNOU!" },
+        ["RushMoving"] = { ["Image"] = "11102256553", ["Title"] = "Rush", ["Description"] = "Rush SPAWNOU!" },
+        ["AmbushMoving"] = { ["Image"] = "10938726652", ["Title"] = "Ambush", ["Description"] = "Ambush SPAWNOU!" },
+        ["Eyes"] = { ["Image"] = "10865377903", ["Title"] = "Eyes", ["Description"] = "Não olhe para os olhos!", ["Spawned"] = true },
+        ["BackdoorLookman"] = { ["Image"] = "16764872677", ["Title"] = "Backdoor Lookman", ["Description"] = "Olhe para baixo!", ["Spawned"] = true },
+        ["JeffTheKiller"] = { ["Image"] = "98993343", ["Title"] = "Jeff The Killer", ["Description"] = "Fuja do Jeff the Killer!" }
+    }
+}
+
+local notificationsEnabled = false
+
+-- Função para monitorar as entidades.
+function MonitorEntities()
+    game:GetService("RunService").Stepped:Connect(function()
+        if notificationsEnabled then
+            for _, entityName in ipairs(EntityTable.Names) do
+                local entity = workspace:FindFirstChild(entityName)
+                if entity and not entity:GetAttribute("Notified") then
+                    entity:SetAttribute("Notified", true)
+                    NotifyEntity(entityName)
+                end
+            end
+        end
+    end)
+end
+
+function NotifyEntity(entityName)
+    local notificationData = EntityTable.NotifyReason[entityName]
+    if notificationData then
+        MsdoorsNotify(
+            notificationData.Title,
+            notificationData.Description,
+            "",
+            "rbxassetid://" .. notificationData.Image,
+            Color3.fromRGB(255, 0, 0),
+            5
+        )
+    end
+end
+
+MonitorEntities()
+
+NotificationGroup:AddToggle({
+    Name = "Notificar Entidades",
+    Default = false,
+    Callback = function(value)
+        notificationsEnabled = value
+        local sound = Instance.new("Sound")
+        sound.SoundId = value and "rbxassetid://4590657391" or "rbxassetid://4590662766"
+        sound.Volume = 1
+        sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+        sound:Play()
+        sound.Ended:Connect(function()
+            sound:Destroy()
+        end)
+        
+        MsdoorsNotify(
+            "MsDoors",
+            value and "Notificações de Entidades ativas!" or "Notificações de Entidades desativadas!",
+            "",
+            "rbxassetid://100573561401335",
+            value and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0),
+            3
+        )
+    end
+})
+
 local Toggles = {}
 local InstaInteractEnabled = false
 
@@ -347,80 +422,3 @@ PlayerGroup:AddToggle({
 })
 
 
---// Tabela de Entidades para notificação.
-local EntityTable = {
-    ["Names"] = {"BackdoorRush", "BackdoorLookman", "RushMoving", "AmbushMoving", "Eyes", "JeffTheKiller", "A60", "A120"},
-    ["NotifyReason"] = {
-        ["A60"] = { ["Image"] = "12350986086", ["Title"] = "A-60", ["Description"] = "A-60 SPAWNOU!" },
-        ["A120"] = { ["Image"] = "12351008553", ["Title"] = "A-120", ["Description"] = "A-120 SPAWNOU!" },
-        ["HaltRoom"] = { ["Image"] = "11331795398", ["Title"] = "Halt", ["Description"] = "Prepare-se para Halt.",  ["Spawned"] = true },
-        ["Window_BrokenSally"] = { ["Image"] = "100573561401335", ["Title"] = "Sally", ["Description"] = "Sally SPAWNOU!",  ["Spawned"] = true },
-        ["BackdoorRush"] = { ["Image"] = "11102256553", ["Title"] = "Backdoor Blitz", ["Description"] = "Blitz SPAWNOU!" },
-        ["RushMoving"] = { ["Image"] = "11102256553", ["Title"] = "Rush", ["Description"] = "Rush SPAWNOU!" },
-        ["AmbushMoving"] = { ["Image"] = "10938726652", ["Title"] = "Ambush", ["Description"] = "Ambush SPAWNOU!" },
-        ["Eyes"] = { ["Image"] = "10865377903", ["Title"] = "Eyes", ["Description"] = "Não olhe para os olhos!", ["Spawned"] = true },
-        ["BackdoorLookman"] = { ["Image"] = "16764872677", ["Title"] = "Backdoor Lookman", ["Description"] = "Olhe para baixo!", ["Spawned"] = true },
-        ["JeffTheKiller"] = { ["Image"] = "98993343", ["Title"] = "Jeff The Killer", ["Description"] = "Fuja do Jeff the Killer!" }
-    }
-}
-
-local notificationsEnabled = false
-
-function MonitorEntities()
-    game:GetService("RunService").Stepped:Connect(function()
-        if notificationsEnabled then
-            for _, entityName in ipairs(EntityTable.Names) do
-                local entity = workspace:FindFirstChild(entityName)
-                if entity and not entity:GetAttribute("Notified") then
-                    entity:SetAttribute("Notified", true)
-                    NotifyEntity(entityName)
-                end
-            end
-        end
-    end)
-end
-MonitorEntities()
-
-function NotifyEntity(entityName)
-    if EntityTable.NotifyReason[entityName] then
-        local notificationData = EntityTable.NotifyReason[entityName]
-        
-            MsdoorsNotify(
-            notificationData.Title,
-            notificationData.Description,
-            "",
-            "rbxassetid://" .. notificationData.Image,
-            Color3.new(255, 0, 0), 
-            5
-        )
-       
-  end
-
-  NotificationGroup:AddToggle({
-    Name = "Notificar Entidades",
-    Default = false,
-    Callback = function(value)
-        notificationsEnabled = value
-        local sound = Instance.new("Sound")
-        if value then
-            sound.SoundId = "rbxassetid://4590657391"
-            sound.Volume = 1
-            sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-            sound:Play()
-            sound.Ended:Connect(function()
-                sound:Destroy()
-            end)
-            MsdoorsNotify("MsDoors", "Notificações de Entidades ativas!", "", "rbxassetid://100573561401335", Color3.new(0, 1, 0), 3)
-        else
-            sound.SoundId = "rbxassetid://4590662766"
-            sound.Volume = 1
-            sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-            sound:Play()
-            sound.Ended:Connect(function()
-                sound:Destroy()
-            end)
-            MsdoorsNotify("MsDoors", "Notificações de Entidades desativadas!", "", "rbxassetid://100573561401335", Color3.new(1, 0, 0), 3)
-        end
-    end
-})
-  
