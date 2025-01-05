@@ -49,6 +49,7 @@ local GroupPrincipal = Window:MakeTab({
     PremiumOnly = false
 })
 local AutomationGroup = GroupPrincipal:AddSection({Name = "Automation"})
+local PlayerGroup = GroupPrincipal:AddSection({Name = "Player"})
 
 
 local GroupExploits = Window:MakeTab({
@@ -313,3 +314,35 @@ local function AutoInteractLoop()
 end
 InitializeScript()
 task.spawn(AutoInteractLoop)
+
+
+local Script = { IsFools = false }
+local Player = game.Players.LocalPlayer
+local Character = Player.Character or Player.CharacterAdded:Wait()
+local Humanoid = Character:WaitForChild("Humanoid")
+local CanJumpEnabled = false
+PlayerGroup:AddToggle({
+    Name = "Enable Jump",
+    Default = false,
+    Callback = function(value)
+        CanJumpEnabled = value
+        if Script.IsFools then return end
+        Character:SetAttribute("CanJump", value)
+        if value then
+            OrionLib:MakeNotification({
+                Name = "Msdoors",
+                Content = "O pulo foi habilitado!",
+                Time = 2
+            })
+        else
+            OrionLib:MakeNotification({
+                Name = "Msdoors",
+                Content = "O pulo foi desabilitado!",
+                Time = 2
+            })
+            if Humanoid then
+                Humanoid.WalkSpeed = 22
+            end
+        end
+    end
+})
