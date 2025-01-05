@@ -99,6 +99,29 @@ GroupCredits:AddButton({
         end
     end
 })
+GroupCredits:AddLabel('<font color="#FF0000">Script</font>')
+GroupCredits:AddButton({
+    Name = "Descarregar",
+    Callback = function()
+        for _, v in pairs(getfenv()) do
+            if typeof(v) == "thread" then
+                task.cancel(v)
+            end
+        end
+        for _, v in pairs(getconnections(game.DescendantAdded)) do
+            v:Disable()
+        end
+        for _, v in pairs(getconnections(game.DescendantRemoving)) do
+            v:Disable()
+        end
+        if OrionLib then
+            OrionLib:Destroy()
+        end
+        print("[Msdoors] • Msdoors descarregado.")
+    end
+})
+OrionLib:Init()
+
 
 
 -- Tabela de Entidades para notificação.
