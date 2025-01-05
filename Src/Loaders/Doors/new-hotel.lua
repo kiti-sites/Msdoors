@@ -1,7 +1,3 @@
-if game.PlaceId == 6516141723 then
-print("[Msdoors] • Inialização interrompida!")
-print("[Msdoors] • Jogo Incorreto!")
-end
 --[[
                                                                                                                      
      ______  _______            ______       _____           _____            _____         _____            ______  
@@ -40,6 +36,10 @@ local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 local LatestRoom = ReplicatedStorage:WaitForChild("GameData"):WaitForChild("LatestRoom")
 print("[Msdoors] • [✅] Inicialização de Serviços")
+if game.PlaceId == 6516141723 then
+print("[Msdoors] • [✅] Inialização interrompida!")
+print("[Msdoors] • [❎] Jogo Incorreto!")
+end
 --[[ SCRIPT ]]--
 local GroupPrincipal = Window:MakeTab({
     Name = "Principal",
