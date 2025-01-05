@@ -69,11 +69,11 @@ local GroupCredits = Window:MakeTab({
     PremiumOnly = false
 })
 
-GroupCredits:AddLabel('Créditos')
+GroupCredits:AddLabel('<font color="#00FFFF">Créditos</font>')
 GroupCredits:AddLabel('• Rhyan57 - <font color="#FFA500">DONO</font>')
 GroupCredits:AddLabel('• SeekAlegriaFla - <font color="#FFA500">SUB-DONO</font>')
-GroupCredits:AddLabel('Redes')
-GroupCredits:AddLabel('Discord: <font color="#FFA500">https://dsc.gg/msdoors-gg</font>')
+GroupCredits:AddLabel('<font color="#00FFFF">Redes</font>')
+GroupCredits:AddLabel('• Discord: <font color="#9DABFF">https://dsc.gg/msdoors-gg</font>')
 
 
 -- Tabela de Entidades para notificação.
