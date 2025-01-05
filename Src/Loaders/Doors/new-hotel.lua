@@ -347,13 +347,14 @@ PlayerGroup:AddToggle({
 })
 
 
+--// Tabela de Entidades para notificação.
 local EntityTable = {
     ["Names"] = {"BackdoorRush", "BackdoorLookman", "RushMoving", "AmbushMoving", "Eyes", "JeffTheKiller", "A60", "A120"},
     ["NotifyReason"] = {
         ["A60"] = { ["Image"] = "12350986086", ["Title"] = "A-60", ["Description"] = "A-60 SPAWNOU!" },
         ["A120"] = { ["Image"] = "12351008553", ["Title"] = "A-120", ["Description"] = "A-120 SPAWNOU!" },
         ["HaltRoom"] = { ["Image"] = "11331795398", ["Title"] = "Halt", ["Description"] = "Prepare-se para Halt.",  ["Spawned"] = true },
-        ["Window_BrokenSally"] = { ["Image"] = "", ["Title"] = "Sally", ["Description"] = "Sally SPAWNOU!",  ["Spawned"] = true },
+        ["Window_BrokenSally"] = { ["Image"] = "100573561401335", ["Title"] = "Sally", ["Description"] = "Sally SPAWNOU!",  ["Spawned"] = true },
         ["BackdoorRush"] = { ["Image"] = "11102256553", ["Title"] = "Backdoor Blitz", ["Description"] = "Blitz SPAWNOU!" },
         ["RushMoving"] = { ["Image"] = "11102256553", ["Title"] = "Rush", ["Description"] = "Rush SPAWNOU!" },
         ["AmbushMoving"] = { ["Image"] = "10938726652", ["Title"] = "Ambush", ["Description"] = "Ambush SPAWNOU!" },
@@ -400,10 +401,26 @@ function NotifyEntity(entityName)
     Default = false,
     Callback = function(value)
         notificationsEnabled = value
+        local sound = Instance.new("Sound")
         if value then
-            MsdoorsNotify("MsDoors", "Notificações de Entidades ativas!", "", "rbxassetid://133997875469993", Color3.new(0, 1, 0), 3)
+            sound.SoundId = "rbxassetid://4590657391"
+            sound.Volume = 1
+            sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+            sound:Play()
+            sound.Ended:Connect(function()
+                sound:Destroy()
+            end)
+            MsdoorsNotify("MsDoors", "Notificações de Entidades ativas!", "", "rbxassetid://100573561401335", Color3.new(0, 1, 0), 3)
         else
-            MsdoorsNotify("MsDoors", "Notificações de Entidades desativadas!", "", "rbxassetid://133997875469993", Color3.new(1, 0, 0), 3)
+            sound.SoundId = "rbxassetid://4590662766"
+            sound.Volume = 1
+            sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+            sound:Play()
+            sound.Ended:Connect(function()
+                sound:Destroy()
+            end)
+            MsdoorsNotify("MsDoors", "Notificações de Entidades desativadas!", "", "rbxassetid://100573561401335", Color3.new(1, 0, 0), 3)
         end
     end
 })
+  
