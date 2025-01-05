@@ -131,107 +131,94 @@ GroupCredits:AddButton({
     end
 })
 --[[ OBJECTIVE ESP ]]--
-local objetos_esp = { 
-    {"KeyObtain", "Chave", Color3.fromRGB(0, 255, 0)},
-    {"LeverForGate", "Alavanca", Color3.fromRGB(0, 255, 0)},
-    {"ElectricalKeyObtain", "Chave elétrica", Color3.fromRGB(0, 255, 0)},
-    {"LiveHintBook", "Livro", Color3.fromRGB(0, 255, 0)},
-    {"LiveBreakerPolePickup", "Disjuntor", Color3.fromRGB(0, 255, 0)},
-    {"MinesGenerator", "Gerador", Color3.fromRGB(0, 255, 0)},
-    {"MinesGateButton", "Botão do portão", Color3.fromRGB(0, 255, 0)},
-    {"FuseObtain", "Fusível", Color3.fromRGB(0, 255, 0)},
-    {"MinesAnchor", "Torre", Color3.fromRGB(0, 255, 0)},
-    {"WaterPump", "Bomba de água", Color3.fromRGB(0, 255, 0)}
+local Settings = {
+    ESP = {
+        MaxDistance = 5000,
+        Colors = {
+            Objective = Color3.fromRGB(0, 255, 0)
+        }
+    }
 }
 
-local espAtivosObjetos = {}
-local espAtivoObjetos = false
-local verificarEspObjetos = false
+local espActive = false
+local espInstances = {}
 
-local function encontrarObjetosEsp(nomeObjeto)
-    local objetosEncontrados = {}
-    for _, objeto in ipairs(workspace:GetDescendants()) do
-        if objeto.Name == nomeObjeto then
-            table.insert(objetosEncontrados, objeto)
-        end
-    end
-    return objetosEncontrados
+-- Function to apply ESP using a modular design
+local function applyESP(object, name, color)
+    return Script.Functions.ESP({
+        Type = "Objective",
+        Object = object,
+        Text = name,
+        Color = color or Settings.ESP.Colors.Objective
+    })
 end
 
-local function aplicarESPObjetos(objeto, nome, cor)
-    local highlightColor = cor or BrickColor.random().Color
-
-    local Tracer = ESPLibrary.ESP.Tracer({
-        Model = objeto,
-        MaxDistance = 5000,
-        From = "tracerDirection",
-        Color = highlightColor
-    })
-
-    local Billboard = ESPLibrary.ESP.Billboard({
-        Name = nome,
-        Model = objeto,
-        MaxDistance = 5000,
-        Color = highlightColor
-    })
-
-    local Highlight = ESPLibrary.ESP.Highlight({
-        Name = nome,
-        Model = objeto,
-        MaxDistance = 5000,
-        FillColor = highlightColor,
-        OutlineColor = highlightColor,
-        TextColor = highlightColor
-    })
-    
-    return {Tracer = Tracer, Billboard = Billboard, Highlight = Highlight}
-end
-local function ativarESPObjetos()
-    for _, objData in ipairs(objetos_esp) do
-        local objetosEncontrados = encontrarObjetosEsp(objData[1])
-        if #objetosEncontrados > 0 then
-            for _, objeto in ipairs(objetosEncontrados) do
-                local espElementos = aplicarESPObjetos(objeto, objData[2], objData[3])
-                table.insert(espAtivosObjetos, espElementos)
+-- Function to find objects by name and apply ESP
+local function activateESPForObjectives()
+    for _, objData in ipairs({
+        {"KeyObtain", "Key"},
+        {"LeverForGate", "Gate Lever"},
+        {"ElectricalKeyObtain", "Electrical Key"},
+        {"LiveHintBook", "Book"},
+        {"LiveBreakerPolePickup", "Breaker"},
+        {"MinesGenerator", "Generator"},
+        {"MinesGateButton", "Gate Button"},
+        {"FuseObtain", "Fuse"},
+        {"MinesAnchor", "Anchor"},
+        {"WaterPump", "Water Pump"}
+    }) do
+        for _, object in ipairs(workspace:GetDescendants()) do
+            if object.Name == objData[1] then
+                local espInstance = applyESP(object, objData[2])
+                table.insert(espInstances, espInstance)
             end
-        else
-        
-    end
-    end
-end
-
-local function desativarESPObjetos()
-    for _, espElementos in ipairs(espAtivosObjetos) do
-        if espElementos.Tracer then espElementos.Tracer:Destroy() end
-        if espElementos.Billboard then espElementos.Billboard:Destroy() end
-        if espElementos.Highlight then espElementos.Highlight:Destroy() end
-    end
-    espAtivosObjetos = {} 
-end
-
-local function verificarNovosObjetos()
-    while verificarEspObjetos do
-        if espAtivoObjetos then
-            ativarESPObjetos()
         end
-        wait(5)
     end
 end
+
+-- Function to clear all active ESP
+local function deactivateESP()
+    for _, instance in ipairs(espInstances) do
+        if instance then
+            instance.Destroy()
+        end
+    end
+    espInstances = {}
+end
+
+-- Toggle ESP functionality
+Toggles.ObjectiveESP:OnChanged(function(state)
+    espActive = state
+    if espActive then
+        activateESPForObjectives()
+    else
+        deactivateESP()
+    end
+end)
+
+Options.ObjectiveEspColor:OnChanged(function(color)
+    for _, instance in ipairs(espInstances) do
+        instance.Update({
+            FillColor = color,
+            OutlineColor = color,
+            TextColor = color
+        })
+    end
+end)
 
 EspGroup:AddToggle({
     Name = "esp objective",
     Default = false,
     Callback = function(state)
-        espAtivoObjetos = state
-        if espAtivoObjetos then
-            verificarEspObjetos = true
-            spawn(verificarNovosObjetos)
+        espActive = state
+        if espActive then
+            activateESPForObjectives() -- Ativa o ESP
         else
-            verificarEspObjetos = false
-            desativarESPObjetos()
+            deactivateESP() -- Desativa o ESP
         end
     end
 })
+
 -- Tabela de Entidades para notificação.
 local EntityTable = {
     ["Names"] = {"BackdoorRush", "BackdoorLookman", "RushMoving", "AmbushMoving", "Eyes", "JeffTheKiller", "A60", "A120"},
