@@ -100,7 +100,7 @@ AutomationGroup:AddToggle({
         UpdateProximityPrompts()
     end
 })
-
+AutomationGroup:AddLabel("")
 
 shared = {
     Character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait(),
