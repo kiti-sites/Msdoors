@@ -111,21 +111,23 @@ GroupCredits:AddLabel('<font color="#FF0000">Script</font>')
 GroupCredits:AddButton({
     Name = "Descarregar",
     Callback = function()
-        for _, v in pairs(getfenv()) do
-            if typeof(v) == "thread" then
-                task.cancel(v)
+        for _, thread in pairs(getfenv()) do
+            if typeof(thread) == "thread" then
+                task.cancel(thread)
             end
         end
-        for _, v in pairs(getconnections(game.DescendantAdded)) do
-            v:Disable()
-        end
-        for _, v in pairs(getconnections(game.DescendantRemoving)) do
-            v:Disable()
-        end
+      
+        notificationsEnabled = false
+        InstaInteractEnabled = false
+        AutoInteractEnabled = false
+        initialized = false
+        verificarEspObjetos = false
+        desativarESPObjetos()
+      
         if OrionLib then
             OrionLib:Destroy()
         end
-        print("[Msdoors] • Msdoors descarregado.")
+        warn("[Msdoors] • Todos os sistemas foram desativados e a interface fechada.")
     end
 })
 --[[ OBJECTIVE ESP ]]--
