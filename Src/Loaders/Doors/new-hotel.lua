@@ -74,7 +74,31 @@ GroupCredits:AddLabel('• Rhyan57 - <font color="#FFA500">DONO</font>')
 GroupCredits:AddLabel('• SeekAlegriaFla - <font color="#FFA500">SUB-DONO</font>')
 GroupCredits:AddLabel('<font color="#00FFFF">Redes</font>')
 GroupCredits:AddLabel('• Discord: <font color="#9DABFF">https://dsc.gg/msdoors-gg</font>')
-
+GroupCredits:AddButton({Name = "Discord", Callback = function()
+        local url = "https://dsc.gg/msdoors-gg"
+        if syn then
+            syn.request({
+                Url = url,
+                Method = "GET"
+            })
+        elseif setclipboard then
+            setclipboard(url)
+            OrionLib:MakeNotification({
+                Name = "Link Copiado!",
+                Content = "<font color="#FF0000">Seu executor não suporta redirecionar.</font> <font color="#FFA500">Link copiado.</font>",
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        else
+            OrionLib:MakeNotification({
+                Name = "LOL",
+                Content = "Seu executor não suporta redirecionar ou copiar links.",
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        end
+    end
+})
 
 -- Tabela de Entidades para notificação.
 local EntityTable = {
