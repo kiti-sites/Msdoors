@@ -400,9 +400,10 @@ function NotifyEntity(entityName)
     Default = false,
     Callback = function(value)
         notificationsEnabled = value
-            MsdoorsNotify("ENTIDADES", "notificações Ativadas.", "", "rbxassetid://100573561401335", Color3.new(0, 1, 0), 3)
+        if value then
+            MsdoorsNotify("MsDoors", "Notificações de Entidades ativas!", "", "rbxassetid://133997875469993", Color3.new(0, 1, 0), 3)
         else
-            MsdoorsNotify("ENTIDADES", "Notificações desativadas.", "", "rbxassetid://100573561401335", Color3.new(1, 0, 0), 3)
+            MsdoorsNotify("MsDoors", "Notificações de Entidades desativadas!", "", "rbxassetid://133997875469993", Color3.new(1, 0, 0), 3)
         end
     end
 })
