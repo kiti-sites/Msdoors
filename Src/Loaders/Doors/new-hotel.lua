@@ -17,7 +17,7 @@
   ]]--
 --[[ LIBRARY & API]]--
 if _G.OrionLibLoaded then
-    warn("[Msdoors] • Script já está carregada!")
+    warn("[Msdoors] • Script já está carregado!")
     return
 end
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
@@ -476,17 +476,9 @@ PlayerGroup:AddToggle({
         if Script.IsFools then return end
         Character:SetAttribute("CanJump", value)
         if value then
-            OrionLib:MakeNotification({
-                Name = "Msdoors",
-                Content = "O pulo foi habilitado!",
-                Time = 2
-            })
+            
         else
-            OrionLib:MakeNotification({
-                Name = "Msdoors",
-                Content = "O pulo foi desabilitado!",
-                Time = 2
-            })
+           
             if Humanoid then
                 Humanoid.WalkSpeed = 22
             end
