@@ -69,6 +69,7 @@ local GroupVisual = Window:MakeTab({
     PremiumOnly = false
 })
 local NotificationGroup = GroupVisual:AddSection({Name = "Notification"})
+local EspGroup = GroupVisual:AddSection({Name = "Esp"})
 
 local GroupCredits = Window:MakeTab({
     Name = "Msdoors",
@@ -127,10 +128,108 @@ GroupCredits:AddButton({
         print("[Msdoors] • Msdoors descarregado.")
     end
 })
-OrionLib:Init()
+--[[ OBJECTIVE ESP ]]--
+local objetos_esp = { 
+    {"KeyObtain", "Chave", Color3.fromRGB(0, 255, 0)},
+    {"LeverForGate", "Alavanca", Color3.fromRGB(0, 255, 0)},
+    {"ElectricalKeyObtain", "Chave elétrica", Color3.fromRGB(0, 255, 0)},
+    {"LiveHintBook", "Livro", Color3.fromRGB(0, 255, 0)},
+    {"LiveBreakerPolePickup", "Disjuntor", Color3.fromRGB(0, 255, 0)},
+    {"MinesGenerator", "Gerador", Color3.fromRGB(0, 255, 0)},
+    {"MinesGateButton", "Botão do portão", Color3.fromRGB(0, 255, 0)},
+    {"FuseObtain", "Fusível", Color3.fromRGB(0, 255, 0)},
+    {"MinesAnchor", "Torre", Color3.fromRGB(0, 255, 0)},
+    {"WaterPump", "Bomba de água", Color3.fromRGB(0, 255, 0)}
+}
 
+local espAtivosObjetos = {}
+local espAtivoObjetos = false
+local verificarEspObjetos = false
 
+local function encontrarObjetosEsp(nomeObjeto)
+    local objetosEncontrados = {}
+    for _, objeto in ipairs(workspace:GetDescendants()) do
+        if objeto.Name == nomeObjeto then
+            table.insert(objetosEncontrados, objeto)
+        end
+    end
+    return objetosEncontrados
+end
 
+local function aplicarESPObjetos(objeto, nome, cor)
+    local highlightColor = cor or BrickColor.random().Color
+
+    local Tracer = ESPLibrary.ESP.Tracer({
+        Model = objeto,
+        MaxDistance = 5000,
+        From = "tracerDirection",
+        Color = highlightColor
+    })
+
+    local Billboard = ESPLibrary.ESP.Billboard({
+        Name = nome,
+        Model = objeto,
+        MaxDistance = 5000,
+        Color = highlightColor
+    })
+
+    local Highlight = ESPLibrary.ESP.Highlight({
+        Name = nome,
+        Model = objeto,
+        MaxDistance = 5000,
+        FillColor = highlightColor,
+        OutlineColor = highlightColor,
+        TextColor = highlightColor
+    })
+    
+    return {Tracer = Tracer, Billboard = Billboard, Highlight = Highlight}
+end
+local function ativarESPObjetos()
+    for _, objData in ipairs(objetos_esp) do
+        local objetosEncontrados = encontrarObjetosEsp(objData[1])
+        if #objetosEncontrados > 0 then
+            for _, objeto in ipairs(objetosEncontrados) do
+                local espElementos = aplicarESPObjetos(objeto, objData[2], objData[3])
+                table.insert(espAtivosObjetos, espElementos)
+            end
+        else
+        
+    end
+    end
+end
+
+local function desativarESPObjetos()
+    for _, espElementos in ipairs(espAtivosObjetos) do
+        if espElementos.Tracer then espElementos.Tracer:Destroy() end
+        if espElementos.Billboard then espElementos.Billboard:Destroy() end
+        if espElementos.Highlight then espElementos.Highlight:Destroy() end
+    end
+    espAtivosObjetos = {} 
+end
+
+local function verificarNovosObjetos()
+    while verificarEspObjetos do
+        if espAtivoObjetos then
+            ativarESPObjetos()
+        end
+        wait(5)
+    end
+end
+
+EspGroup:AddToggle({
+    Name = "esp objective",
+    Default = false,
+    Callback = function(state)
+        espAtivoObjetos = state
+        if espAtivoObjetos then
+            verificarEspObjetos = true
+            spawn(verificarNovosObjetos)
+        else
+            verificarEspObjetos = false
+            desativarESPObjetos()
+        end
+    end
+})
 -- Tabela de Entidades para notificação.
 local EntityTable = {
     ["Names"] = {"BackdoorRush", "BackdoorLookman", "RushMoving", "AmbushMoving", "Eyes", "JeffTheKiller", "A60", "A120"},
