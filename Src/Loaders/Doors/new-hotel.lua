@@ -75,7 +75,7 @@ GroupCredits:AddLabel('• SeekAlegriaFla - <font color="#FFA500">SUB-DONO</font
 GroupCredits:AddLabel('<font color="#00FFFF">Redes</font>')
 GroupCredits:AddLabel('• Discord: <font color="#9DABFF">https://dsc.gg/msdoors-gg</font>')
 GroupCredits:AddButton({
-    Name = "Discord",
+    Name = "Copiar Link",
     Callback = function()
         local url = "https://dsc.gg/msdoors-gg"
         if syn then
@@ -88,14 +88,12 @@ GroupCredits:AddButton({
             OrionLib:MakeNotification({
                 Name = "Link Copiado!",
                 Content = "Seu executor não suporta redirecionar. Link copiado.",
-                Image = "rbxassetid://4483345998",
                 Time = 5
             })
         else
             OrionLib:MakeNotification({
                 Name = "LOL",
                 Content = "Seu executor não suporta redirecionar ou copiar links.",
-                Image = "rbxassetid://4483345998",
                 Time = 5
             })
         end
