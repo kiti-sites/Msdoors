@@ -69,7 +69,11 @@ local GroupCredits = Window:MakeTab({
     PremiumOnly = false
 })
 
+GroupCredits:AddParagraph("<font color="#9DABFF">Créditos</font>",
+  "• Rhyan57 - <font color="#000000">Owner</font>
+  • SeekAlegriaFla - <font color="#000000">Sub-Owner</font>")
 
+  
 -- Tabela de Entidades para notificação.
 local EntityTable = {
     ["Names"] = {"BackdoorRush", "BackdoorLookman", "RushMoving", "AmbushMoving", "Eyes", "JeffTheKiller", "A60", "A120"},
@@ -432,9 +436,4 @@ PlayerGroup:AddToggle({
     end
 })
 
-
-
-GroupCredits:AddParagraph("<font color="#9DABFF">Créditos</font>",
-  "• Rhyan57 - <font color="#000000">Owner</font>
-  • SeekAlegriaFla - <font color="#000000">Sub-Owner</font>")
 
