@@ -183,6 +183,8 @@ end
 MonitorEntities()
 NotificationGroup:AddToggle({
     Name = "Notificar Entidades",
+    Save = true,
+    Flag = "NotifyEntitys-toggle",
     Default = false,
     Callback = function(value)
         if not initialized then
@@ -242,6 +244,8 @@ end)
 AutomationGroup:AddToggle({
     Name = "Instant Interaction",
     Default = false,
+    Save = true,
+    Flag = "instantInteract-toggle",
     Callback = function(value)
         InstaInteractEnabled = value
         UpdateProximityPrompts()
@@ -386,6 +390,8 @@ local IgnoreSettings = {
 AutomationGroup:AddToggle({
     Name = "Auto Interact",
     Default = false,
+    Save = true,
+    Flag = "AutoInteract-toggle"
     Callback = function(Value)
         AutoInteractEnabled = Value
     end    
@@ -472,6 +478,8 @@ local CanJumpEnabled = false
 PlayerGroup:AddToggle({
     Name = "Enable Jump",
     Default = false,
+    Save = true,
+    Flag = "enableJump-toggle"
     Callback = function(value)
         CanJumpEnabled = value
         if Script.IsFools then return end
