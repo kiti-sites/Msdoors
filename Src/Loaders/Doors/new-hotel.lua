@@ -81,8 +81,8 @@ local EntityTable = {
 }
 
 local notificationsEnabled = false
+local initialized = false
 
--- Função para monitorar as entidades.
 function MonitorEntities()
     game:GetService("RunService").Stepped:Connect(function()
         if notificationsEnabled then
@@ -112,11 +112,15 @@ function NotifyEntity(entityName)
 end
 
 MonitorEntities()
-
 NotificationGroup:AddToggle({
     Name = "Notificar Entidades",
     Default = false,
     Callback = function(value)
+        if not initialized then
+            initialized = true
+            return
+        end
+        
         notificationsEnabled = value
         local sound = Instance.new("Sound")
         sound.SoundId = value and "rbxassetid://4590657391" or "rbxassetid://4590662766"
