@@ -479,7 +479,7 @@ PlayerGroup:AddToggle({
     Name = "Enable Jump",
     Default = false,
     Save = true,
-    Flag = "enableJump-toggle"
+    Flag = "enableJump-toggle",
     Callback = function(value)
         CanJumpEnabled = value
         if Script.IsFools then return end
