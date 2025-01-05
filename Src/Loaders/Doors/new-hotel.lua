@@ -85,7 +85,7 @@ GroupCredits:AddButton({Name = "Discord", Callback = function()
             setclipboard(url)
             OrionLib:MakeNotification({
                 Name = "Link Copiado!",
-                Content = "<font color="#FF0000">Seu executor não suporta redirecionar.</font> <font color="#FFA500">Link copiado.</font>",
+                Content = "Seu executor não suporta redirecionar. Link copiado.",
                 Image = "rbxassetid://4483345998",
                 Time = 5
             })
