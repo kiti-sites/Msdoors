@@ -391,7 +391,7 @@ AutomationGroup:AddToggle({
     Name = "Auto Interact",
     Default = false,
     Save = true,
-    Flag = "AutoInteract-toggle"
+    Flag = "AutoInteract-toggle",
     Callback = function(Value)
         AutoInteractEnabled = Value
     end    
