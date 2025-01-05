@@ -68,8 +68,8 @@ local GroupCredits = Window:MakeTab({
     Icon = "rbxassetid://7733765045",
     PremiumOnly = false
 })
-GroupCredits:AddLabel('• Rhyan57 <font color="#FFA500">DONO</font>')
-GroupCredits:AddLabel('• SeekAlegriaFla <font color="#FFA500">SUB-DONO</font>')
+GroupCredits:AddLabel('<font color="#FFA500">Rhyan57 - Dono</font>')
+GroupCredits:AddLabel('<font color="#FFA500">SeekAlegriaFla - Sub-Dono</font>')
   
 -- Tabela de Entidades para notificação.
 local EntityTable = {
