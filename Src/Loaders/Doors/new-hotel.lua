@@ -74,7 +74,9 @@ GroupCredits:AddLabel('• Rhyan57 - <font color="#FFA500">DONO</font>')
 GroupCredits:AddLabel('• SeekAlegriaFla - <font color="#FFA500">SUB-DONO</font>')
 GroupCredits:AddLabel('<font color="#00FFFF">Redes</font>')
 GroupCredits:AddLabel('• Discord: <font color="#9DABFF">https://dsc.gg/msdoors-gg</font>')
-GroupCredits:AddButton({Name = "Discord", Callback = function()
+GroupCredits:AddButton({
+    Name = "Discord",
+    Callback = function()
         local url = "https://dsc.gg/msdoors-gg"
         if syn then
             syn.request({
@@ -99,6 +101,7 @@ GroupCredits:AddButton({Name = "Discord", Callback = function()
         end
     end
 })
+
 
 -- Tabela de Entidades para notificação.
 local EntityTable = {
