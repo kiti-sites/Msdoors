@@ -346,7 +346,7 @@ local AutoInteractEnabled = false
 local IgnoreSettings = {
     ["Jeff Items"] = true,
     ["Unlock w/ Lockpick"] = false,
-    ["Paintings"] = false,
+    ["Paintings"] = true,
     ["Gold"] = false,
     ["Light Source Items"] = false,
     ["Skull Prompt"] = false
@@ -376,13 +376,14 @@ AutomationGroup:AddDropdown({
 })
 
 AutomationGroup:AddBind({
-    Name = "Toggle Key",
+    Name = "KeyBind",
     Default = Enum.KeyCode.R,
     Hold = false,
     Callback = function()
         AutoInteractEnabled = not AutoInteractEnabled
     end    
 })
+AutomationGroup:AddLabel("")
 
 local function AutoInteractLoop()
     while true do
