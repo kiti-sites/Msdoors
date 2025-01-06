@@ -186,7 +186,7 @@ GroupExploit:AddButton({
         end
     end
 })
-GrouopPlayer:AddToggle({
+GroupPlayer:AddToggle({
     Name = "Autofarm",
     Default = false,
     Callback = function(state)
