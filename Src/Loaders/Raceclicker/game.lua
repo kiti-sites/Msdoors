@@ -108,9 +108,9 @@ local GroupPrincipal = Window:MakeTab({
     PremiumOnly = false
 })
 local FarmGroup = GroupPrincipal:AddSection({Name = "Automoção" })
-FarmGroup:GroupCredits:AddLabel('<font color="#FF0000">AutoFarm WINS</font>')
+GroupCredits:AddLabel('<font color="#FF0000">Autofarm win</font>')
 
---[[ Auto Farm Wins script ]]--
+--[[ SCRIPT ]]--
 local destino = Vector3.new(-583062, 37, 77)
 local ativo = false
 local clicando = false
@@ -202,7 +202,6 @@ FarmGroup:AddLabel("")
 task.spawn(function()
 
     local AddonTab = Window:MakeTab({Name = "Addons [BETA]", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-    AddonTab:GroupCredits:AddLabel('<font color="#FF0000">Está é uma para addons não oficiais! tome cuidado com o que você usa.</font>')
     
     if not isfolder(".msdoors/addons") then
         makefolder(".msdoors/addons")
@@ -359,7 +358,5 @@ GroupCredits:AddButton({
         warn("[Msdoors] • Todos os sistemas foram desativados e a interface fechada.")
     end
 })
-
-
 
 OrionLib:Init()
