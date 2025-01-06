@@ -17,169 +17,116 @@
                                                                                                                      
                                         Por Rhyan57 💜
   ]]--
-
---// SERVIÇOS \\--
+--[[ LIBRARY & API]]--
+if _G.OrionLibLoaded then
+    warn("[Msdoors] • Script já está carregado!")
+    return
+end
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/refs/heads/main/Library/OrionLibrary_msdoors.lua'))()
+local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://100573561401335", IntroIcon = "rbxassetid://95869322194132", Name = "MsDoors | The Hotel", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/hotel"})
+local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
-local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1 ",Icon = "rbxassetid://100573561401335", IntroIcon = "rbxassetid://95869322194132", Name = "MsDoors | Carrinho + Cart Para GigaNoob!", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/carrinhoCartGiganoob"})
+print("[Msdoors] • [✅] Inialização da livraria e apis")
+_G.OrionLibLoaded = true
 
---// Player ESP \\--
-local ESPEnabled = false
-local ESPObjects = {}
-local RunService = game:GetService("RunService")
+--[[ SERVIÇOS ]]--
+local Lighting = game:GetService("Lighting")
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local Camera = workspace.CurrentCamera
-
--- Helper functions
-local function getDistance(from, to)
-    return math.floor((from.Position - to.Position).Magnitude)
-end
-
-local function getRGB()
-    local hue = tick() % 5 / 5
-    return Color3.fromHSV(hue, 1, 1)
-end
-
-local function createBillboard(player, rootPart)
-    local billboard = Instance.new("BillboardGui")
-    billboard.Adornee = rootPart
-    billboard.Size = UDim2.new(4, 0, 2, 0)
-    billboard.StudsOffset = Vector3.new(0, 3, 0)
-    billboard.AlwaysOnTop = true
-    billboard.Parent = game.CoreGui
-
-    local nameLabel = Instance.new("TextLabel")
-    nameLabel.Size = UDim2.new(1, 0, 0.3, 0)
-    nameLabel.BackgroundTransparency = 1
-    nameLabel.TextScaled = true
-    nameLabel.Text = player.Name
-    nameLabel.Font = Enum.Font.SourceSansBold
-    nameLabel.Parent = billboard
-
-    local infoLabel = Instance.new("TextLabel")
-    infoLabel.Size = UDim2.new(1, 0, 0.3, 0)
-    infoLabel.Position = UDim2.new(0, 0, 0.3, 0)
-    infoLabel.BackgroundTransparency = 1
-    infoLabel.TextScaled = true
-    infoLabel.Font = Enum.Font.SourceSansBold
-    infoLabel.Parent = billboard
-
-    return billboard, nameLabel, infoLabel
-end
-
-local function createESP(player, character)
-    local rootPart = character:FindFirstChild("HumanoidRootPart")
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    if not rootPart or not humanoid then return end
-
-    local billboard, nameLabel, infoLabel = createBillboard(player, rootPart)
-
-    local box = Instance.new("BoxHandleAdornment")
-    box.Adornee = character
-    box.Size = Vector3.new(4, 7, 4)
-    box.Color3 = getRGB()
-    box.Transparency = 0.6
-    box.AlwaysOnTop = true
-    box.ZIndex = 2
-    box.Parent = game.CoreGui
-
-    local line = Drawing.new("Line")
-    line.Color = getRGB()
-    line.Thickness = 2
-    line.Visible = true
-
-    local function update()
-        if not ESPEnabled or not character.Parent or not rootPart:IsDescendantOf(workspace) then
-            removeESP(player)
-            return
-        end
-
-        local screenPos, onScreen = Camera:WorldToViewportPoint(rootPart.Position)
-        if onScreen then
-            line.Visible = true
-            line.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
-            line.To = Vector2.new(screenPos.X, screenPos.Y)
-
-            nameLabel.TextColor3 = getRGB()
-            box.Color3 = getRGB()
-
-            local distance = getDistance(Camera.CFrame, rootPart.CFrame)
-            infoLabel.Text = string.format("Health: %d | Distance: %d", math.floor(humanoid.Health), distance)
-        else
-            line.Visible = false
-        end
-    end
-
-    local connection = RunService.RenderStepped:Connect(update)
-    ESPObjects[player] = {Billboard = billboard, Box = box, Line = line, Connection = connection}
-end
-
-local function removeESP(player)
-    local espObject = ESPObjects[player]
-    if espObject then
-        espObject.Billboard:Destroy()
-        espObject.Box:Destroy()
-        espObject.Line:Remove()
-        espObject.Connection:Disconnect()
-        ESPObjects[player] = nil
-    end
-end
-
-local function handlePlayer(player)
-    if player.Character then
-        createESP(player, player.Character)
-    end
-
-    player.CharacterAdded:Connect(function(character)
-        removeESP(player)
-        createESP(player, character)
-    end)
-
-    player.CharacterRemoving:Connect(function()
-        removeESP(player)
-    end)
-end
-
-local function toggleESP(state)
-    ESPEnabled = state
-    if ESPEnabled then
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player ~= LocalPlayer then
-                handlePlayer(player)
-            end
-        end
-    else
-        for player, _ in pairs(ESPObjects) do
-            removeESP(player)
-        end
-    end
-end
-
--- Player connections
-Players.PlayerAdded:Connect(function(player)
-    if ESPEnabled then
-        handlePlayer(player)
-    end
-end)
-
-Players.PlayerRemoving:Connect(removeESP)
-
---\\ FIM //--
-
-local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local SoundService = game:GetService("SoundService")
+local TextChatService = game:GetService("TextChatService")
+local UserInputService = game:GetService("UserInputService")
+local PathfindingService = game:GetService("PathfindingService")
+local ProximityPromptService = game:GetService("ProximityPromptService")
+local TweenService = game:GetService("TweenService")
+local Workspace = game:GetService("Workspace")
 local HttpService = game:GetService("HttpService")
-local musicPlayer = {
-    isPlaying = false,
-    currentSound = nil,
-    currentPlaylist = nil,
-    playlists = {},
-    currentIndex = 0,
-    volume = 0.5,
-    folderName = ".msdoors",
-}
+local LocalPlayer = Players.LocalPlayer
+local musicPlayer = { isPlaying = false, currentSound = nil, currentPlaylist = nil, playlists = {}, currentIndex = 0, volume = 0.5, folderName = ".msdoors", }
+print("[Msdoors] • [✅] Inicialização de Serviços")
+--[[ VERIFICAÇÃO DE JOGO ]]--
+local GAME_ID_ESPERADO = 5275822877
+local function getGameInfo()
+    local success, gameInfo = pcall(function()
+        return game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
+    end)
+    
+    if not success then
+        warn("[Msdoors] • Erro ao obter informações do jogo:", gameInfo)
+        return nil
+    end
+    
+    return gameInfo
+end
+local function verificarJogo()
+    local gameInfo = getGameInfo()
+    
+    if not gameInfo then
+        error(string.format([[
+[ERRO CRÍTICO]
+==========================================
+Falha ao verificar o jogo atual
+Detalhes do erro:
+- Não foi possível obter informações do jogo
+- Place ID atual: %d
+- Hora do erro: %s
+==========================================
+]], game.PlaceId, os.date("%Y-%m-%d %H:%M:%S")))
+        return false
+    end
+    
+    if game.PlaceId ~= GAME_ID_ESPERADO then
+        error(string.format([[
+[ERRO DE VERIFICAÇÃO]
+==========================================
+Jogo incompatível detectado!
+Detalhes:
+- ID Esperado: %d
+- ID Atual: %d
+- Nome do Jogo: %s
+- Criador: %s
+- Hora da verificação: %s
+==========================================
+]], GAME_ID_ESPERADO, game.PlaceId, gameInfo.Name, gameInfo.Creator.Name, os.date("%Y-%m-%d %H:%M:%S")))
+        return false
+    end
+    print(string.format([[
+[VERIFICAÇÃO BEM-SUCEDIDA]
+==========================================
+Jogo verificado com sucesso!
+- ID do Jogo: %d
+- Nome: %s
+- Hora: %s
+==========================================
+]], game.PlaceId, gameInfo.Name, os.date("%Y-%m-%d %H:%M:%S")))
+    return true
+end
+verificarJogo()
 
+--[[ TABS]]--
+local GroupPrincipal = Window:MakeTab({
+    Name = "Principal",
+    Icon = "rbxassetid://7733765045",
+    PremiumOnly = false
+})
+local CartsTab = GroupPrincipal:AddSection({ Name = "Carts"})
+CartsTab:AddLabel('<font color="#FF0000">Use responsibly and with consent.</font>')
+local JeepsTab = GroupPrincipal:AddSection({ Name = "Jeeps" })
+JeepsTab:AddLabel('<font color="#FF0000">This function may cause some lag for the player.</font>')
+local TeleportGroup = GroupPrincipal:AddSection({ Name = "Teleportes" })
+TeleportGroup:AddLabel('<font color="#9DABFF">Aba de teleportes</font>')
+
+local GroupMusic = Window:MakeTab({
+    Name = "Musica",
+    Icon = "rbxassetid://7734020554",
+    PremiumOnly = false
+})
+local Msplayer = GroupMusic:AddSection({ Name = "Sistema de Músicas" })
+Msplayer:AddLabel('<font color="#9DABFF">Escute músicas enquanto joga</font>')
+
+--[[ MUSIC SYSTEM ]]--
 local function createFolderIfNotExists()
     if not isfolder(musicPlayer.folderName) then
         makefolder(musicPlayer.folderName)
@@ -435,33 +382,10 @@ local function interactWithAllCarrinhos()
         task.wait(0.1) 
     end
 end
-
---// CRÉDITOS \\--
-local CreditsTab = Window:MakeTab({
-    Name = "Créditos - Msdoors",
-    Icon = "rbxassetid://7743875759",
-    PremiumOnly = false
-})
-local CdSc = CreditsTab:AddSection({
-    Name = "Créditos"
-})
-
-CdSc:AddParagraph("Rhyan57", "• Criador e fundador do Msdoors.")
-CdSc:AddParagraph("SeekAlegriaFla", "• Ajudante e coletor de files.")
-
-
-local ExploitTab = Window:MakeTab({
-    Name = "Exploits",
-    Icon = "rbxassetid://7743873633",
-    PremiumOnly = false
-})
-local CartsTab = ExploitTab:AddSection({
-	Name = "Carts"
-})
-
 destroyAllBuyHatGamePassSign()
+
 CartsTab:AddToggle({
-    Name = "Quebrar Carts",
+    Name = "Break Carts",
     Default = false,
     Callback = function(state)
         getgenv().AutoClickDetectors = state
@@ -483,7 +407,7 @@ CartsTab:AddToggle({
 })
 
 CartsTab:AddSlider({
-    Name = "Velocidade do Clique (segundos)",
+    Name = "Spam speed",
     Min = 0.1,
     Max = 2,
     Default = 0.3,
@@ -500,23 +424,13 @@ CartsTab:AddSlider({
 })
 
 CartsTab:AddToggle({
-    Name = "Spam Mais Velocidade ",
+    Name = "speed for all carts",
     Default = false,
     Callback = function(state)
-        getgenv().AutoClickDetectors1 = state -- Usa a nova variável de controle
+        getgenv().AutoClickDetectors1 = state
         if state then
-            OrionLib:MakeNotification({
-                Name = "Sistema Ativado",
-                Content = "Spam de ➕ iniciado!",
-                Time = 5
-            })
             spawn(spamClickDetectors)
-        else
-            OrionLib:MakeNotification({
-                Name = "Sistema Desativado",
-                Content = "Spam de ➕ pausado.",
-                Time = 5
-            })
+			else
         end
     end
 })
@@ -546,18 +460,16 @@ CartsTab:AddToggle({
 ]]--
 
 CartsTab:AddButton({
-    Name = "Ligar/Desligar Carts",
+    Name = "Stop/Play carts",
     Callback = function()
         interactOnce()
     end
 })
 
-local JeepsTab = ExploitTab:AddSection({
-	Name = "Jeeps"
-})
+
 
 JeepsTab:AddToggle({
-    Name = "Spam Spawn Jeeps",
+    Name = "Spawn Infinite Jeeps(half slow)",
     Default = false,
     Callback = function(state)
         getgenv().AutoSpamCarrinhos = state
@@ -578,17 +490,8 @@ JeepsTab:AddToggle({
     end
 })
 
-local MainTab = Window:MakeTab({
-    Name = "Extras",
-    Icon = "rbxassetid://7734068495",
-    PremiumOnly = false
-})
 
-local Section = MainTab:AddSection({
-    Name = "Teleporte"
-})
-
-MainTab:AddDropdown({
+TeleportGroup:AddDropdown({
     Name = "Selecione um Local",
     Default = "Início",
     Options = {"Início", "Meio", "Fim"},
@@ -603,22 +506,6 @@ MainTab:AddDropdown({
     end
 })
 
-
-MainTab:AddToggle({
-    Name = "Players esp",
-    Default = false,
-    Callback = function(value)
-        toggleESP(value)
-    end
-})
-
-local MsPlayer = Window:MakeTab({
-    Name = "Musica",
-    Icon = "rbxassetid://7734020554",
-    PremiumOnly = false
-})
-
-MsPlayer:AddLabel("Gerenciar Playlist")
 
 MsPlayer:AddTextbox({
     Name = "Nome da Playlist",
@@ -887,3 +774,66 @@ task.spawn(function()
         AddonTab:AddLabel("A pasta de addons está vazia. Adicione addons na pasta '.msdoors/addons' e reinicie o script.")
     end
 end)
+
+
+local GroupCredits = Window:MakeTab({
+    Name = "Msdoors",
+    Icon = "rbxassetid://7733765045",
+    PremiumOnly = false
+})
+
+GroupCredits:AddLabel('<font color="#00FFFF">Créditos</font>')
+GroupCredits:AddLabel('• Rhyan57 - <font color="#FFA500">DONO</font>')
+GroupCredits:AddLabel('• SeekAlegriaFla - <font color="#FFA500">SUB-DONO</font>')
+GroupCredits:AddLabel('<font color="#00FFFF">Redes</font>')
+GroupCredits:AddLabel('• Discord: <font color="#9DABFF">https://dsc.gg/msdoors-gg</font>')
+GroupCredits:AddButton({
+    Name = "Copiar Link",
+    Callback = function()
+        local url = "https://dsc.gg/msdoors-gg"
+        if syn then
+            syn.request({
+                Url = url,
+                Method = "GET"
+            })
+        elseif setclipboard then
+            setclipboard(url)
+            OrionLib:MakeNotification({
+                Name = "Link Copiado!",
+                Content = "Seu executor não suporta redirecionar. Link copiado.",
+                Time = 5
+            })
+        else
+            OrionLib:MakeNotification({
+                Name = "LOL",
+                Content = "Seu executor não suporta redirecionar ou copiar links.",
+                Time = 5
+            })
+        end
+    end
+})
+GroupCredits:AddLabel('<font color="#FF0000">Script</font>')
+GroupCredits:AddButton({
+    Name = "Descarregar",
+    Callback = function()
+        for _, thread in pairs(getfenv()) do
+            if typeof(thread) == "thread" then
+                task.cancel(thread)
+            end
+        end
+      
+        notificationsEnabled = false
+        InstaInteractEnabled = false
+        AutoInteractEnabled = false
+        initialized = false
+        verificarEspObjetos = false
+        desativarESPObjetos()
+      
+        if OrionLib then
+            OrionLib:Destroy()
+        end
+        warn("[Msdoors] • Todos os sistemas foram desativados e a interface fechada.")
+    end
+})
+
+
