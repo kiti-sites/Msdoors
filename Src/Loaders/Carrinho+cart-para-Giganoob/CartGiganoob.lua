@@ -123,8 +123,8 @@ local GroupMusic = Window:MakeTab({
     Icon = "rbxassetid://7734020554",
     PremiumOnly = false
 })
-local Msplayer = GroupMusic:AddSection({ Name = "Sistema de Músicas" })
-Msplayer:AddLabel('<font color="#9DABFF">Escute músicas enquanto joga</font>')
+local MsPlayer = GroupMusic:AddSection({ Name = "Sistema de Músicas" })
+MsPlayer:AddLabel('<font color="#9DABFF">Escute músicas enquanto joga</font>')
 
 --[[ MUSIC SYSTEM ]]--
 local function createFolderIfNotExists()
@@ -587,7 +587,7 @@ MsPlayer:AddTextbox({
     end
 })
 
-MsPlayer:AddLabel("Playe(Playlist)")
+MsPlayer::AddLabel('<font color="#9DABFF">Playlist</font>')
 MsPlayer:AddButton({
     Name = "Tocar Playlist",
     Callback = function()
@@ -604,9 +604,21 @@ MsPlayer:AddButton({
     end
 })
 
-MsPlayer:AddLabel("Player")
-local musicIdFromTextbox = ""
+MsPlayer:AddButton({
+    Name = "Pausar",
+    Callback = function()
+        if musicPlayer.currentSound and musicPlayer.isPlaying then
+            musicPlayer.currentSound:Pause()
+            musicPlayer.isPlaying = false
+            createNotification("Reprodutor", "Música pausada.", 3)
+        else
+            createNotification("Erro", "Nenhuma música está tocando ou já está pausada.", 3)
+        end
+    end
+})
 
+MsPlayer:AddLabel('<font color="#9DABFF">Player</font>')
+local musicIdFromTextbox = ""
 MsPlayer:AddTextbox({
     Name = "Música (ID do Roblox)",
     Default = "",
