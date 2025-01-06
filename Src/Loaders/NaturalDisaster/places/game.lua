@@ -98,12 +98,12 @@ TeleportsGroup:AddLabel('<font color="#00FF34">Teleport between island and tower
 local VisualsGroup = GroupPrincipal:AddSection({ Name = "Visualas"})
 VisualsGroup:AddLabel('<font color="#00FF34">Things like Delete Screen Effects</font>')
 
-local GroupPlayer = Window:MakeTab({
+local GroupPlayers = Window:MakeTab({
     Name = "Player",
     Icon = "rbxassetid://7733765045",
     PremiumOnly = false
 })
-local GroupPlayer = GroupPlayer:AddSection({ Name = "movement"})
+local GroupPlayer = GroupPlayers:AddSection({ Name = "movement"})
 GroupPlayer:AddLabel('<font color="#00FF34">Speed hack, walk speed and player stuff.</font>')
 
 
