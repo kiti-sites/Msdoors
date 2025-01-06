@@ -108,7 +108,7 @@ local GroupPrincipal = Window:MakeTab({
     PremiumOnly = false
 })
 local FarmGroup = GroupPrincipal:AddSection({Name = "Automoção" })
-GroupCredits:AddLabel('<font color="#FF0000">Autofarm win</font>')
+FarmGroup:AddLabel('<font color="#FF0000">Autofarm win</font>')
 
 --[[ SCRIPT ]]--
 local destino = Vector3.new(-583062, 37, 77)
