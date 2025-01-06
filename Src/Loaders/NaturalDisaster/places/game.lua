@@ -1,214 +1,110 @@
---// LIBRARY \\--
+--[[ LIBRARY & API]]--
+if _G.OrionLibLoaded then
+    warn("[Msdoors] • Script já está carregado!")
+    return
+end
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/refs/heads/main/Library/OrionLibrary_msdoors.lua'))()
-local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://100573561401335", IntroIcon = "rbxassetid://95869322194132", Name = "MsDoors | Natural Disaster", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/natural/game"})
+local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://100573561401335", IntroIcon = "rbxassetid://95869322194132", Name = "MsDoors | Natural Disaster", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/natural-disaster"})
+local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
+local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
+print("[Msdoors] • [✅] Inialização da livraria e apis")
+_G.OrionLibLoaded = true
 
---// SCRIPT \\--
+--[[ SERVIÇOS ]]--
+local Lighting = game:GetService("Lighting")
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
-local Player = Players.LocalPlayer
-
---// GLOBAL VARIABLES \\--
-local CooldownTime = 3
-local TpCustomCooldown = 1
-local ForceTpActive = false
-local TpCustomActive = false
-local CurrentTarget = nil
-
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
+local SoundService = game:GetService("SoundService")
+local TextChatService = game:GetService("TextChatService")
+local UserInputService = game:GetService("UserInputService")
+local PathfindingService = game:GetService("PathfindingService")
+local ProximityPromptService = game:GetService("ProximityPromptService")
+local TweenService = game:GetService("TweenService")
+local Workspace = game:GetService("Workspace")
+local HttpService = game:GetService("HttpService")
 local LocalPlayer = Players.LocalPlayer
-local TeleportList = {}
-local ToggleActive = false
-local CurrentTarget = nil
-local Cooldown = 5
-local ForceTPActive = false 
-local HUD 
-local FixConnection 
-local FixActive = false 
-
-local function sendNotification(title, content, duration)
-    OrionLib:MakeNotification({
-        Name = title,
-        Content = content,
-        Image = "rbxassetid://133997875469993",
-        Time = duration or 2
-    })
-end
-
-local function teleportToAll()
-    for _, targetPlayer in ipairs(Players:GetPlayers()) do
-        if targetPlayer ~= Player then
-            local Character = Player.Character
-            local TargetCharacter = targetPlayer.Character
-            if Character and TargetCharacter and TargetCharacter:FindFirstChild("HumanoidRootPart") then
-                Character:SetPrimaryPartCFrame(TargetCharacter.HumanoidRootPart.CFrame)
-                sendNotification("Force Tp", "Teleportado para: " .. targetPlayer.Name, 2)
-                task.wait(0.2)
-            end
-        end
-    end
-end
-
-local function ForceTpByMs()
-    ForceTpActive = true
-    while ForceTpActive do
-        teleportToAll()
-        task.wait(CooldownTime)
-    end
-end
-
-local function TpCustomByMs()
-    TpCustomActive = true
-    while TpCustomActive do
-        if CurrentTarget then
-            local targetPlayer = Players:FindFirstChild(CurrentTarget)
-            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                Player.Character:SetPrimaryPartCFrame(targetPlayer.Character.HumanoidRootPart.CFrame)
-                sendNotification("Tp Custom", "Teleportado para: " .. targetPlayer.Name, 2)
-            else
-                sendNotification("Erro", "Jogador selecionado não encontrado.", 2)
-                TpCustomActive = false
-            end
-        end
-        task.wait(TpCustomCooldown)
-    end
-end
-
-local function stopAllSystems()
-    ForceTpActive = false
-    TpCustomActive = false
-end
-
-local function getPlayerList()
-    local playerList = {}
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= Player then
-            table.insert(playerList, player.Name)
-        end
-    end
-    return playerList
-end
-
-local function updateHUD()
-    if HUD then
-        HUD.Text = "Alvo Atual: " .. (CurrentTarget or "Nenhum")
-    end
-end
-
-local function createHUD()
-    local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-    HUD = Instance.new("TextLabel", ScreenGui)
-    HUD.Size = UDim2.new(0, 300, 0, 50)
-    HUD.Position = UDim2.new(0.5, -150, 0, 10)
-    HUD.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    HUD.BackgroundTransparency = 0.5
-    HUD.TextColor3 = Color3.fromRGB(255, 255, 255)
-    HUD.Font = Enum.Font.SourceSansBold
-    HUD.TextScaled = true
-    HUD.Text = "Função desativada"
-end
-
-local function teleportToPlayer(targetPlayer)
-    if not targetPlayer or not targetPlayer.Character or not LocalPlayer.Character then return end
-
-    local localRoot = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-    local targetRoot = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
-    if localRoot and targetRoot then
-
-        localRoot.CFrame = targetRoot.CFrame
-        CurrentTarget = targetPlayer.Name
-        updateHUD()
-    end
-end
-
-local function applyHighlight(player, color, label)
-    if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then return end
-
-    local highlight = Instance.new("Highlight")
-    highlight.FillColor = color
-    highlight.FillTransparency = 0.5
-    highlight.OutlineTransparency = 0.7
-    highlight.Parent = player.Character
-
-    local billboard = Instance.new("BillboardGui")
-    billboard.Adornee = player.Character:FindFirstChild("HumanoidRootPart")
-    billboard.Size = UDim2.new(5, 0, 1, 0)
-    billboard.AlwaysOnTop = true
-    billboard.Parent = player.Character
-
-    local textLabel = Instance.new("TextLabel")
-    textLabel.Size = UDim2.new(1, 0, 1, 0)
-    textLabel.BackgroundTransparency = 1
-    textLabel.Text = label
-    textLabel.TextScaled = true
-    textLabel.Font = Enum.Font.SourceSansBold
-    textLabel.TextColor3 = color
-    textLabel.Parent = billboard
-end
-
-local function maintainFix()
-    if FixConnection then FixConnection:Disconnect() end 
-
-    FixConnection = RunService.Stepped:Connect(function()
-        if not CurrentTarget then return end
-        local targetPlayer = Players:FindFirstChild(CurrentTarget)
-        if targetPlayer and targetPlayer.Character and LocalPlayer.Character then
-            local localRoot = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-            local targetRoot = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
-            if localRoot and targetRoot then
-                localRoot.CFrame = targetRoot.CFrame
-            end
-        else
-  
-            FixActive = false
-            if FixConnection then FixConnection:Disconnect() end
-        end
+print("[Msdoors] • [✅] Inicialização de Serviços")
+--[[ VERIFICAÇÃO DE JOGO ]]--
+local GAME_ID_ESPERADO = 189707
+local function getGameInfo()
+    local success, gameInfo = pcall(function()
+        return game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
     end)
-end
-
-local function forceTeleport()
-    if not LocalPlayer.Character then return end
-
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Name ~= CurrentTarget then
-            teleportToPlayer(player)
-            applyHighlight(player, Color3.fromRGB(0, 255, 0), "Forçado!")
-            break
-        end
+    
+    if not success then
+        warn("[Msdoors] • Erro ao obter informações do jogo:", gameInfo)
+        return nil
     end
+    
+    return gameInfo
 end
-
-local function teleportLoop()
-    while ToggleActive do
-        for _, player in pairs(Players:GetPlayers()) do
-            if not ToggleActive then break end
-            if player ~= LocalPlayer and not table.find(TeleportList, player) then
-                teleportToPlayer(player)
-                applyHighlight(player, Color3.fromRGB(255, 0, 0), "Afetado")
-                FixActive = true
-                maintainFix() 
-                task.wait(Cooldown)
-                FixActive = false 
-                if FixConnection then FixConnection:Disconnect() end
-                table.insert(TeleportList, player)
-            end
-        end
-
-        TeleportList = {}
-        if ForceTPActive then
-            forceTeleport()
-        end
+local function verificarJogo()
+    local gameInfo = getGameInfo()
+    
+    if not gameInfo then
+        error(string.format([[
+[ERRO CRÍTICO]
+==========================================
+Falha ao verificar o jogo atual
+Detalhes do erro:
+- Não foi possível obter informações do jogo
+- Place ID atual: %d
+- Hora do erro: %s
+==========================================
+]], game.PlaceId, os.date("%Y-%m-%d %H:%M:%S")))
+        return false
     end
+    
+    if game.PlaceId ~= GAME_ID_ESPERADO then
+        error(string.format([[
+[ERRO DE VERIFICAÇÃO]
+==========================================
+Jogo incompatível detectado!
+Detalhes:
+- ID Esperado: %d
+- ID Atual: %d
+- Nome do Jogo: %s
+- Criador: %s
+- Hora da verificação: %s
+==========================================
+]], GAME_ID_ESPERADO, game.PlaceId, gameInfo.Name, gameInfo.Creator.Name, os.date("%Y-%m-%d %H:%M:%S")))
+        return false
+    end
+    print(string.format([[
+[VERIFICAÇÃO BEM-SUCEDIDA]
+==========================================
+Jogo verificado com sucesso!
+- ID do Jogo: %d
+- Nome: %s
+- Hora: %s
+==========================================
+]], game.PlaceId, gameInfo.Name, os.date("%Y-%m-%d %H:%M:%S")))
+    return true
 end
+verificarJogo()
 
-local function stopAllSystems()
-    ToggleActive = false
-    FixActive = false
-    TeleportList = {}
-    CurrentTarget = nil
-    if FixConnection then FixConnection:Disconnect() end
-    updateHUD()
-end
+--[[ TABS]]--
+local GroupPrincipal = Window:MakeTab({
+    Name = "Principal",
+    Icon = "rbxassetid://7733765045",
+    PremiumOnly = false
+})
+local TeleportsGroup = GroupPrincipal:AddSection({ Name = "Teleports"})
+TeleportsGroup:AddLabel('<font color="#00FF34">Teleport between island and tower</font>')
+
+
+local VisualsGroup = GroupPrincipal:AddSection({ Name = "Visualas"})
+VisualsGroup:AddLabel('<font color="#00FF34">Things like Delete Screen Effects</font>')
+
+local GroupPlayer = Window:MakeTab({
+    Name = "Player",
+    Icon = "rbxassetid://7733765045",
+    PremiumOnly = false
+})
+local GroupPlayer = GroupPlayer:AddSection({ Name = "movement"})
+GroupPlayer:AddLabel('<font color="#00FF34">Speed hack, walk speed and player stuff.</font>')
 
 local TrollTab = Window:MakeTab({
     Name = "Troll",
@@ -223,23 +119,6 @@ local ExploitTab = Window:MakeTab({
 })
 
 
-local TeleportTab = Window:MakeTab({
-    Name = "Teleports",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-local SettingsTab = Window:MakeTab({
-    Name = "Settings",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-local CreditsTab = Window:MakeTab({
-    Name = "Credits",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
 
 -- Exploits
 ExploitTab:AddToggle({
@@ -323,21 +202,6 @@ ExploitTab:AddToggle({
     end
 })
 
-ExploitTab:AddToggle({
-    Name = "Autofarm",
-    Default = false,
-    Callback = function(state)
-        if state then
-            autofarmEvent = game:GetService("RunService").RenderStepped:Connect(function()
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-264, 195, 288)
-            end)
-        else
-            if autofarmEvent then
-                autofarmEvent:Disconnect()
-            end
-        end
-    end
-})
 
 ExploitTab:AddButton({
     Name = "Launch Rocket",
@@ -370,8 +234,24 @@ ExploitTab:AddButton({
         end
     end
 })
+GroupPlayer:AddToggle({
+    Name = "Autofarm",
+    Default = false,
+    Callback = function(state)
+        if state then
+            autofarmEvent = game:GetService("RunService").RenderStepped:Connect(function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-264, 195, 288)
+            end)
+        else
+            if autofarmEvent then
+                autofarmEvent:Disconnect()
+            end
+        end
+    end
+})
 
-ExploitTab:AddSlider({
+--[[ PLAYER ]]--
+GroupPlayer:AddSlider({
     Name = "WalkSpeed",
     Min = 16,
     Max = 50,
@@ -384,8 +264,8 @@ ExploitTab:AddSlider({
     end
 })
 
-ExploitTab:AddSlider({
-    Name = "Gravity",
+GroupPlayer:AddSlider({
+    Name = "Gravity / Jump boost",
     Min = 0,
     Max = 196,
     Default = 196,
@@ -397,21 +277,22 @@ ExploitTab:AddSlider({
     end
 })
 
-ExploitTab:AddButton({
+--[[ VISUAIS ]]--
+VisualsGroup:AddButton({
     Name = "Remove Sandstorm UI",
     Callback = function()
         game.Players.LocalPlayer.PlayerGui.SandStormGui:Destroy()
     end
 })
 
-ExploitTab:AddButton({
+VisualsGroup:AddButton({
     Name = "Remove Blizzard UI",
     Callback = function()
         game.Players.LocalPlayer.PlayerGui.BlizzardGui:Destroy()
     end
 })
 
-ExploitTab:AddButton({
+VisualsGroup:AddButton({
     Name = "Remove Ads",
     Callback = function()
         game:GetService("Workspace").BillboardAd:Destroy()
@@ -422,42 +303,21 @@ ExploitTab:AddButton({
 
 
 
-ExploitTab:AddToggle({
-    Name = "Ativar Teleporte",
-    Default = false,
-    Callback = function(value)
-        ToggleActive = value
-        if ToggleActive then
-            task.spawn(teleportLoop)
-        else
-            stopAllSystems()
-        end
-    end
-})
-
-ExploitTab:AddToggle({
-    Name = "Forçar Teleporte",
-    Default = false,
-    Callback = function(value)
-        ForceTPActive = value
-    end
-})
-
-
--- Teleports
-TeleportTab:AddButton({
+--[[ TELEPORTES ]]--
+TeleportsGroup:AddButton({
     Name = "Island",
     Callback = function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-108, 49, 0)
     end
 })
 
-TeleportTab:AddButton({
+TeleportsGroup:AddButton({
     Name = "Tower",
     Callback = function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-264, 196, 288)
     end
 })
+TeleportsGroup:AddLabel("")
 
 -- Settings
 SettingsTab:AddButton({
@@ -468,14 +328,6 @@ SettingsTab:AddButton({
 })
 
 
-
--- Credits
-CreditsTab:AddParagraph("Credits", [[
-Msdoors made by:
-Rhyan57 / https://github.com/Sc-rhyan57
-
-agradecimentos a
-]] .. tostring(game.Players.LocalPlayer.Name) .. " / Você 🫵😃")
 
 
 --// ADDONS \\--
