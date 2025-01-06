@@ -575,6 +575,22 @@ GroupExploit:AddToggle({
     end
 })
 
+_G.msdoors_chatActive = false
+local function TrySendChatMessage(message)
+    if _G.msdoors_chatActive then
+        local TextChatService = game:GetService("TextChatService")
+
+        if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+            local textChannel = TextChatService.TextChannels.RBXGeneral
+            textChannel:SendAsync(message)
+        else
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
+        end
+    else
+
+    end
+end
+
 local function createStylishHUD()
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "DisasterHUD"
@@ -671,6 +687,7 @@ local function monitorarDesastre()
                 lastValue = survivalTag.Value
 
                 print("[Msdoors] • Desastre: " .. survivalTag.Value)
+		TrySendChatMessage("⚠️ Desastre: " .. survivalTag.Value)
                 showStylishHUD("Desastre: " .. survivalTag.Value)
                 OrionLib:MakeNotification({
                     Name = "Desastre Detectado",
@@ -719,6 +736,14 @@ VisualsGroup:AddToggle({
         else
             pararMonitoramento()
         end
+    end
+})
+
+VisualsGroup:AddToggle({
+    Name = "Send disasters in chat",
+    Default = false,
+    Callback = function(value)
+        _G.msdoors_chatActive = value
     end
 })
     
