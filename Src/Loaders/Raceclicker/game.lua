@@ -104,7 +104,7 @@ verificarJogo()
 --[[ TABS ]]--
 local GroupPrincipal = Window:MakeTab({
     Name = "Principal",
-    Icon = "rbxassetid://7733799901",
+    Icon = "rbxassetid://7733960981",
     PremiumOnly = false
 })
 local FarmGroup = GroupPrincipal:AddSection({Name = "Automoção" })
