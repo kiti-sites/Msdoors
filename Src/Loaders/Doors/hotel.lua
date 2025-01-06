@@ -587,7 +587,6 @@ local IgnoreSettings = {
 AutomationGroup:AddToggle({
     Name = "Auto Interact",
     Default = false,
-    Save = true,
     Flag = "AutoInteract-toggle",
     Callback = function(Value)
         AutoInteractEnabled = Value
@@ -675,7 +674,6 @@ local CanJumpEnabled = false
 PlayerGroup:AddToggle({
     Name = "Enable Jump",
     Default = false,
-    Save = true,
     Flag = "enableJump-toggle",
     Callback = function(value)
         CanJumpEnabled = value
