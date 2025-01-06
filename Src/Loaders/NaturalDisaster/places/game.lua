@@ -675,7 +675,7 @@ local function monitorarDesastre()
     end
 
     if not checkSurvivalTag() then
-        print("[Msdoors] • Arquivo SurvivalTag inexistente, impossível Exibir desastres Naturais | Tentando novamente...)
+        print("[Msdoors] • Arquivo SurvivalTag inexistente, impossível Exibir desastres Naturais | Tentando novamente...")
     end
 
     _G.msdoors_desastre.conexao = RunService.Heartbeat:Connect(function()
