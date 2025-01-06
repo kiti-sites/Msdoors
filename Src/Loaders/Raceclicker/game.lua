@@ -42,6 +42,64 @@ local TweenService = game:GetService("TweenService")
 local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 print("[Msdoors] • [✅] Inicialização de Serviços")
+--[[ VERIFICAÇÃO DE JOGO ]]--
+local GAME_ID_ESPERADO = 9285238704
+local function getGameInfo()
+    local success, gameInfo = pcall(function()
+        return game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
+    end)
+    
+    if not success then
+        warn("[Msdoors] • Erro ao obter informações do jogo:", gameInfo)
+        return nil
+    end
+    
+    return gameInfo
+end
+local function verificarJogo()
+    local gameInfo = getGameInfo()
+    
+    if not gameInfo then
+        error(string.format([[
+[ERRO CRÍTICO]
+==========================================
+Falha ao verificar o jogo atual
+Detalhes do erro:
+- Não foi possível obter informações do jogo
+- Place ID atual: %d
+- Hora do erro: %s
+==========================================
+]], game.PlaceId, os.date("%Y-%m-%d %H:%M:%S")))
+        return false
+    end
+    
+    if game.PlaceId ~= GAME_ID_ESPERADO then
+        error(string.format([[
+[ERRO DE VERIFICAÇÃO]
+==========================================
+Jogo incompatível detectado!
+Detalhes:
+- ID Esperado: %d
+- ID Atual: %d
+- Nome do Jogo: %s
+- Criador: %s
+- Hora da verificação: %s
+==========================================
+]], GAME_ID_ESPERADO, game.PlaceId, gameInfo.Name, gameInfo.Creator.Name, os.date("%Y-%m-%d %H:%M:%S")))
+        return false
+    end
+    print(string.format([[
+[VERIFICAÇÃO BEM-SUCEDIDA]
+==========================================
+Jogo verificado com sucesso!
+- ID do Jogo: %d
+- Nome: %s
+- Hora: %s
+==========================================
+]], game.PlaceId, gameInfo.Name, os.date("%Y-%m-%d %H:%M:%S")))
+    return true
+end
+verificarJogo()
 
 --[[ TABS ]]--
 local GroupPrincipal = Window:MakeTab({
@@ -50,66 +108,7 @@ local GroupPrincipal = Window:MakeTab({
     PremiumOnly = false
 })
 local FarmGroup = GroupPrincipal:AddSection({Name = "Automoção" })
-
-local GroupCredits = Window:MakeTab({
-    Name = "Msdoors",
-    Icon = "rbxassetid://7733765045",
-    PremiumOnly = false
-})
-
-GroupCredits:AddLabel('<font color="#00FFFF">Créditos</font>')
-GroupCredits:AddLabel('• Rhyan57 - <font color="#FFA500">DONO</font>')
-GroupCredits:AddLabel('• SeekAlegriaFla - <font color="#FFA500">SUB-DONO</font>')
-GroupCredits:AddLabel('<font color="#00FFFF">Redes</font>')
-GroupCredits:AddLabel('• Discord: <font color="#9DABFF">https://dsc.gg/msdoors-gg</font>')
-GroupCredits:AddButton({
-    Name = "Copiar Link",
-    Callback = function()
-        local url = "https://dsc.gg/msdoors-gg"
-        if syn then
-            syn.request({
-                Url = url,
-                Method = "GET"
-            })
-        elseif setclipboard then
-            setclipboard(url)
-            OrionLib:MakeNotification({
-                Name = "Link Copiado!",
-                Content = "Seu executor não suporta redirecionar. Link copiado.",
-                Time = 5
-            })
-        else
-            OrionLib:MakeNotification({
-                Name = "LOL",
-                Content = "Seu executor não suporta redirecionar ou copiar links.",
-                Time = 5
-            })
-        end
-    end
-})
-GroupCredits:AddLabel('<font color="#FF0000">Script</font>')
-GroupCredits:AddButton({
-    Name = "Descarregar",
-    Callback = function()
-        for _, thread in pairs(getfenv()) do
-            if typeof(thread) == "thread" then
-                task.cancel(thread)
-            end
-        end
-      
-        notificationsEnabled = false
-        InstaInteractEnabled = false
-        AutoInteractEnabled = false
-        initialized = false
-        verificarEspObjetos = false
-        desativarESPObjetos()
-      
-        if OrionLib then
-            OrionLib:Destroy()
-        end
-        warn("[Msdoors] • Todos os sistemas foram desativados e a interface fechada.")
-    end
-})
+FarmGroup:GroupCredits:AddLabel('<font color="#FF0000">AutoFarm WINS</font>')
 
 --[[ Auto Farm Wins script ]]--
 local destino = Vector3.new(-583062, 37, 77)
@@ -203,7 +202,8 @@ FarmGroup:AddLabel("")
 task.spawn(function()
 
     local AddonTab = Window:MakeTab({Name = "Addons [BETA]", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-
+    AddonTab:GroupCredits:AddLabel('<font color="#FF0000">Está é uma para addons não oficiais! tome cuidado com o que você usa.</font>')
+    
     if not isfolder(".msdoors/addons") then
         makefolder(".msdoors/addons")
     end
@@ -299,5 +299,67 @@ task.spawn(function()
         AddonTab:AddLabel("A pasta de addons está vazia. Adicione addons na pasta '.msdoors/addons' e reinicie o script.")
     end
 end)
+
+local GroupCredits = Window:MakeTab({
+    Name = "Msdoors",
+    Icon = "rbxassetid://7733765045",
+    PremiumOnly = false
+})
+
+GroupCredits:AddLabel('<font color="#00FFFF">Créditos</font>')
+GroupCredits:AddLabel('• Rhyan57 - <font color="#FFA500">DONO</font>')
+GroupCredits:AddLabel('• SeekAlegriaFla - <font color="#FFA500">SUB-DONO</font>')
+GroupCredits:AddLabel('<font color="#00FFFF">Redes</font>')
+GroupCredits:AddLabel('• Discord: <font color="#9DABFF">https://dsc.gg/msdoors-gg</font>')
+GroupCredits:AddButton({
+    Name = "Copiar Link",
+    Callback = function()
+        local url = "https://dsc.gg/msdoors-gg"
+        if syn then
+            syn.request({
+                Url = url,
+                Method = "GET"
+            })
+        elseif setclipboard then
+            setclipboard(url)
+            OrionLib:MakeNotification({
+                Name = "Link Copiado!",
+                Content = "Seu executor não suporta redirecionar. Link copiado.",
+                Time = 5
+            })
+        else
+            OrionLib:MakeNotification({
+                Name = "LOL",
+                Content = "Seu executor não suporta redirecionar ou copiar links.",
+                Time = 5
+            })
+        end
+    end
+})
+GroupCredits:AddLabel('<font color="#FF0000">Script</font>')
+GroupCredits:AddButton({
+    Name = "Descarregar",
+    Callback = function()
+        for _, thread in pairs(getfenv()) do
+            if typeof(thread) == "thread" then
+                task.cancel(thread)
+            end
+        end
+      
+        notificationsEnabled = false
+        InstaInteractEnabled = false
+        AutoInteractEnabled = false
+        initialized = false
+        verificarEspObjetos = false
+        desativarESPObjetos()
+      
+        if OrionLib then
+            OrionLib:Destroy()
+        end
+        warn("[Msdoors] • Todos os sistemas foram desativados e a interface fechada.")
+    end
+})
+
+
 
 OrionLib:Init()
