@@ -161,6 +161,17 @@ local GroupPlayers = Window:MakeTab({
 local GroupPlayer = GroupPlayers:AddSection({ Name = "movement"})
 GroupPlayer:AddLabel('<font color="#00FF34">Speed hack, walk speed and player stuff.</font>')
 --[[ PLAYER ]]--
+GroupPlayer:AddButton({
+	Name = "GodMode",
+	Callback = function()
+      		print("[Msdoors] • GodMode")
+            game.Players.LocalPlayer.Character.Humanoid:Remove()
+Instance.new('Humanoid', game.Players.LocalPlayer.Character)
+game:GetService("Workspace")[game.Players.LocalPlayer.Name]:FindFirstChildOfClass(
+'Humanoid').HipHeight = 2
+  	end    
+})
+
 GroupPlayer:AddToggle({
     Name = "Autofarm",
     Default = false,
