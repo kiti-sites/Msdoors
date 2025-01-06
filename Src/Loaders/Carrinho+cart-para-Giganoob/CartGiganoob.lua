@@ -587,7 +587,7 @@ MsPlayer:AddTextbox({
     end
 })
 
-MsPlayer::AddLabel('<font color="#9DABFF">Playlist</font>')
+MsPlayer:AddLabel('<font color="#9DABFF">Playlist</font>')
 MsPlayer:AddButton({
     Name = "Tocar Playlist",
     Callback = function()
