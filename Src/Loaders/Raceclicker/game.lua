@@ -104,11 +104,10 @@ verificarJogo()
 --[[ TABS ]]--
 local GroupPrincipal = Window:MakeTab({
     Name = "Principal",
-    Icon = "rbxassetid://7733765045",
+    Icon = "rbxassetid://7733799901",
     PremiumOnly = false
 })
 local FarmGroup = GroupPrincipal:AddSection({Name = "Automoção" })
-FarmGroup:AddLabel('<font color="#FF0000">Autofarm win</font>')
 
 --[[ SCRIPT ]]--
 local destino = Vector3.new(-583062, 37, 77)
@@ -183,7 +182,7 @@ local function verificarUI()
 end
 
 FarmGroup:AddToggle({
-    Name = "<font color="#FF0000">Autofarm win</font>",
+    Name = "Autofarm",
     Default = false,
     Callback = function(estado)
         ativo = estado
@@ -196,12 +195,12 @@ FarmGroup:AddToggle({
         end
     end
 })
-FarmGroup:AddLabel("")
 
 --// ADDONS \\--
 task.spawn(function()
 
-    local AddonTab = Window:MakeTab({Name = "Addons [BETA]", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+    local AddonTab = Window:MakeTab({Name = "Addons [BETA]", Icon = "rbxassetid://7733799901", PremiumOnly = false})
+    AddonTab:AddLabel('<font color="#FF0000">This tab is for unofficial Msdoors addons! We are not responsible for anything!</font>')
     
     if not isfolder(".msdoors/addons") then
         makefolder(".msdoors/addons")
