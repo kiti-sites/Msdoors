@@ -183,7 +183,7 @@ local function verificarUI()
 end
 
 FarmGroup:AddToggle({
-    Name = "Auto Farm Win",
+    Name = "<font color="#FF0000">Autofarm win</font>",
     Default = false,
     Callback = function(estado)
         ativo = estado
