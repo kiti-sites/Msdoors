@@ -88,7 +88,7 @@ verificarJogo()
 --[[ TABS]]--
 local GroupPrincipal = Window:MakeTab({
     Name = "Principal",
-    Icon = "rbxassetid://7733765045",
+    Icon = "rbxassetid://7733954760",
     PremiumOnly = false
 })
 local TeleportsGroup = GroupPrincipal:AddSection({ Name = "Teleports"})
@@ -110,7 +110,7 @@ TeleportsGroup:AddButton({
 })
 TeleportsGroup:AddLabel("")
 
-local VisualsGroup = GroupPrincipal:AddSection({ Name = "Visualas"})
+local VisualsGroup = GroupPrincipal:AddSection({ Name = "Visuals"})
 VisualsGroup:AddLabel('<font color="#00FF34">Things like Delete Screen Effects</font>')
 
 --[[ VISUAIS ]]--
@@ -136,10 +136,11 @@ VisualsGroup:AddButton({
         game:GetService("Workspace").ReturnPortal:Destroy()
     end
 })
+VisualsGroup:AddLabel("")
 
 local GroupPlayers = Window:MakeTab({
     Name = "Player",
-    Icon = "rbxassetid://7733765045",
+    Icon = "rbxassetid://7743871002",
     PremiumOnly = false
 })
 local GroupPlayer = GroupPlayers:AddSection({ Name = "movement"})
@@ -190,7 +191,7 @@ GroupPlayer:AddSlider({
 
 local GroupExploits = Window:MakeTab({
     Name = "Exploits",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://7733655834",
     PremiumOnly = false
 })
 local GroupExploit = GroupExploits:AddSection({ Name = "map"})
