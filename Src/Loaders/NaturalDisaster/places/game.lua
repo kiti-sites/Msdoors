@@ -94,9 +94,48 @@ local GroupPrincipal = Window:MakeTab({
 local TeleportsGroup = GroupPrincipal:AddSection({ Name = "Teleports"})
 TeleportsGroup:AddLabel('<font color="#00FF34">Teleport between island and tower</font>')
 
+--[[ TELEPORTES ]]--
+TeleportsGroup:AddButton({
+    Name = "Island",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-108, 49, 0)
+    end
+})
+
+TeleportsGroup:AddButton({
+    Name = "Tower",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-264, 196, 288)
+    end
+})
+TeleportsGroup:AddLabel("")
 
 local VisualsGroup = GroupPrincipal:AddSection({ Name = "Visualas"})
 VisualsGroup:AddLabel('<font color="#00FF34">Things like Delete Screen Effects</font>')
+
+--[[ VISUAIS ]]--
+VisualsGroup:AddButton({
+    Name = "Remove Sandstorm UI",
+    Callback = function()
+        game.Players.LocalPlayer.PlayerGui.SandStormGui:Destroy()
+    end
+})
+
+VisualsGroup:AddButton({
+    Name = "Remove Blizzard UI",
+    Callback = function()
+        game.Players.LocalPlayer.PlayerGui.BlizzardGui:Destroy()
+    end
+})
+
+VisualsGroup:AddButton({
+    Name = "Remove Ads",
+    Callback = function()
+        game:GetService("Workspace").BillboardAd:Destroy()
+        game:GetService("Workspace")["Main Portal Template "]:Destroy()
+        game:GetService("Workspace").ReturnPortal:Destroy()
+    end
+})
 
 local GroupPlayers = Window:MakeTab({
     Name = "Player",
@@ -105,6 +144,48 @@ local GroupPlayers = Window:MakeTab({
 })
 local GroupPlayer = GroupPlayers:AddSection({ Name = "movement"})
 GroupPlayer:AddLabel('<font color="#00FF34">Speed hack, walk speed and player stuff.</font>')
+--[[ PLAYER ]]--
+GroupPlayer:AddToggle({
+    Name = "Autofarm",
+    Default = false,
+    Callback = function(state)
+        if state then
+            autofarmEvent = game:GetService("RunService").RenderStepped:Connect(function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-264, 195, 288)
+            end)
+        else
+            if autofarmEvent then
+                autofarmEvent:Disconnect()
+            end
+        end
+    end
+})
+GroupPlayer:AddSlider({
+    Name = "WalkSpeed",
+    Min = 16,
+    Max = 50,
+    Default = 16,
+    Color = Color3.fromRGB(255, 255, 255),
+    Increment = 1,
+    ValueName = "Speed",
+    Callback = function(value)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+    end
+})
+
+GroupPlayer:AddSlider({
+    Name = "Gravity / Jump boost",
+    Min = 0,
+    Max = 196,
+    Default = 196,
+    Color = Color3.fromRGB(255, 255, 255),
+    Increment = 1,
+    ValueName = "Gravity",
+    Callback = function(value)
+        game.Workspace.Gravity = value
+    end
+})
+
 
 
 local GroupExploits = Window:MakeTab({
@@ -115,8 +196,6 @@ local GroupExploits = Window:MakeTab({
 local GroupExploit = GroupExploits:AddSection({ Name = "map"})
 GroupExploit:AddLabel('<font color="#00FF34">things like solid sland and solid water</font>')
 
-
--- Exploits
 GroupExploit:AddToggle({
     Name = "Walk On Water",
     Default = false,
@@ -131,7 +210,6 @@ GroupExploit:AddToggle({
         end
     end
 })
-
 
 
 GroupExploit:AddToggle({
@@ -186,92 +264,6 @@ GroupExploit:AddButton({
         end
     end
 })
-GroupPlayer:AddToggle({
-    Name = "Autofarm",
-    Default = false,
-    Callback = function(state)
-        if state then
-            autofarmEvent = game:GetService("RunService").RenderStepped:Connect(function()
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-264, 195, 288)
-            end)
-        else
-            if autofarmEvent then
-                autofarmEvent:Disconnect()
-            end
-        end
-    end
-})
-
---[[ PLAYER ]]--
-GroupPlayer:AddSlider({
-    Name = "WalkSpeed",
-    Min = 16,
-    Max = 50,
-    Default = 16,
-    Color = Color3.fromRGB(255, 255, 255),
-    Increment = 1,
-    ValueName = "Speed",
-    Callback = function(value)
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
-    end
-})
-
-GroupPlayer:AddSlider({
-    Name = "Gravity / Jump boost",
-    Min = 0,
-    Max = 196,
-    Default = 196,
-    Color = Color3.fromRGB(255, 255, 255),
-    Increment = 1,
-    ValueName = "Gravity",
-    Callback = function(value)
-        game.Workspace.Gravity = value
-    end
-})
-
---[[ VISUAIS ]]--
-VisualsGroup:AddButton({
-    Name = "Remove Sandstorm UI",
-    Callback = function()
-        game.Players.LocalPlayer.PlayerGui.SandStormGui:Destroy()
-    end
-})
-
-VisualsGroup:AddButton({
-    Name = "Remove Blizzard UI",
-    Callback = function()
-        game.Players.LocalPlayer.PlayerGui.BlizzardGui:Destroy()
-    end
-})
-
-VisualsGroup:AddButton({
-    Name = "Remove Ads",
-    Callback = function()
-        game:GetService("Workspace").BillboardAd:Destroy()
-        game:GetService("Workspace")["Main Portal Template "]:Destroy()
-        game:GetService("Workspace").ReturnPortal:Destroy()
-    end
-})
-
-
-
---[[ TELEPORTES ]]--
-TeleportsGroup:AddButton({
-    Name = "Island",
-    Callback = function()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-108, 49, 0)
-    end
-})
-
-TeleportsGroup:AddButton({
-    Name = "Tower",
-    Callback = function()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-264, 196, 288)
-    end
-})
-TeleportsGroup:AddLabel("")
-
-
 
 
 
