@@ -789,9 +789,9 @@ MsPlayer:AddSlider({
 
 --// ADDONS \\--
 task.spawn(function()
-
-    local AddonTab = Window:MakeTab({Name = "Addons [BETA]", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-
+    local AddonTab = Window:MakeTab({Name = "Addons [BETA]", Icon = "rbxassetid://7733799901", PremiumOnly = false})
+    AddonTab:AddLabel('<font color="#FF0000">This tab is for unofficial Msdoors addons! We are not responsible for anything!</font>')
+   
     if not isfolder(".msdoors/addons") then
         makefolder(".msdoors/addons")
     end
