@@ -106,22 +106,18 @@ local GroupPlayer = Window:MakeTab({
 local GroupPlayer = GroupPlayer:AddSection({ Name = "movement"})
 GroupPlayer:AddLabel('<font color="#00FF34">Speed hack, walk speed and player stuff.</font>')
 
-local TrollTab = Window:MakeTab({
-    Name = "Troll",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
 
-local ExploitTab = Window:MakeTab({
+local GroupExploits = Window:MakeTab({
     Name = "Exploits",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
+local GroupExploit = GroupExploits:AddSection({ Name = "map"})
+GroupExploit:AddLabel('<font color="#00FF34">things like solid sland and solid water</font>')
 
 
 -- Exploits
-ExploitTab:AddToggle({
+GroupExploit:AddToggle({
     Name = "Walk On Water",
     Default = false,
     Callback = function(state)
@@ -137,52 +133,8 @@ ExploitTab:AddToggle({
 })
 
 
-TrollTab:AddToggle({
-    Name = "Force Tp (Todos os jogadores)",
-    Default = false,
-    Callback = function(state)
-        if state then
-            task.spawn(ForceTpByMs)
-        else
-            stopAllSystems()
-        end
-    end
-})
 
-TrollTab:AddDropdown({
-    Name = "Selecionar Jogador",
-    Default = "",
-    Options = getPlayerList(),
-    Callback = function(value)
-        CurrentTarget = value
-    end
-})
-
-TrollTab:AddSlider({
-    Name = "Tempo de Teleporte (s)",
-    Min = 0.5,
-    Max = 5,
-    Default = 1,
-    Increment = 0.1,
-    Callback = function(value)
-        TpCustomCooldown = value
-    end
-})
-
-TrollTab:AddToggle({
-    Name = "Tp Custom",
-    Default = false,
-    Callback = function(state)
-        if state then
-            task.spawn(TpCustomByMs)
-        else
-            stopAllSystems()
-        end
-    end
-})
-
-
-ExploitTab:AddToggle({
+GroupExploit:AddToggle({
     Name = "Solid Island",
     Default = false,
     Callback = function(state)
@@ -194,7 +146,7 @@ ExploitTab:AddToggle({
     end
 })
 
-ExploitTab:AddToggle({
+GroupExploit:AddToggle({
     Name = "Choose Map",
     Default = false,
     Callback = function(state)
@@ -203,7 +155,7 @@ ExploitTab:AddToggle({
 })
 
 
-ExploitTab:AddButton({
+GroupExploit:AddButton({
     Name = "Launch Rocket",
     Callback = function()
         pcall(function()
@@ -215,7 +167,7 @@ ExploitTab:AddButton({
     end
 })
 
-ExploitTab:AddButton({
+GroupExploit:AddButton({
     Name = "Say Current Disaster",
     Callback = function()
         local chatEvents = game:GetService("ReplicatedStorage"):FindFirstChild("DefaultChatSystemChatEvents")
@@ -234,7 +186,7 @@ ExploitTab:AddButton({
         end
     end
 })
-GroupPlayer:AddToggle({
+GrouopPlayer:AddToggle({
     Name = "Autofarm",
     Default = false,
     Callback = function(state)
@@ -319,13 +271,6 @@ TeleportsGroup:AddButton({
 })
 TeleportsGroup:AddLabel("")
 
--- Settings
-SettingsTab:AddButton({
-    Name = "Destroy GUI",
-    Callback = function()
-        OrionLib:Destroy()
-    end
-})
 
 
 
