@@ -130,6 +130,204 @@ GroupCredits:AddButton({
     end
 })
 
+local ObjectiveESPConfig = {
+    Types = {
+        KeyObtain = {
+            Name = "Chave",
+            Color = Color3.fromRGB(0, 255, 0)
+        },
+        LeverForGate = {
+            Name = "Alavanca",
+            Color = Color3.fromRGB(0, 255, 0)
+        },
+        ElectricalKeyObtain = {
+            Name = "Chave elétrica",
+            Color = Color3.fromRGB(0, 255, 0)
+        },
+        LiveHintBook = {
+            Name = "Livro",
+            Color = Color3.fromRGB(0, 255, 0)
+        },
+        LiveBreakerPolePickup = {
+            Name = "Disjuntor",
+            Color = Color3.fromRGB(0, 255, 0)
+        },
+        MinesGenerator = {
+            Name = "Gerador",
+            Color = Color3.fromRGB(0, 255, 0)
+        },
+        MinesGateButton = {
+            Name = "Botão do portão",
+            Color = Color3.fromRGB(0, 255, 0)
+        },
+        FuseObtain = {
+            Name = "Fusível",
+            Color = Color3.fromRGB(0, 255, 0)
+        },
+        MinesAnchor = {
+            Name = "Torre",
+            Color = Color3.fromRGB(0, 255, 0)
+        },
+        WaterPump = {
+            Name = "Bomba de água",
+            Color = Color3.fromRGB(0, 255, 0)
+        }
+    },
+    Settings = {
+        MaxDistance = 5000,
+        UpdateInterval = 5,
+        TextSize = 16,
+        FillTransparency = 0.75,
+        OutlineTransparency = 0,
+        TracerStartPosition = "Bottom",
+        ArrowCenterOffset = 300
+    }
+}
+
+local ObjectiveESPManager = {
+    ActiveESPs = {},
+    IsEnabled = false,
+    IsChecking = false,
+    CurrentRoom = nil
+}
+
+function ObjectiveESPManager:CreateESP(object, config)
+    if not object or not object.PrimaryPart then return nil end
+    
+    local espInstance = ESPLibrary.ESP.Highlight({
+        Name = config.Name,
+        Model = object,
+        MaxDistance = ObjectiveESPConfig.Settings.MaxDistance,
+        
+        FillColor = config.Color,
+        OutlineColor = config.Color,
+        TextColor = config.Color,
+        TextSize = ObjectiveESPConfig.Settings.TextSize,
+        
+        FillTransparency = ObjectiveESPConfig.Settings.FillTransparency,
+        OutlineTransparency = ObjectiveESPConfig.Settings.OutlineTransparency,
+        
+        Tracer = {
+            Enabled = true,
+            From = ObjectiveESPConfig.Settings.TracerStartPosition,
+            Color = config.Color
+        },
+        
+        Arrow = {
+            Enabled = true,
+            CenterOffset = ObjectiveESPConfig.Settings.ArrowCenterOffset,
+            Color = config.Color
+        }
+    })
+    
+    return espInstance
+end
+
+function ObjectiveESPManager:HandleSpecialCases(object, config)
+    if object.Name == "MinesAnchor" then
+        local sign = object:WaitForChild("Sign", 5)
+        if sign and sign:FindFirstChild("TextLabel") then
+            config.Name = string.format("Torre %s", sign.TextLabel.Text)
+        end
+    elseif object.Name == "WaterPump" then
+        local wheel = object:WaitForChild("Wheel", 5)
+        local onFrame = object:FindFirstChild("OnFrame", true)
+        
+        if not (wheel and onFrame and onFrame.Visible) then
+            return nil
+        end
+        
+        onFrame:GetPropertyChangedSignal("Visible"):Connect(function()
+            self:RemoveESP(object)
+        end)
+    end
+    
+    return config
+end
+
+function ObjectiveESPManager:AddESP(object)
+    if not object or self.ActiveESPs[object] then return end
+    
+    local config = ObjectiveESPConfig.Types[object.Name]
+    if not config then return end
+    
+    config = self:HandleSpecialCases(object, table.clone(config))
+    if not config then return end
+    
+    local espInstance = self:CreateESP(object, config)
+    if espInstance then
+        self.ActiveESPs[object] = espInstance
+    end
+end
+
+function ObjectiveESPManager:RemoveESP(object)
+    if self.ActiveESPs[object] then
+        self.ActiveESPs[object].Destroy()
+        self.ActiveESPs[object] = nil
+    end
+end
+
+function ObjectiveESPManager:ScanRoom()
+    if not self.IsEnabled then return end
+    
+    local currentRoom = workspace.CurrentRooms:FindFirstChild(game.Players.LocalPlayer:GetAttribute("CurrentRoom"))
+    if not currentRoom then return end
+    
+    if self.CurrentRoom ~= currentRoom then
+        self:ClearESPs()
+        self.CurrentRoom = currentRoom
+    end
+    
+    for _, asset in pairs(currentRoom:GetDescendants()) do
+        if ObjectiveESPConfig.Types[asset.Name] then
+            self:AddESP(asset)
+        end
+    end
+end
+
+function ObjectiveESPManager:ClearESPs()
+    for object, esp in pairs(self.ActiveESPs) do
+        esp.Destroy()
+    end
+    self.ActiveESPs = {}
+end
+
+function ObjectiveESPManager:StartScanning()
+    if self.IsChecking then return end
+    self.IsChecking = true
+    
+    spawn(function()
+        while self.IsChecking do
+            self:ScanRoom()
+            wait(ObjectiveESPConfig.Settings.UpdateInterval)
+        end
+    end)
+end
+
+function ObjectiveESPManager:StopScanning()
+    self.IsChecking = false
+    self:ClearESPs()
+end
+
+EspGroup:AddToggle({
+    Name = "esp de objetivo",
+    Default = false,
+    Callback = function(state)
+        ObjectiveESPManager.IsEnabled = state
+        
+        if state then
+            ObjectiveESPManager:StartScanning()
+        else
+            ObjectiveESPManager:StopScanning()
+        end
+    end
+})
+
+game.Players.LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
+    if ObjectiveESPManager.IsEnabled then
+        ObjectiveESPManager:ScanRoom()
+    end
+end)
 
 -- Tabela de Entidades para notificação.
 local EntityTable = {
