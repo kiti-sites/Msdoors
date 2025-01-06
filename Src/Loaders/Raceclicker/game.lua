@@ -1,5 +1,3 @@
---// <[❄️UPD] Race Clicker | UPDATE EM BREVEL \\--
-
 --[[
                                                                                                                      
      ______  _______            ______       _____           _____            _____         _____            ______  
@@ -17,21 +15,161 @@
                                                                                                                      
                                         Por Rhyan57 💜
   ]]--
-
---// SERVIÇOS \\--
+--[[ LIBRARY & API]]--
+if _G.OrionLibLoaded then
+    warn("[Msdoors] • Script já está carregado!")
+    return
+end
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/refs/heads/main/Library/OrionLibrary_msdoors.lua'))()
+local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://100573561401335", IntroIcon = "rbxassetid://95869322194132", Name = "MsDoors | Race Clicker", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/hotel"})
+local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
-local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1 ",Icon = "rbxassetid://100573561401335", IntroIcon = "rbxassetid://95869322194132", Name = "MsDoors | RaceClicker", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/RaceClicker"})
+print("[Msdoors] • [✅] Inialização da livraria e apis")
+_G.OrionLibLoaded = true
 
---// CRÉDITOS \\--
-local CreditsTab = Window:MakeTab({
-    Name = "Créditos - Msdoors",
-    Icon = "rbxassetid://7743875759",
+--[[ SERVIÇOS ]]--
+local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local SoundService = game:GetService("SoundService")
+local TextChatService = game:GetService("TextChatService")
+local UserInputService = game:GetService("UserInputService")
+local PathfindingService = game:GetService("PathfindingService")
+local ProximityPromptService = game:GetService("ProximityPromptService")
+local TweenService = game:GetService("TweenService")
+local Workspace = game:GetService("Workspace")
+local LocalPlayer = Players.LocalPlayer
+local LatestRoom = ReplicatedStorage:WaitForChild("GameData"):WaitForChild("LatestRoom")
+print("[Msdoors] • [✅] Inicialização de Serviços")
+
+--[[ VERIFICAÇÃO DE JOGO ]]--
+local GAME_ID_ESPERADO = 9285238704
+local function getGameInfo()
+    local success, gameInfo = pcall(function()
+        return game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
+    end)
+    
+    if not success then
+        warn("[Msdoors] • Erro ao obter informações do jogo:", gameInfo)
+        return nil
+    end
+    
+    return gameInfo
+end
+local function verificarJogo()
+    local gameInfo = getGameInfo()
+    
+    if not gameInfo then
+        error(string.format([[
+[ERRO CRÍTICO]
+==========================================
+Falha ao verificar o jogo atual
+Detalhes do erro:
+- Não foi possível obter informações do jogo
+- Place ID atual: %d
+- Hora do erro: %s
+==========================================
+]], game.PlaceId, os.date("%Y-%m-%d %H:%M:%S")))
+        return false
+    end
+    
+    if game.PlaceId ~= GAME_ID_ESPERADO then
+        error(string.format([[
+[ERRO DE VERIFICAÇÃO]
+==========================================
+Jogo incompatível detectado!
+Detalhes:
+- ID Esperado: %d
+- ID Atual: %d
+- Nome do Jogo: %s
+- Criador: %s
+- Hora da verificação: %s
+==========================================
+]], GAME_ID_ESPERADO, game.PlaceId, gameInfo.Name, gameInfo.Creator.Name, os.date("%Y-%m-%d %H:%M:%S")))
+        return false
+    end
+    print(string.format([[
+[VERIFICAÇÃO BEM-SUCEDIDA]
+==========================================
+Jogo verificado com sucesso!
+- ID do Jogo: %d
+- Nome: %s
+- Hora: %s
+==========================================
+]], game.PlaceId, gameInfo.Name, os.date("%Y-%m-%d %H:%M:%S")))
+    return true
+end
+verificarJogo()
+
+--[[ TABS ]]--
+local GroupPrincipal = Window:MakeTab({
+    Name = "Principal",
+    Icon = "rbxassetid://7733765045",
     PremiumOnly = false
 })
-local CdSc = CreditsTab:AddSection({Name = "Créditos"})
-CdSc:AddParagraph("Rhyan57", "• Criador e fundador do Msdoors.")
-CdSc:AddParagraph("SeekAlegriaFla", "• Ajudante e coletor de files.")
+local FarmGroup = GroupPrincipal:AddSection({Name = "Automoção" })
+
+local GroupCredits = Window:MakeTab({
+    Name = "Msdoors",
+    Icon = "rbxassetid://7733765045",
+    PremiumOnly = false
+})
+
+GroupCredits:AddLabel('<font color="#00FFFF">Créditos</font>')
+GroupCredits:AddLabel('• Rhyan57 - <font color="#FFA500">DONO</font>')
+GroupCredits:AddLabel('• SeekAlegriaFla - <font color="#FFA500">SUB-DONO</font>')
+GroupCredits:AddLabel('<font color="#00FFFF">Redes</font>')
+GroupCredits:AddLabel('• Discord: <font color="#9DABFF">https://dsc.gg/msdoors-gg</font>')
+GroupCredits:AddButton({
+    Name = "Copiar Link",
+    Callback = function()
+        local url = "https://dsc.gg/msdoors-gg"
+        if syn then
+            syn.request({
+                Url = url,
+                Method = "GET"
+            })
+        elseif setclipboard then
+            setclipboard(url)
+            OrionLib:MakeNotification({
+                Name = "Link Copiado!",
+                Content = "Seu executor não suporta redirecionar. Link copiado.",
+                Time = 5
+            })
+        else
+            OrionLib:MakeNotification({
+                Name = "LOL",
+                Content = "Seu executor não suporta redirecionar ou copiar links.",
+                Time = 5
+            })
+        end
+    end
+})
+GroupCredits:AddLabel('<font color="#FF0000">Script</font>')
+GroupCredits:AddButton({
+    Name = "Descarregar",
+    Callback = function()
+        for _, thread in pairs(getfenv()) do
+            if typeof(thread) == "thread" then
+                task.cancel(thread)
+            end
+        end
+      
+        notificationsEnabled = false
+        InstaInteractEnabled = false
+        AutoInteractEnabled = false
+        initialized = false
+        verificarEspObjetos = false
+        desativarESPObjetos()
+      
+        if OrionLib then
+            OrionLib:Destroy()
+        end
+        warn("[Msdoors] • Todos os sistemas foram desativados e a interface fechada.")
+    end
+})
 
 --[[ Auto Farm Wins script ]]--
 local destino = Vector3.new(-583062, 37, 77)
@@ -105,12 +243,7 @@ local function verificarUI()
     end
 end
 
-local Farm = Window:MakeTab({
-    Name = "Automação",
-    Icon = "rbxassetid://7743873633",
-    PremiumOnly = false
-})
-Farm:AddToggle({
+FarmGroup:AddToggle({
     Name = "Auto Farm Win",
     Default = false,
     Callback = function(estado)
@@ -124,6 +257,7 @@ Farm:AddToggle({
         end
     end
 })
+FarmGroup:AddLabel("")
 
 --// ADDONS \\--
 task.spawn(function()
