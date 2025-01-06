@@ -32,6 +32,15 @@ local Noclip = nil
 local PathBeam = nil
 local VelocityHandler = nil
 
+_G.msdoors_desastre = {
+    ativo = false,
+    conexao = nil,
+    valorAtual = nil,
+    lastCheck = 0, 
+    checkInterval = 0.1,
+    hudDisplayTime = 5 
+}
+
 print("[Msdoors] • [✅] Inicialização de Serviços")
 --[[ VERIFICAÇÃO DE JOGO ]]--
 local GAME_ID_ESPERADO = 189707
@@ -274,6 +283,154 @@ GroupExploit:AddButton({
 })
 
 GroupExploit:AddLabel('<font color="#FF0000">Use at your own risk.</font>')
+
+
+local function createStylishHUD()
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "DisasterHUD"
+    screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Name = "MainFrame"
+    mainFrame.Size = UDim2.new(0, 300, 0, 80)
+    mainFrame.Position = UDim2.new(0.5, -150, 0, -100)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    mainFrame.BackgroundTransparency = 0.2
+    mainFrame.BorderSizePixel = 0
+    mainFrame.Parent = screenGui
+
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(0, 10)
+    uiCorner.Parent = mainFrame
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Name = "DisasterText"
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Font = Enum.Font.GothamBold
+    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textLabel.TextSize = 24
+    textLabel.Parent = mainFrame
+
+    local gradient = Instance.new("UIGradient")
+    gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 165, 0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+    })
+    gradient.Parent = mainFrame
+
+    local gradientRotation = 0
+    RunService.RenderStepped:Connect(function()
+        gradientRotation = (gradientRotation + 1) % 360
+        gradient.Rotation = gradientRotation
+    end)
+
+    return screenGui, mainFrame, textLabel
+end
+
+local function showStylishHUD(message)
+    local existingHUD = game.Players.LocalPlayer.PlayerGui:FindFirstChild("DisasterHUD")
+    if existingHUD then existingHUD:Destroy() end
+
+    local screenGui, mainFrame, textLabel = createStylishHUD()
+    textLabel.Text = message
+
+    local entranceTween = TweenService:Create(mainFrame, 
+        TweenInfo.new(0.5, Enum.EasingStyle.Bounce), 
+        {Position = UDim2.new(0.5, -150, 0, 20)}
+    )
+    entranceTween:Play()
+
+    local pulseIn = TweenService:Create(mainFrame,
+        TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out),
+        {Size = UDim2.new(0, 320, 0, 85)}
+    )
+    local pulseOut = TweenService:Create(mainFrame,
+        TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.In),
+        {Size = UDim2.new(0, 300, 0, 80)}
+    )
+
+    pulseIn:Play()
+    pulseIn.Completed:Connect(function()
+        pulseOut:Play()
+    end)
+
+    task.delay(_G.msdoors_desastre.hudDisplayTime, function()
+        local exitTween = TweenService:Create(mainFrame,
+            TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.In),
+            {Position = UDim2.new(0.5, -150, 0, -100)}
+        )
+        exitTween.Completed:Connect(function()
+            screenGui:Destroy()
+        end)
+        exitTween:Play()
+    end)
+end
+
+local function monitorarDesastre()
+    local localPlayerName = Players.LocalPlayer.Name
+    local lastValue = nil
+
+    local function checkSurvivalTag()
+        local playerModel = Workspace:FindFirstChild(localPlayerName)
+        local survivalTag = playerModel and playerModel:FindFirstChild("SurvivalTag")
+
+        if survivalTag and survivalTag:IsA("StringValue") then
+            if survivalTag.Value ~= lastValue then
+                lastValue = survivalTag.Value
+
+                print("[Msdoors] • Desastre: " .. survivalTag.Value)
+                showStylishHUD("Desastre: " .. survivalTag.Value)
+                OrionLib:MakeNotification({
+                    Name = "Desastre Detectado",
+                    Content = "O desastre é " .. survivalTag.Value,
+                    Image = "rbxassetid://4483345998",
+                    Time = 5
+                })
+                
+            end
+            return true
+        end
+        return false
+    end
+
+    if not checkSurvivalTag() then
+        print("[Msdoors] • Arquivo SurvivalTag inexistente, impossível Exibir desastres Naturais | Tentando novamente...)
+    end
+
+    _G.msdoors_desastre.conexao = RunService.Heartbeat:Connect(function()
+        local currentTime = tick()
+        if currentTime - _G.msdoors_desastre.lastCheck >= _G.msdoors_desastre.checkInterval then
+            _G.msdoors_desastre.lastCheck = currentTime
+            checkSurvivalTag()
+        end
+    end)
+end
+
+local function pararMonitoramento()
+    if _G.msdoors_desastre.conexao then
+        _G.msdoors_desastre.conexao:Disconnect()
+        _G.msdoors_desastre.conexao = nil
+    end
+    _G.msdoors_desastre.valorAtual = nil
+
+
+end
+
+VisualsGroup:AddLabel('<font color="#00FF34">see disasters before they appear.</font>')
+VisualsGroup:AddToggle({
+    Name = "warn of disasters",
+    Default = false,
+    Callback = function(estado)
+        _G.msdoors_desastre.ativo = estado
+        if estado then
+            monitorarDesastre()
+        else
+            pararMonitoramento()
+        end
+    end
+})
 
 local function preventSit()
     if Humanoid then
