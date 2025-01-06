@@ -277,10 +277,10 @@ TeleportsGroup:AddLabel("")
 
 --// ADDONS \\--
 task.spawn(function()
-
-    local AddonTab = Window:MakeTab({Name = "Addons [BETA]", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-
-    if not isfolder(".msdoors/addons") then
+     local AddonTab = Window:MakeTab({Name = "Addons [BETA]", Icon = "rbxassetid://7733799901", PremiumOnly = false})
+    AddonTab:AddLabel('<font color="#FF0000">This tab is for unofficial Msdoors addons! We are not responsible for anything!</font>')
+   
+        if not isfolder(".msdoors/addons") then
         makefolder(".msdoors/addons")
     end
 
@@ -376,5 +376,64 @@ task.spawn(function()
     end
 end)
 
-createHUD()
+local GroupCredits = Window:MakeTab({
+    Name = "Msdoors",
+    Icon = "rbxassetid://7733765045",
+    PremiumOnly = false
+})
+
+GroupCredits:AddLabel('<font color="#00FFFF">Créditos</font>')
+GroupCredits:AddLabel('• Rhyan57 - <font color="#FFA500">DONO</font>')
+GroupCredits:AddLabel('• SeekAlegriaFla - <font color="#FFA500">SUB-DONO</font>')
+GroupCredits:AddLabel('<font color="#00FFFF">Redes</font>')
+GroupCredits:AddLabel('• Discord: <font color="#9DABFF">https://dsc.gg/msdoors-gg</font>')
+GroupCredits:AddButton({
+    Name = "Copiar Link",
+    Callback = function()
+        local url = "https://dsc.gg/msdoors-gg"
+        if syn then
+            syn.request({
+                Url = url,
+                Method = "GET"
+            })
+        elseif setclipboard then
+            setclipboard(url)
+            OrionLib:MakeNotification({
+                Name = "Link Copiado!",
+                Content = "Seu executor não suporta redirecionar. Link copiado.",
+                Time = 5
+            })
+        else
+            OrionLib:MakeNotification({
+                Name = "LOL",
+                Content = "Seu executor não suporta redirecionar ou copiar links.",
+                Time = 5
+            })
+        end
+    end
+})
+GroupCredits:AddLabel('<font color="#FF0000">Script</font>')
+GroupCredits:AddButton({
+    Name = "Descarregar",
+    Callback = function()
+        for _, thread in pairs(getfenv()) do
+            if typeof(thread) == "thread" then
+                task.cancel(thread)
+            end
+        end
+      
+        notificationsEnabled = false
+        InstaInteractEnabled = false
+        AutoInteractEnabled = false
+        initialized = false
+        verificarEspObjetos = false
+        desativarESPObjetos()
+      
+        if OrionLib then
+            OrionLib:Destroy()
+        end
+        warn("[Msdoors] • Todos os sistemas foram desativados e a interface fechada.")
+    end
+})
+
 OrionLib:Init()
