@@ -273,7 +273,7 @@ GroupExploit:AddButton({
     end
 })
 
-GroupExploit:AddLabel('<font color="#00FF34">Use at your own risk.</font>')
+GroupExploit:AddLabel('<font color="#FF0000">Use at your own risk.</font>')
 
 local function preventSit()
     if Humanoid then
