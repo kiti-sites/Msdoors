@@ -152,7 +152,6 @@ VisualsGroup:AddButton({
         game:GetService("Workspace").ReturnPortal:Destroy()
     end
 })
-VisualsGroup:AddLabel("")
 
 local GroupPlayers = Window:MakeTab({
     Name = "Player",
@@ -262,25 +261,6 @@ GroupExploit:AddButton({
     end
 })
 
-GroupExploit:AddButton({
-    Name = "Say Current Disaster",
-    Callback = function()
-        local chatEvents = game:GetService("ReplicatedStorage"):FindFirstChild("DefaultChatSystemChatEvents")
-        local sayMessageRequest = chatEvents and chatEvents:FindFirstChild("SayMessageRequest")
-        local disasterTag = game.Players.LocalPlayer.Character:FindFirstChild("SurvivalTag")
-
-        if sayMessageRequest and disasterTag then
-            sayMessageRequest:FireServer(disasterTag.Value, "All")
-        else
-            OrionLib:MakeNotification({
-                Name = "Erro",
-                Content = "Não foi possível identificar o desastre ou enviar mensagem no chat.",
-                Image = "rbxassetid://4483345998",
-                Time = 5
-            })
-        end
-    end
-})
 
 GroupExploit:AddLabel('<font color="#FF0000">Use at your own risk.</font>')
 
