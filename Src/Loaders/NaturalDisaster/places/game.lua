@@ -107,6 +107,7 @@ local GroupPrincipal = Window:MakeTab({
     Icon = "rbxassetid://7733954760",
     PremiumOnly = false
 })
+local desastre = GroupPrincipal:AddLabel("Desastre: <font color="#FF0000">Nenhum</font>")
 local TeleportsGroup = GroupPrincipal:AddSection({ Name = "Teleports"})
 TeleportsGroup:AddLabel('<font color="#00FF34">Teleport between island and tower</font>')
 
@@ -673,6 +674,9 @@ local function showStylishHUD(message)
         exitTween:Play()
     end)
 end
+local function AtualizarDesastre(novoTexto)
+     desastre:Set(novoTexto)
+end
 
 local function monitorarDesastre()
     local localPlayerName = Players.LocalPlayer.Name
@@ -685,7 +689,8 @@ local function monitorarDesastre()
         if survivalTag and survivalTag:IsA("StringValue") then
             if survivalTag.Value ~= lastValue then
                 lastValue = survivalTag.Value
-
+				
+                AtualizarDesastre("Desastre: " .. survivalTag.Value))
                 print("[Msdoors] • Desastre: " .. survivalTag.Value)
 		TrySendChatMessage("⚠️ Desastre: " .. survivalTag.Value)
                 showStylishHUD("Desastre: " .. survivalTag.Value)
