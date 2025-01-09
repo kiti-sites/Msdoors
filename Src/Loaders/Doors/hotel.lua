@@ -20,12 +20,19 @@ if _G.OrionLibLoaded then
     warn("[Msdoors] • Script já está carregado!")
     return
 end
+--[[ VARIAVEIS GLOBAIS ]]--
+_G.msdoors_DeletingFigure = false
+_G.msdoors_InvisFigure = false
+_G.msdoors_InvisGrumbles = false
+_G.msdoors_CurrentlyUsingSGF = false
+_G.msdoors_SpeedBypassBeTurned = nil
+_G.msdoors_SpeedHackBeTurned = nil
+
 local OrionLib = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/refs/heads/main/Library/OrionLibrary_msdoors.lua'))()
 local Window = OrionLib:MakeWindow({IntroText = "Msdoors | V1",Icon = "rbxassetid://100573561401335", IntroIcon = "rbxassetid://95869322194132", Name = "MsDoors | The Hotel", HidePremium = false, SaveConfig = true, ConfigFolder = ".msdoors/places/hotel"})
 local MsdoorsNotify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Notification-doorsAPI/refs/heads/main/Msdoors/MsdoorsApi.lua"))()
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
 print("[Msdoors] • [✅] Inialização da livraria e apis")
-_G.OrionLibLoaded = true
 
 --[[ SERVIÇOS ]]--
 local Lighting = game:GetService("Lighting")
@@ -42,10 +49,8 @@ local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 local LatestRoom = ReplicatedStorage:WaitForChild("GameData"):WaitForChild("LatestRoom")
 print("[Msdoors] • [✅] Inicialização de Serviços")
-if game.PlaceId == 6516141723 then
-print("[Msdoors] • [✅] Inialização interrompida!")
-print("[Msdoors] • [❎] Jogo Incorreto!")
-end
+
+
 --[[ SCRIPT ]]--
 local GroupPrincipal = Window:MakeTab({
     Name = "Principal",
@@ -61,6 +66,8 @@ local GroupExploits = Window:MakeTab({
     Icon = "rbxassetid://7733765045",
     PremiumOnly = false
 })
+local ByppasGroup = GroupExploits:AddSection({Name = "Byppas"})
+local TrollGroup = GroupExploits:AddSection({Name = "Troll"})
 
 local GroupVisual = Window:MakeTab({
     Name = "Visual",
@@ -68,6 +75,8 @@ local GroupVisual = Window:MakeTab({
     PremiumOnly = false
 })
 local NotificationGroup = GroupVisual:AddSection({Name = "Notification"})
+local PlayerGroup = GroupVisual:AddSection({Name = "Player"})
+local GameGroup = GroupVisual:AddSection({Name = "Game"})
 local EspGroup = GroupVisual:AddSection({Name = "Esp"})
 
 local GroupCredits = Window:MakeTab({
@@ -129,6 +138,166 @@ GroupCredits:AddButton({
         warn("[Msdoors] • Todos os sistemas foram desativados e a interface fechada.")
     end
 })
+
+ByppasGroup:AddButton({
+    Name = "Delete Figure",
+    Callback = function()
+        local room = game.Players.LocalPlayer:GetAttribute("CurrentRoom")
+        local crooms = workspace.CurrentRooms
+        local notsuccess = 0
+        
+        if _G.msdoors_DeletingFigure == false then
+            _G.msdoors_DeletingFigure = true
+            local Part = Instance.new("Part", workspace)
+            local Attachment1 = Instance.new("Attachment", Part)
+            Part.Anchored = true
+            Part.Position = Vector3.new(0,0,0)
+            Attachment1.Position = Vector3.new(0,-40000,0)
+            
+            if crooms:WaitForChild(room):FindFirstChild("FigureSetup") then
+                if crooms:WaitForChild(room).FigureSetup.FigureRig:FindFirstChild("Root") then
+                    local figure = crooms:WaitForChild(room).FigureSetup.FigureRig
+                    local Torque = Instance.new("Torque")
+                    Torque.Parent = figure.Hitbox
+                    Torque.Torque = Vector3.new(100000,100000,100000)
+                    local AlignPosition = Instance.new("AlignPosition")
+                    local Attachment2 = Instance.new("Attachment")
+                    AlignPosition.Parent = figure.Hitbox
+                    Attachment2.Parent = figure.Hitbox
+                    Torque.Attachment0 = Attachment2
+                    AlignPosition.MaxForce = 9999999999999999
+                    AlignPosition.MaxVelocity = math.huge
+                    AlignPosition.Responsiveness = 100
+                    AlignPosition.Attachment0 = Attachment2
+                    AlignPosition.Attachment1 = Attachment1
+                    
+                    task.wait(1.5)
+                    Part:Destroy()
+                    Attachment1:Destroy()
+                    Torque:Destroy()
+                    AlignPosition:Destroy()
+                    Attachment2:Destroy()
+                    
+                    repeat 
+                        notsuccess = notsuccess + 1 
+                        task.wait(0.02) 
+                    until figure:FindFirstChild("Hitbox") == false or notsuccess == 100
+                    
+                    if notsuccess == 100 then
+                        OrionLib:MakeNotification({
+                            Name = "Error",
+                            Content = "Failed to delete figure",
+                            Time = 4
+                        })
+                    else
+                        OrionLib:MakeNotification({
+                            Name = "Success",
+                            Content = "Figure deleted successfully!",
+                            Time = 4
+                        })
+                    end
+                else
+                    OrionLib:MakeNotification({
+                        Name = "Error",
+                        Content = "Figure not found",
+                        Time = 3
+                    })
+                    Part:Destroy()
+                    Attachment1:Destroy()
+                end
+            else
+                OrionLib:MakeNotification({
+                    Name = "Error",
+                    Content = "Figure not found",
+                    Time = 3
+                })
+                Part:Destroy()
+                Attachment1:Destroy()
+            end
+            _G.msdoors_DeletingFigure = false
+        end
+    end
+})
+
+ByppasGroup:AddToggle({
+    Name = "Delete Grumbles",
+    Default = false,
+    Callback = function(Value)
+        local room = game.Players.LocalPlayer:GetAttribute("CurrentRoom")
+        local crooms = workspace.CurrentRooms
+        
+        if Value then
+            if crooms:WaitForChild(room):FindFirstChild("_NestHandler") then
+                if crooms:WaitForChild(room):WaitForChild("_NestHandler"):FindFirstChild("Grumbles") then
+                    _G.msdoors_InvisGrumbles = true
+                    for i,v in ipairs(crooms:WaitForChild(room):WaitForChild("_NestHandler").Grumbles:GetChildren()) do 
+                        v.MainPart.GrumbleAttach.CFrame = CFrame.new(Vector3.new(0,500,0)) 
+                    end
+                else
+                    OrionLib:MakeNotification({
+                        Name = "Error",
+                        Content = "Grumbles not found",
+                        Time = 3
+                    })
+                end
+            else
+                OrionLib:MakeNotification({
+                    Name = "Error",
+                    Content = "Grumbles not found",
+                    Time = 3
+                })
+            end
+        else
+            if _G.msdoors_InvisGrumbles == true then
+                _G.msdoors_InvisGrumbles = false
+                if crooms:WaitForChild(room):FindFirstChild("_NestHandler") then
+                    if crooms:WaitForChild(room):WaitForChild("_NestHandler"):FindFirstChild("Grumbles") then
+                        for i,v in ipairs(crooms:WaitForChild(room):WaitForChild("_NestHandler").Grumbles:GetChildren()) do 
+                            v.MainPart.GrumbleAttach.CFrame = CFrame.new(Vector3.new(0,0,0)) 
+                        end
+                    end
+                end
+            end
+        end
+    end
+})
+TrollGroup:AddToggle({
+    Name = "Animação de Atordoar",
+    Default = false,
+    Callback = function(Value)
+        local lplr = game.Players.LocalPlayer
+        if Value then
+            lplr.Character:SetAttribute('Stunned', true)
+            lplr.Character.Humanoid:SetAttribute('Stunned', true)
+        else
+            lplr.Character:SetAttribute('Stunned', false)
+            lplr.Character.Humanoid:SetAttribute('Stunned', false)
+        end
+    end
+})
+
+TrollGroup:AddToggle({
+    Name = "Animação de Pensamento",
+    Default = false,
+    Callback = function(Value)
+        local lplr = game.Players.LocalPlayer
+        local thinkanims = {"18885101321", "18885098453", "18885095182"}
+        
+        if Value then
+            local animation = Instance.new("Animation")
+            animation.AnimationId = "rbxassetid://" .. thinkanims[math.random(1, #thinkanims)]
+            animtrack = lplr.Character:FindFirstChildWhichIsA("Humanoid"):LoadAnimation(animation)
+            animtrack.Looped = true
+            animtrack:Play()
+        else
+            if animtrack then
+                animtrack:Stop()
+                animtrack:Destroy()
+            end
+        end
+    end
+})
+
 
 local ObjectiveESPConfig = {
     Types = {
@@ -329,6 +498,58 @@ game.Players.LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(functi
     end
 end)
 
+GameGroup:AddToggle({
+    Name = "No Ambience",
+    Default = false,
+    Callback = function(Value)
+        if not game.SoundService:FindFirstChild("AmbienceRemove") then
+            local ambiencerem = Instance.new("BoolValue")
+            ambiencerem.Name = "AmbienceRemove"
+            ambiencerem.Parent = game.SoundService
+        end
+        if Value then
+            workspace.Ambience_Dark.Volume = 0
+            if workspace:FindFirstChild("AmbienceMines") then
+                workspace.AmbienceMines.Volume = 0
+            else
+                workspace.Ambience_Hotel.Volume = 0
+                workspace.Ambience_Hotel2.Volume = 0
+                workspace.Ambience_Hotel3.Volume = 0
+            end
+            game.SoundService.AmbienceRemove.Value = true
+            task.wait()
+            repeat 
+                if workspace.Terrain:FindFirstChildWhichIsA("Attachment") then 
+                    workspace.Terrain:FindFirstChildWhichIsA("Attachment"):Destroy()
+                end 
+                task.wait(0.01) 
+            until game.SoundService.AmbienceRemove.Value == false
+        else
+            workspace.Ambience_Dark.Volume = 0.6
+            if workspace:FindFirstChild("AmbienceMines") then
+                workspace.AmbienceMines.Volume = 0.4
+            else
+                workspace.Ambience_Hotel.Volume = 0.2
+                workspace.Ambience_Hotel2.Volume = 0.3
+                workspace.Ambience_Hotel3.Volume = 0.05
+            end
+            game.SoundService.AmbienceRemove.Value = false
+        end
+    end
+})
+
+GameGroup:AddToggle({
+    Name = "No Wardrobe Vignette",
+    Default = false,
+    Callback = function(Value)
+        local vignette = game:GetService("Players").LocalPlayer.PlayerGui.MainUI.MainFrame.HideVignette
+        if Value then
+            vignette.Size = UDim2.new(0,0,0,0)
+        else
+            vignette.Size = UDim2.new(1,0,1,0)
+        end
+    end
+})
 -- Tabela de Entidades para notificação.
 local EntityTable = {
     ["Names"] = {"BackdoorRush", "BackdoorLookman", "RushMoving", "AmbushMoving", "Eyes", "JeffTheKiller", "A60", "A120"},
@@ -690,4 +911,4 @@ PlayerGroup:AddToggle({
     end
 })
 
-
+_G.OrionLibLoaded = true
