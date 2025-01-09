@@ -287,9 +287,9 @@ local config = {
     local statusLabel = FarmingGroup:AddLabel('Waiting...')
     cache.RunService.Heartbeat:Connect(function()
         if getgenv().msdoors_isteleporting then
-            statusLabel:Set('Status: Active - <font color="#FF0000">Farming Position</font>')
+            statusLabel:Set("Status: Active - Farming Position")
         else
-            statusLabel:Set('Status: Inactive - <font color="#00FF34">Safe mode</font>')
+            statusLabel:Set("Status: Inactive - SafeMode")
         end
     end)
     
@@ -303,6 +303,7 @@ local config = {
         end
     end)
 end
+
 initializeTeleportSystem()
 
 local GroupExploits = Window:MakeTab({
