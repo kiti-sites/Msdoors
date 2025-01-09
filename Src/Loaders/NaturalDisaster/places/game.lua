@@ -160,6 +160,8 @@ local GroupPlayers = Window:MakeTab({
 })
 local GroupPlayer = GroupPlayers:AddSection({ Name = "movement"})
 GroupPlayer:AddLabel('<font color="#00FF34">Speed hack, walk speed and player stuff.</font>')
+
+
 --[[ PLAYER ]]--
 GroupPlayer:AddButton({
 	Name = "GodMode",
@@ -212,7 +214,8 @@ GroupPlayer:AddSlider({
         game.Workspace.Gravity = value
     end
 })
-local FarmingGroup = GroupPlayer:AddSection({ Name = "Farming"})
+
+local FarmingGroup = GroupPlayers:AddSection({ Name = "Farming"})
 FarmingGroup:AddLabel('<font color="#FF0000">Farm Systems</font>')
 
 local cache = {
