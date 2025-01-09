@@ -215,6 +215,96 @@ GroupPlayer:AddSlider({
 local FarmingGroup = GroupPlayer:AddSection({ Name = "Farming"})
 FarmingGroup:AddLabel('<font color="#FF0000">Farm Systems</font>')
 
+local cache = {
+    RunService = game:GetService("RunService"),
+    Players = game:GetService("Players"),
+    LocalPlayer = game:GetService("Players").LocalPlayer,
+    TweenService = game:GetService("TweenService")
+}
+local config = {
+    locations = {
+        farm = CFrame.new(-281, 167, 339),
+        safe = CFrame.new(-278, 180, 343)
+    },
+    tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear),
+    updateRate = 0 -- 0 = máxima velocidade
+}
+local function initializeTeleportSystem()
+    local function isCharacterValid()
+        local character = cache.LocalPlayer.Character
+        return character 
+            and character:FindFirstChild("HumanoidRootPart") 
+            and character:FindFirstChild("Humanoid") 
+            and character.Humanoid.Health > 0
+    end
+local function teleportWithTween(targetCFrame)
+        if not isCharacterValid() then return end
+        
+        local humanoidRootPart = cache.LocalPlayer.Character.HumanoidRootPart
+        local tween = cache.TweenService:Create(
+            humanoidRootPart,
+            config.tweenInfo,
+            {CFrame = targetCFrame}
+        )
+        tween:Play()
+        return tween
+    end
+    getgenv().msdoors_isteleporting = false
+    local connection
+    
+    FarmingGroup:AddToggle({
+        Name = "AutoFarm wins",
+        Default = false,
+        Flag = "autofarm-natural",
+        Save = true,
+        Callback = function(Value)
+            getgenv().msdoors_isteleporting = Value
+            
+            if Value then
+                connection = cache.RunService.Heartbeat:Connect(function()
+                    if not isCharacterValid() then return end
+                    cache.LocalPlayer.Character.HumanoidRootPart.CFrame = config.locations.farm
+                end)
+            else
+                if connection then 
+                    connection:Disconnect()
+                    connection = nil
+                    teleportWithTween(config.locations.safe)
+                end
+            end
+        end
+    })
+    
+    FarmingGroup:AddButton({
+        Name = "Instant Safe Teleport",
+        Callback = function()
+            if isCharacterValid() then
+                teleportWithTween(config.locations.safe)
+            end
+        end
+    })
+    
+    FarmingGroup:AddLabel('<font color="#00FF34">Status do AutoFarm</font>')
+    local statusLabel = FarmingGroup:AddLabel('Waiting...')
+
+    cache.RunService.Heartbeat:Connect(function()
+        if getgenv().msdoors_isteleporting then
+            statusLabel:Set('Status: Active - <font color="#FF0000">Farming....</font>')
+        else
+            statusLabel:Set('Status: Inactive - <font color="#00FF34">SafeMode</font>')
+        end
+    end)
+    cache.LocalPlayer.CharacterAdded:Connect(function()
+        if getgenv().msdoors_isteleporting then
+            task.wait(0.5)
+            connection = cache.RunService.Heartbeat:Connect(function()
+                if not isCharacterValid() then return end
+                cache.LocalPlayer.Character.HumanoidRootPart.CFrame = config.locations.farm
+            end)
+        end
+    end)
+end
+initializeTeleportSystem()
 
 local GroupExploits = Window:MakeTab({
     Name = "Exploits",
