@@ -284,12 +284,12 @@ local config = {
         end
     })
     
-    local statusLabel = FarmingGroup:AddLabel("Waiting...")
+    local statusLabel = FarmingGroup:AddLabel('Waiting...')
     cache.RunService.Heartbeat:Connect(function()
         if getgenv().msdoors_isteleporting then
-            statusLabel:Set("Status: Active - <font color="#FF0000">Farming Position</font>")
+            statusLabel:Set('Status: Active - <font color="#FF0000">Farming Position</font>')
         else
-            statusLabel:Set("Status: Inactive - <font color="#FFA500">Safe Mode</font>")
+            statusLabel:Set('Status: Inactive - <font color="#00FF34">Safe mode</font>')
         end
     end)
     
