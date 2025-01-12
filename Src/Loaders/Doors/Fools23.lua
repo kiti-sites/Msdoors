@@ -158,3 +158,4 @@ ExploitsTab:AddToggle({
 
 
 OrionLib:Init()
+_G.MsdoorsLoaded = true
