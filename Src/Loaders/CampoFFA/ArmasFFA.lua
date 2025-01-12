@@ -313,4 +313,5 @@ VisualsTab:AddToggle({
 })
 
 OrionLib:Init()
+_G.MsdoorsLoaded = true
 
