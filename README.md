@@ -11,10 +11,10 @@
 > ``Logo Abaixo você tem acesso ao script de forma totalmente gratuita.``
 
 # 🌟 **WEBSITE**
-> [ACESSAR WEBSITE](https://msdoors-gg.vercel.app/)
+> [ACESSAR WEBSITE DO PROJETO OFICIAL](https://msdoors-gg.vercel.app/)
 
 # **Scripts**
 > **Msdoors Loadstring**
 ```js
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Sc-Rhyan57/Msdoors/refs/heads/main/download/main.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/kiti-sites/Msdoors/refs/heads/main/download/main.lua"))()
 ```
