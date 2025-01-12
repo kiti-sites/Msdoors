@@ -912,3 +912,4 @@ PlayerGroup:AddToggle({
 })
 
 _G.OrionLibLoaded = true
+_G.MsdoorsLoaded = true
