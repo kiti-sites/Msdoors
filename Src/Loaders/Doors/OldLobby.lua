@@ -18,3 +18,4 @@ MsdoorsNotify("Msdoors", "Em Breve...", "Execução", "rbxassetid://6023426923",
 
 
 OrionLib:Init()
+_G.MsdoorsLoaded = true
