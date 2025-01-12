@@ -1002,3 +1002,4 @@ GroupCredits:AddButton({
 })
 
 OrionLib:Init()
+_G.MsdoorsLoaded = true
