@@ -848,4 +848,4 @@ GroupCredits:AddButton({
     end
 })
 
-
+_G.MsdoorsLoaded = true
